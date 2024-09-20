@@ -1,16 +1,17 @@
-﻿using System;
+﻿using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models
+namespace BusinessObject.RequestModel
 {
-    public partial class Member
+    public class RegisterMemberModel
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -36,7 +37,7 @@ namespace BusinessObject.Models
         public int RoleId { get; set; }
 
         [JsonIgnore]
-        public virtual Role? Role { get; set; }
+        public virtual Role Role { get; set; } = null!;
         [JsonIgnore]
         public virtual ICollection<Blog>? Blogs { get; set; }
         [JsonIgnore]
