@@ -18,6 +18,11 @@ namespace Service
             _memberRepository = memberRepository;
         }
 
+        public Task<bool> ExistedEmail(string email)
+        {
+           return _memberRepository.ExistedEmail(email);
+        }
+
         public async Task<List<Member>> GetAllMember()
         {
             return await _memberRepository.GetAllMember();
