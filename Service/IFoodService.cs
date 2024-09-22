@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository
+namespace Service
 {
-    public interface IFoodRepository
+    interface IFoodService
     {
         public Task<List<Food>> GetAllFood();
         public Task<Food> GetFoodById(int id);
-        public  Task AddNewFood(Food food);
-        public  Task DeleteFoodById(int id);
+        public Task AddNewFood(Food food);
+        public Task DeleteFoodById(int id);
         public Task<Food> UpdateFoodById(Food food);
     }
 }
