@@ -27,11 +27,11 @@ namespace Service
             return await _blogRepository.GetBLogById(id);
         }
 
-        public async void AddNewBlog(Blog newBlog) { 
+        public async Task AddNewBlog(Blog newBlog) { 
          await _blogRepository.UpdateBlog(newBlog);
         }
       
-        public async void DeleteBlog(int id)
+        public async Task DeleteBlog(int id)
         {
               _blogRepository.DeleteBlog(id);
         }

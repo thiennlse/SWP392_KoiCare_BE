@@ -21,46 +21,46 @@ namespace Repository
 
         public async Task<List<Blog>> GetAllBlog()
         {
-            return await _context.Blogs.ToListAsync();
+            return await _context.Blogs.Include(b => b.MemberId).ToListAsync();
         }
 
         public async Task<Blog> GetBLogById(int id)
         {
-            return await _context.Blogs.SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _context.Blogs.Include(b => b.MemberId).SingleOrDefaultAsync(m => m.Id.Equals(id));
         }
 
-        public async void AddNewBlog(Blog newBlog)
+        public async Task AddNewBlog(Blog blog)
         {
-            if (newBlog != null)
+            if (blog != null)
             {
-                BlogList.Add(newBlog);
+                BlogList.Add(blog);
                 await _context.SaveChangesAsync();
             }
 
         }
 
-        public async void DeleteBlog(int id)
+        public async Task DeleteBlog(int id)
         {
-            var Blog = await _context.Blogs.SingleOrDefaultAsync(b => b.Id == id);
-            if (Blog != null) { 
-            _context.Blogs.Remove(Blog);
+            var blog = await GetBLogById(id);
+            if (blog != null) { 
+            _context.Blogs.Remove(blog);
                 await _context.SaveChangesAsync();
             }
             
         }
 
-        public async Task<Blog> UpdateBlog(Blog newBlog)
+        public async Task<Blog> UpdateBlog(Blog blog)
         {
-            var Blog = await _context.Blogs.SingleOrDefaultAsync(b => b.Id == newBlog.Id);
-            if (Blog != null) { 
-                Blog.MemberId = newBlog.MemberId;
-               Blog.Title = newBlog.Title;
-                Blog.Content = newBlog.Content;
-                Blog.DateOfPublish = newBlog.DateOfPublish;
-                Blog.Status = newBlog.Status;
+            var _blog = await GetBLogById( blog.Id);
+            if (_blog != null) { 
+                _blog.MemberId = blog.MemberId;
+               _blog.Title = blog.Title;
+                _blog.Content = blog.Content;
+                _blog.DateOfPublish = blog.DateOfPublish;
+                _blog.Status = blog.Status;
             }
             await _context.SaveChangesAsync();
-            return Blog;
+            return _blog;
         }
 
 
