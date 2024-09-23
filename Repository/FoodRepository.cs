@@ -18,7 +18,7 @@ namespace Repository
             _context = context;
         }
 
-        List<Food> Foods;
+        List<Food> FoodList;
 
         public async Task<List<Food>> GetAllFood()
         {
@@ -34,7 +34,7 @@ namespace Repository
         {
             if (food != null)
             {
-                _context.Foods.Add(food);
+                FoodList.Add(food);
                 await _context.SaveChangesAsync();
             }
         }

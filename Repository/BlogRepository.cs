@@ -33,7 +33,7 @@ namespace Repository
         {
             if (blog != null)
             {
-                BlogList.Add(blog);
+                _context.Blogs.Add(blog); 
                 await _context.SaveChangesAsync();
             }
 
