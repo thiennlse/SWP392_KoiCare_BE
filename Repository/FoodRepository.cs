@@ -34,7 +34,7 @@ namespace Repository
         {
             if (food != null)
             {
-                FoodList.Add(food);
+                _context.Foods.Add(food);
                 await _context.SaveChangesAsync();
             }
         }

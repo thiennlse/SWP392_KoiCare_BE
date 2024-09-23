@@ -33,8 +33,8 @@ namespace Repository
         {
             if (blog != null)
             {
-                _context.Blogs.Add(blog); 
-                await _context.SaveChangesAsync();
+               _context.Blogs.Add(blog); 
+               await _context.SaveChangesAsync();
             }
 
         }
@@ -54,7 +54,7 @@ namespace Repository
             var _blog = await GetBLogById( blog.Id);
             if (_blog != null) { 
                 _blog.MemberId = blog.MemberId;
-               _blog.Title = blog.Title;
+                _blog.Title = blog.Title;
                 _blog.Content = blog.Content;
                 _blog.DateOfPublish = blog.DateOfPublish;
                 _blog.Status = blog.Status;
