@@ -18,7 +18,7 @@ namespace Repository
 
         }
 
-        private List<Fish> FistList;
+        private List<Fish> fishtList;
 
         public async Task<List<Fish>> GetAllFish() 
         { 
@@ -51,22 +51,9 @@ namespace Repository
 
         public  async Task<Fish> UpdateById(Fish fish)
         {
-            var _fish = await GetFishById(fish.Id);
-
-            if (_fish != null) 
-            { 
-            _fish.Weight = fish.Weight;
-                _fish.Origin = fish.Origin;
-                _fish.Size = fish.Size;
-                _fish.FoodId = fish.FoodId;
-                _fish.PoolId = fish.PoolId;
-                _fish.Age = fish.Age;
-                _fish.Gender = fish.Gender;
-                _fish.Image = fish.Image;
-                _fish.Name = fish.Name;
-                await _context.SaveChangesAsync();
-            }
-            return _fish;
+            _context.Entry(fish).State = EntityState.Modified;
+              await _context.SaveChangesAsync();
+            return fish;
         }
 
 
