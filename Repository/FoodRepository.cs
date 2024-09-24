@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace Repository
             _context = context;
         }
 
-        List<Food> FoodList;
+        List<Food> foodList;
 
         public async Task<List<Food>> GetAllFood()
         {
@@ -51,16 +52,9 @@ namespace Repository
 
         public async Task<Food> UpdateFoodById(Food food) 
         {
-            var _food = await GetFoodById(food.Id);
-
-            if(_food != null) 
-            {
-              _food.Name = food.Name;
-              _food.Weight = food.Weight;
-            _food.Fish = food.Fish;
-            }
+            _context.Entry(food).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return _food;
+           return food;
         }
     }
 }

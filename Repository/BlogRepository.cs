@@ -17,7 +17,7 @@ namespace Repository
             _context = context;
         }
 
-        List<Blog> BlogList;
+        List<Blog> blogList;
 
         public async Task<List<Blog>> GetAllBlog()
         {
@@ -51,16 +51,9 @@ namespace Repository
 
         public async Task<Blog> UpdateBlog(Blog blog)
         {
-            var _blog = await GetBLogById( blog.Id);
-            if (_blog != null) { 
-                _blog.MemberId = blog.MemberId;
-                _blog.Title = blog.Title;
-                _blog.Content = blog.Content;
-                _blog.DateOfPublish = blog.DateOfPublish;
-                _blog.Status = blog.Status;
-            }
+          _context.Entry(blog).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return _blog;
+            return blog;
         }
 
 
