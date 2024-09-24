@@ -8,15 +8,6 @@ namespace BusinessObject.Models
 {
     public partial class KoiCareDBContext : DbContext
     {
-        private readonly IConfiguration _configuration;
-        public KoiCareDBContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public KoiCareDBContext() { }
-
-
         public KoiCareDBContext(DbContextOptions<KoiCareDBContext> options)
             : base(options)
         {
@@ -31,17 +22,6 @@ namespace BusinessObject.Models
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Waters> Waters { get; set; } = null!;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-
-                var connectionString = _configuration.GetConnectionString("KoiCareDB");
-
-                optionsBuilder.UseSqlServer(connectionString);
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
