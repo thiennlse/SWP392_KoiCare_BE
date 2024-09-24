@@ -57,7 +57,7 @@ namespace KoiCareApi.Controllers
             return Ok(member);
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Member member)
+        public async Task<IActionResult> Register([FromBody] RegisterMemberModel member)
         {
             if (member == null)
             {
@@ -73,7 +73,10 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest(new { message = "Email đã được sử dụng" });
             }
-            await _memberService.Register(member);
+            Member _member = null;
+            _member.Email = member.Email;
+            _member.Password = member.Password; 
+            await _memberService.Register(_member);
             return Created("Created",member);
         }
     }
