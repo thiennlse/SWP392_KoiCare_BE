@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    internal class FishService : IFishService
+    public class FishService : IFishService
     {
 
         private IFishRepository _fishRepository;

@@ -22,6 +22,12 @@ builder.Services.AddControllers()
     });
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IBlogService, BlogService>();
+builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+builder.Services.AddScoped<IFishService, FishService>();
+builder.Services.AddScoped<IFishRepository, FishRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    interface IBlogService
+    public interface IBlogService
     {
         public Task<List<Blog>> GetAllBlog();
 

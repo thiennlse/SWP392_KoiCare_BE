@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    internal interface IFishService
+    public interface IFishService
     {
         public Task<List<Fish>> GetAllFish();
         public Task<Fish> GetFishById(int id);
