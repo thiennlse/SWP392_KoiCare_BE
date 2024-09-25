@@ -27,7 +27,7 @@ namespace KoiCareApi.Controllers
             return Ok(blog);
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetBlogById(int id)
         {
             if (id <= 0)
@@ -42,7 +42,7 @@ namespace KoiCareApi.Controllers
             return Ok(blog);
         }
 
-        [HttpPost("/{add}")]
+        [HttpPost("add")]
         public async Task<IActionResult> AddNewBlog([FromBody] Blog _blog)
         {
             if (_blog == null) {
@@ -52,7 +52,7 @@ namespace KoiCareApi.Controllers
             return Ok("add successfully");
         }
 
-        [HttpGet("/{delete}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteById(int id)
         {
             var _blog = await _blogService.GetBLogById(id);
@@ -63,10 +63,10 @@ namespace KoiCareApi.Controllers
             return Ok("delete successfully");
         }
 
-        [HttpGet("/{update}")]
-        public async Task<IActionResult> UpdateById([FromBody]Blog _blog) 
+        [HttpPatch("update")]
+        public async Task<IActionResult> UpdateById(int id) 
         {
-            var blog = await _blogService.GetBLogById(_blog.Id);
+            var blog = await _blogService.GetBLogById(id);
             if (blog == null)
             {
                 return NotFound("blog no exits");
