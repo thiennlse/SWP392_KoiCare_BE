@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using BusinessObject.RequestModel;
+using BusinessObject.ResponseModel;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -10,10 +11,12 @@ namespace KoiCareApi.Controllers
     public class MemberController : ControllerBase
     {
         private readonly IMemberService _memberService;
+        private readonly IRoleService _roleService;
 
-        public MemberController(IMemberService memberService)
+        public MemberController(IMemberService memberService, IRoleService roleService)
         {
             _memberService = memberService;
+            _roleService = roleService;
         }
 
         [HttpGet]
@@ -34,14 +37,22 @@ namespace KoiCareApi.Controllers
                 return BadRequest("Vui lòng nhập đúng id");
             }
             var member = await _memberService.GetMemberById(id);
+            MemberResponseModel response = new MemberResponseModel();
+            response.Id = member.Id;
+            response.Email = member.Email;
+            response.Password = member.Password;
+            response.Phone = member.Phone;
+            response.FullName = member.FullName;
+            response.Address = member.Address;
+            response.Role = member.Role;
             if (member == null)
             {
                 return NotFound($"Không có member với id {id}");
             }
-            return Ok(member);
+            return Ok(response);
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AccountModel loginModel)
+        public async Task<IActionResult> Login([FromBody] AccountRequestModel loginModel)
         {
             if (loginModel == null || string.IsNullOrEmpty(loginModel.Email) || string.IsNullOrEmpty(loginModel.Password))
             {
@@ -57,7 +68,7 @@ namespace KoiCareApi.Controllers
             return Ok(member);
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterMemberModel member)
+        public async Task<IActionResult> Register([FromBody] AccountRequestModel member)
         {
             if (member == null)
             {
@@ -73,11 +84,13 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest(new { message = "Email đã được sử dụng" });
             }
-            Member _member = null;
+            Member _member = new Member();
             _member.Email = member.Email;
-            _member.Password = member.Password; 
+            _member.Password = member.Password;
+            _member.RoleId = 4;
+            _member.Role = await _roleService.GetRoleById(_member.RoleId);
             await _memberService.Register(_member);
-            return Created("Created",member);
+            return Created("Created",_member);
         }
     }
 }
