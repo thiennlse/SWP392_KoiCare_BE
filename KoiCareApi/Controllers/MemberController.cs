@@ -41,7 +41,7 @@ namespace KoiCareApi.Controllers
             return Ok(member);
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
+        public async Task<IActionResult> Login([FromBody] AccountModel loginModel)
         {
             if (loginModel == null || string.IsNullOrEmpty(loginModel.Email) || string.IsNullOrEmpty(loginModel.Password))
             {
