@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public  class FoodService : IFoodService
+    public class FoodService : IFoodService
     {
         private readonly IFoodRepository _foodRepository;
 

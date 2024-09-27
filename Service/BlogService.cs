@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public  class BlogService : IBlogService
+    public class BlogService : IBlogService
     {
         private readonly IBlogRepository _blogRepository;
         public BlogService( IBlogRepository blogRepository) { 
             _blogRepository = blogRepository;
         }
-
-       
 
         public async Task<List<Blog>> GetAllBlog()
         {
