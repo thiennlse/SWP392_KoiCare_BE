@@ -8,59 +8,39 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class OrderService : IOrderService
+    internal class OrderService : IOrderService
     {
-        private readonly KoiCareDBContext _context;
-
+        private readonly IOrderRepository _orderRepository;
         public OrderService(IOrderRepository orderRepository)
         {
-            _context = context;
+            _orderRepository = orderRepository;
         }
 
-        List<Order> OrderList;
+
 
         public async Task<List<Order>> GetAllOrder()
         {
-            return await _context.Orders.Include(b => b.MemberId).ToListAsync();
+            return await _orderRepository.GetAllOrder();
         }
 
         public async Task<Order> GetOrderById(int id)
         {
-            return await _context.Orders.Include(b => b.MemberId).SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _orderRepository.GetOrderById(id);
         }
 
-        public async Task AddNewOrder(Order order)
+        public async Task AddNewOrder(Order newOrder)
         {
-            if (order != null)
-            {
-                OrderList.Add(order);
-                await _context.SaveChangesAsync();
-            }
-
+            await _orderRepository.UpdateOrder(newOrder);
         }
 
         public async Task DeleteOrder(int id)
         {
-            var order = await GetOrderById(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-                await _context.SaveChangesAsync();
-            }
-
+            _orderRepository.DeleteOrder(id);
         }
 
-        public async Task<Order> UpdateOrder(Order order)
+        public async Task<Order> UpdateOrder(Order newOrder)
         {
-            var _order = await GetOrderById(order.Id);
-            if (_order != null)
-            {
-
-            }
-            await _context.SaveChangesAsync();
-            return _order;
+            return await _orderRepository.UpdateOrder(newOrder);
         }
-
-
     }
 }

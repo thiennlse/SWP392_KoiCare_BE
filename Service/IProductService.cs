@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,14 @@ namespace Service
 {
     interface IProductService
     {
+        Task<List<Product>> GetAllProduct();
+
+        Task<Product> GetProductById(int id);
+
+        Task AddNewProduct(Product product);
+
+        Task DeleteProduct(int id);
+
+        Task<Product> UpdateProduct(Product product);
     }
 }
