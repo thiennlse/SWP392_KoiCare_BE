@@ -1,10 +1,14 @@
 ﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.Execution;
+using BusinessObject.IMapperConfig;
 
 namespace Repository
 {
@@ -19,9 +23,19 @@ namespace Repository
 
         List<Blog> blogList;
 
-        public async Task<List<Blog>> GetAllBlog()
+        public async Task<List<BlogResponseModel>> GetAllBlog()
         {
-            return await _context.Blogs.Include(b => b.Member).ToListAsync();
+              List<Blog> blogs =  await _context.Blogs.Include(b => b.Member).ToListAsync();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+            List<BlogResponseModel> _blogs = blogs.Select(b => mapper.Map<Blog, BlogResponseModel>(b)).ToList();
+
+            return _blogs;
+
         }
 
         public async Task<Blog> GetBLogById(int id)

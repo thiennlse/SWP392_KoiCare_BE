@@ -1,16 +1,16 @@
-﻿using System;
+﻿using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models
+namespace BusinessObject.ResponseModel
 {
-    public partial class Member
+    public class MemberResponseModel
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -32,16 +32,6 @@ namespace BusinessObject.Models
         [StringLength(200)]
         public string Address { get; set; } = string.Empty;
 
-        [Required]
-        public int RoleId { get; set; }
         public virtual Role? Role { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Blog>? Blogs { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Order>? Orders { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Pool>? Pools { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Product>? Products { get; set; }
     }
 }

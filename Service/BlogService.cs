@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Service
             _blogRepository = blogRepository;
         }
 
-        public async Task<List<Blog>> GetAllBlog()
+        public async Task<List<BlogResponseModel>> GetAllBlog()
         {
                return await _blogRepository.GetAllBlog();
         }

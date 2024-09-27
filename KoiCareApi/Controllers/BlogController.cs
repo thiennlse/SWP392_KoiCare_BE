@@ -66,7 +66,7 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update")]
         public async Task<IActionResult> UpdateById([FromBody]Blog _blog) 
         {
-            var blog = await _blogService.GetBLogById(id);
+            var blog = await _blogService.GetBLogById(_blog.Id);
             if (blog == null)
             {
                 return NotFound("blog no exits");

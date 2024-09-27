@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Service
 {
     public interface IBlogService
     {
-        public Task<List<Blog>> GetAllBlog();
+        public Task<List<BlogResponseModel>> GetAllBlog();
 
         public Task<Blog> GetBLogById(int id);
 
