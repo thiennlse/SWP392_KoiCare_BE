@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    interface IProductService
+    public interface IProductService
     {
         Task<List<Product>> GetAllProduct();
 
