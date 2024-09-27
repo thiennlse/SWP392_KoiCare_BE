@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Validation_Handler;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Repository
@@ -37,8 +38,9 @@ namespace Repository
         }
         public async Task Register(Member member)
         {
-                _context.Members.Add(member);
-                await _context.SaveChangesAsync();
+            member.Password = HashPasswordValidation.HashPasswordToSha256(member.Password);
+            _context.Members.Add(member);
+            await _context.SaveChangesAsync();
 
         }
         public async Task<Member> UpdateMember(Member member)

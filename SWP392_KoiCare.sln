@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoiCareApi", "KoiCareApi\KoiCareApi.csproj", "{F9D5725D-F94D-4E1C-82E6-7B1BA663D5F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KoiCareApi", "KoiCareApi\KoiCareApi.csproj", "{F9D5725D-F94D-4E1C-82E6-7B1BA663D5F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObject", "BusinessObject\BusinessObject.csproj", "{17B6D0B0-0F6F-4AB1-8D7A-AFF1FD1DBCD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessObject", "BusinessObject\BusinessObject.csproj", "{17B6D0B0-0F6F-4AB1-8D7A-AFF1FD1DBCD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{7ED4088B-8C74-459F-97D6-DFAD5691FE03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{7ED4088B-8C74-459F-97D6-DFAD5691FE03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{5E1EB155-CED3-4D88-8CA1-01D992BA9071}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{5E1EB155-CED3-4D88-8CA1-01D992BA9071}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation_Handler", "Validation_Handler\Validation_Handler.csproj", "{3DEC51E4-E7DC-447A-AE3F-BEC56EA02830}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{5E1EB155-CED3-4D88-8CA1-01D992BA9071}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E1EB155-CED3-4D88-8CA1-01D992BA9071}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E1EB155-CED3-4D88-8CA1-01D992BA9071}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DEC51E4-E7DC-447A-AE3F-BEC56EA02830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DEC51E4-E7DC-447A-AE3F-BEC56EA02830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DEC51E4-E7DC-447A-AE3F-BEC56EA02830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DEC51E4-E7DC-447A-AE3F-BEC56EA02830}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
