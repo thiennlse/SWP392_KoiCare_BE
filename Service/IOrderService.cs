@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public interface IOrderService
+    interface IOrderService
     {
         Task<List<Order>> GetAllOrder();
 
