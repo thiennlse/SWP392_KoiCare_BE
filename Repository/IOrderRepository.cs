@@ -9,14 +9,14 @@ namespace Repository
 {
     public interface IOrderRepository
     {
-        public Task<List<Order>> GetAllOrder();
+        Task<List<Order>> GetAllOrder();
 
-        public Task<Order> GetOrderById(int id);
+        Task<Order> GetOrderById(int id);
 
-        public Task AddNewOrder(Order order);
+        Task AddNewOrder(Order order);
 
-        public Task DeleteOrder(int id);
+        Task DeleteOrder(int id);
 
-        public Task<Order> UpdateOrder(Order order);
+        Task<Order> UpdateOrder(Order order);
     }
 }

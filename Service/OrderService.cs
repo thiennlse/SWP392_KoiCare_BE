@@ -12,7 +12,7 @@ namespace Service
     {
         private readonly KoiCareDBContext _context;
 
-        public OrderService(KoiCareDBContext context)
+        public OrderService(IOrderRepository orderRepository)
         {
             _context = context;
         }
