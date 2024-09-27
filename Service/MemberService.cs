@@ -10,59 +10,43 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class OrderService : IOrderService
+    public class MemberService : IMemberService
     {
-        private readonly KoiCareDBContext _context;
+        private readonly IMemberRepository _memberRepository;
 
-        public OrderService(KoiCareDBContext context)
+        public MemberService(IMemberRepository memberRepository)
         {
-            _context = context;
+            _memberRepository = memberRepository;
         }
 
-        List<Order> OrderList;
-
-        public async Task<List<Order>> GetAllOrder()
+        public Task<bool> ExistedEmail(string email)
         {
-            return await _context.Orders.Include(b => b.MemberId).ToListAsync();
+            return _memberRepository.ExistedEmail(email);
         }
 
-        public async Task<Order> GetOrderById(int id)
+        public async Task<List<Member>> GetAllMember()
         {
-            return await _context.Orders.Include(b => b.MemberId).SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _memberRepository.GetAllMember();
         }
 
-        public async Task AddNewOrder(Order order)
+        public async Task<Member> GetMemberById(int id)
         {
-            if (order != null)
-            {
-                OrderList.Add(order);
-                await _context.SaveChangesAsync();
-            }
-
+            return await _memberRepository.GetMemberById(id);
         }
 
-        public async Task DeleteOrder(int id)
+        public async Task<Member> Login(string email, string password)
         {
-            var order = await GetOrderById(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-                await _context.SaveChangesAsync();
-            }
-
+            return await _memberRepository.Login(email, password);
         }
 
-        public async Task<Order> UpdateOrder(Order order)
+        public async Task Register(Member member)
         {
-            var _order = await GetOrderById(order.Id);
-            if (_order != null)
-            {
-
-            }
-            await _context.SaveChangesAsync();
-            return _order;
+            await _memberRepository.Register(member);
         }
 
-
+        public async Task<Member> UpdateMember(Member member)
+        {
+            return await _memberRepository.UpdateMember(member);
+        }
     }
 }
