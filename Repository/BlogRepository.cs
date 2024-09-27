@@ -21,12 +21,12 @@ namespace Repository
 
         public async Task<List<Blog>> GetAllBlog()
         {
-            return await _context.Blogs.Include(b => b.MemberId).ToListAsync();
+            return await _context.Blogs.Include(b => b.Member).ToListAsync();
         }
 
         public async Task<Blog> GetBLogById(int id)
         {
-            return await _context.Blogs.Include(b => b.MemberId).SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _context.Blogs.Include(b => b.Member).SingleOrDefaultAsync(m => m.Id.Equals(id));
         }
 
         public async Task AddNewBlog(Blog blog)
