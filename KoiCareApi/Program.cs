@@ -2,6 +2,7 @@ using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Repository;
+using Repository.Interface;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);
