@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,12 @@ namespace Service
             _memberRepository = memberRepository;
         }
 
-        public Task<bool> ExistedEmail(string email)
+        public async Task<bool> ExistedEmail(string email)
         {
-           return _memberRepository.ExistedEmail(email);
+           return await _memberRepository.ExistedEmail(email);
         }
 
-        public async Task<List<Member>> GetAllMember()
+        public async Task<List<MemberResponseModel>> GetAllMember()
         {
             return await _memberRepository.GetAllMember();
         }

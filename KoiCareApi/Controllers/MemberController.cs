@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using Validation_Handler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -6,7 +7,7 @@ using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
 namespace KoiCareApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Member")]
     [ApiController]
     public class MemberController : ControllerBase
     {
@@ -25,11 +26,11 @@ namespace KoiCareApi.Controllers
             var members = await _memberService.GetAllMember();
             if (members == null)
             {
-                return NotFound("Không có member nào hiện tại");
+                return NotFound("Không có member nào hiện tại");    
             }
             return Ok(members);
         }
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetMemeberById(int id)
         {
             if (id < 0)
@@ -58,39 +59,41 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest("Vui lòng nhập đúng thông tin");
             }
-            
+
+            loginModel.Password = HashPasswordValidation.HashPasswordToSha256(loginModel.Password);
+
             var member = await _memberService.Login(loginModel.Email, loginModel.Password);
             if (member == null)
             {
                 return Unauthorized("Sai tài khoản hoặc mật khẩu");
             }
-            
+
             return Ok(member);
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] AccountRequestModel member)
+        public async Task<IActionResult> Register([FromBody] AccountRequestModel _registerMember)
         {
-            if (member == null)
+            if (_registerMember == null)
             {
                 return BadRequest(new { message = "Vui lòng nhập đúng thông tin" });
             }
 
-            if (string.IsNullOrWhiteSpace(member.Email) || string.IsNullOrWhiteSpace(member.Password))
+            if (string.IsNullOrWhiteSpace(_registerMember.Email) || string.IsNullOrWhiteSpace(_registerMember.Password))
             {
                 return BadRequest(new { message = "Email và mật khẩu không được để trống" });
             }
 
-            if (await _memberService.ExistedEmail(member.Email))
+            if (await _memberService.ExistedEmail(_registerMember.Email))
             {
                 return BadRequest(new { message = "Email đã được sử dụng" });
             }
             Member _member = new Member();
-            _member.Email = member.Email;
-            _member.Password = member.Password;
+            _member.Email = _registerMember.Email;
+            _member.Password = HashPasswordValidation.HashPasswordToSha256(_member.Password);
             _member.RoleId = 4;
             _member.Role = await _roleService.GetRoleById(_member.RoleId);
             await _memberService.Register(_member);
-            return Created("Created",_member);
+            return Created("Created", _member);
         }
     }
 }

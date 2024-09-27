@@ -1,4 +1,7 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper;
+using BusinessObject.IMapperConfig;
+using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System;
@@ -22,9 +25,19 @@ namespace Repository
 
         List<Member> _members;
 
-        public async Task<List<Member>> GetAllMember()
+        public async Task<List<MemberResponseModel>> GetAllMember()
         {
-            return await _context.Members.Include(m => m.Role).ToListAsync();
+            List<Member> members = await _context.Members.Include(m => m.Role).ToListAsync();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+
+            List<MemberResponseModel> _member = members.Select(mem => mapper.Map<Member, MemberResponseModel>(mem)).ToList();
+
+            return _member;
         }
         public async Task<Member> GetMemberById( int id)
         {

@@ -33,13 +33,5 @@ namespace BusinessObject.ResponseModel
         public string Address { get; set; } = string.Empty;
 
         public virtual Role? Role { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Blog>? Blogs { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Order>? Orders { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Pool>? Pools { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Product>? Products { get; set; }
     }
 }
