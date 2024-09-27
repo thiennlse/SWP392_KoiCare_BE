@@ -10,14 +10,14 @@ namespace Repository
 {
     public interface IBlogRepository
     {
-        public Task<List<BlogResponseModel>> GetAllBlog();
-        
-        public Task<Blog> GetBLogById(int id);
+        Task<List<BlogResponseModel>> GetAllBlog();
 
-        public Task AddNewBlog(Blog blog);
+        Task<Blog> GetBLogById(int id);
 
-        public  Task DeleteBlog(int id);
+        Task AddNewBlog(Blog blog);
 
-        public  Task<Blog> UpdateBlog(Blog blog);
+        Task DeleteBlog(int id);
+
+        Task<Blog> UpdateBlog(Blog blog);
     }
 }

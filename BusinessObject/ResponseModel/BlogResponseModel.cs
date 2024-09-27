@@ -11,8 +11,7 @@ namespace BusinessObject.ResponseModel
 {
     public  class BlogResponseModel
     {
-        [Required]
-        public int MemberId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(200)]

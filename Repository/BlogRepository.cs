@@ -45,12 +45,8 @@ namespace Repository
 
         public async Task AddNewBlog(Blog blog)
         {
-            if (blog != null)
-            {
                _context.Blogs.Add(blog); 
                await _context.SaveChangesAsync();
-            }
-
         }
 
         public async Task DeleteBlog(int id)
@@ -69,7 +65,6 @@ namespace Repository
             await _context.SaveChangesAsync();
             return blog;
         }
-
 
     }
 }

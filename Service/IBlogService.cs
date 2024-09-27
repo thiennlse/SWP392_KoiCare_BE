@@ -10,14 +10,14 @@ namespace Service
 {
     public interface IBlogService
     {
-        public Task<List<BlogResponseModel>> GetAllBlog();
+        Task<List<BlogResponseModel>> GetAllBlog();
 
-        public Task<Blog> GetBLogById(int id);
+        Task<Blog> GetBLogById(int id);
 
-        public Task AddNewBlog(Blog blog);
+        Task AddNewBlog(Blog blog);
 
-        public Task DeleteBlog(int id);
+        Task DeleteBlog(int id);
 
-        public Task<Blog> UpdateBlog(Blog blog);
+        Task<Blog> UpdateBlog(Blog blog);
     }
 }

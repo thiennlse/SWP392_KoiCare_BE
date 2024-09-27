@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using BusinessObject.RequestModel;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace KoiCareApi.Controllers
 {
@@ -10,10 +12,12 @@ namespace KoiCareApi.Controllers
     public class BlogController : ControllerBase
     {
         private readonly IBlogService _blogService;
+        private readonly IMemberService _memberService;
 
-        public BlogController(IBlogService blogService)
+        public BlogController(IBlogService blogService, IMemberService memberService)
         {
             _blogService = blogService;
+            _memberService = memberService;
         }
 
         [HttpGet]
@@ -43,36 +47,57 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddNewBlog([FromBody] Blog _blog)
+        public async Task<IActionResult> AddNewBlog([FromBody] BlogRequestModel _blog)
         {
-            if (_blog == null) {
+
+            if (_blog == null)
+            {
                 return BadRequest("please input Blog information");
             }
-            await _blogService.AddNewBlog(_blog);
-            return Ok("add successfully");
+
+            Blog blog = new Blog();
+            blog.MemberId = _blog.MemberId;
+            blog.Title = _blog.Title;
+            blog.Content = _blog.Content;
+            blog.DateOfPublish = _blog.DateOfPublish;
+            blog.Status = _blog.Status;
+            blog.Member = await _memberService.GetMemberById(blog.MemberId);
+
+            await _blogService.AddNewBlog(blog);
+            return Created("Created", blog);
         }
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteById(int id)
         {
             var _blog = await _blogService.GetBLogById(id);
-            if (_blog == null) {
-                return NotFound("blog no exits");
-            }
-            await _blogService.DeleteBlog(id);
-            return Ok("delete successfully");
-        }
-
-        [HttpPatch("update")]
-        public async Task<IActionResult> UpdateById([FromBody]Blog _blog) 
-        {
-            var blog = await _blogService.GetBLogById(_blog.Id);
-            if (blog == null)
+            if (_blog == null)
             {
                 return NotFound("blog no exits");
             }
-            await _blogService.UpdateBlog(_blog);
-            return Ok("update successfully");
+            await _blogService.DeleteBlog(id);
+            return NoContent();
+        }
+
+        [HttpPatch("update/{id}")]
+        public async Task<IActionResult> UpdateBlog([FromBody] BlogRequestModel _blog, int id)
+        {
+            var blog = await _blogService.GetBLogById(id);
+            if (_blog == null)
+            {
+                return NotFound("blog no exits");
+            }
+            blog.Id = id;
+            blog.MemberId = _blog.MemberId;
+            blog.Title = _blog.Title;
+            blog.Content = _blog.Content;
+            blog.DateOfPublish = _blog.DateOfPublish;
+            blog.Status = _blog.Status;
+            blog.Member = await _memberService.GetMemberById(blog.MemberId);
+
+            await _blogService.UpdateBlog(blog);
+
+            return Ok(blog);
         }
     }
 }

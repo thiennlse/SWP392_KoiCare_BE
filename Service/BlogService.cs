@@ -12,13 +12,14 @@ namespace Service
     public class BlogService : IBlogService
     {
         private readonly IBlogRepository _blogRepository;
-        public BlogService( IBlogRepository blogRepository) { 
+        public BlogService(IBlogRepository blogRepository)
+        {
             _blogRepository = blogRepository;
         }
 
         public async Task<List<BlogResponseModel>> GetAllBlog()
         {
-               return await _blogRepository.GetAllBlog();
+            return await _blogRepository.GetAllBlog();
         }
 
         public async Task<Blog> GetBLogById(int id)
@@ -26,18 +27,19 @@ namespace Service
             return await _blogRepository.GetBLogById(id);
         }
 
-        public async Task AddNewBlog(Blog newBlog) { 
-         await _blogRepository.UpdateBlog(newBlog);
-        }
-      
-        public async Task DeleteBlog(int id)
+        public async Task AddNewBlog(Blog newBlog)
         {
-              _blogRepository.DeleteBlog(id);
+            await _blogRepository.AddNewBlog(newBlog);
         }
 
-        public  async Task<Blog> UpdateBlog(Blog newBlog)
+        public async Task DeleteBlog(int id)
         {
-          return  await _blogRepository.UpdateBlog(newBlog);
+            await _blogRepository.DeleteBlog(id);
+        }
+
+        public async Task<Blog> UpdateBlog(Blog newBlog)
+        {
+            return await _blogRepository.UpdateBlog(newBlog);
         }
     }
 }

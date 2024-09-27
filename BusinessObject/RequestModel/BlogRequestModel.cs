@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.RequestModel
 {
-    internal class BlogRequestModel
+    public class BlogRequestModel
     {
         public int MemberId { get; set; }
         public string Title { get; set; }
