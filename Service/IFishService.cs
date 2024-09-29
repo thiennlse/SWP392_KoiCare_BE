@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Service
 {
     public interface IFishService
     {
-        public Task<List<Fish>> GetAllFish();
+        public Task<List<FishResponseModel>> GetAllFish();
         public Task<Fish> GetFishById(int id);
         public Task AddNewFish(Fish fish);
-        public Task DeleteById(int id);
+        public Task DeleteFish(int id);
         public Task<Fish> UpdateById(Fish fish);
     }
 }

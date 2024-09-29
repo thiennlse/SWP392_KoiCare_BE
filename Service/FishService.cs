@@ -1,5 +1,7 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
+using Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace Service
             _fishRepository = fishRepository;
         }
 
-        public async Task<List<Fish>> GetAllFish() 
+        public async Task<List<FishResponseModel>> GetAllFish() 
         {
         return await _fishRepository.GetAllFish();
         }
@@ -32,9 +34,9 @@ namespace Service
          await _fishRepository.AddNewFish(fish);
         }
 
-        public async Task DeleteById(int id)
+        public async Task DeleteFish(int id)
         {
-         await _fishRepository.DeleteById(id);
+         await _fishRepository.DeleteFish(id);
         }
         public async Task<Fish> UpdateById(Fish fish) 
         {

@@ -1,5 +1,9 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper;
+using BusinessObject.IMapperConfig;
+using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
+using Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +24,18 @@ namespace Repository
 
         private List<Fish> fishtList;
 
-        public async Task<List<Fish>> GetAllFish() 
-        { 
-        return await _context.Fishes.ToListAsync();
+        public async Task<List<FishResponseModel>> GetAllFish() 
+        {
+            List<Fish> fishs = await _context.Fishes.ToListAsync();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+            List<FishResponseModel> _fishs = fishs.Select(f => mapper.Map<Fish, FishResponseModel>(f)).ToList();
+
+            return _fishs;
         }
 
       public async Task<Fish> GetFishById(int id) 
@@ -32,14 +45,14 @@ namespace Repository
 
       public async Task AddNewFish(Fish fish)
         {
-            if (fish != null) {
+            
               _context.Fishes.AddAsync(fish);   
                 await _context.SaveChangesAsync();
-            }
+            
 
         }
 
-        public async Task DeleteById(int id)
+        public async Task DeleteFish(int id)
         {
             var _fish = await GetFishById(id);
             if ( _fish != null) {

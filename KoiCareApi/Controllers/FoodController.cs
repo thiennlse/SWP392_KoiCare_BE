@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -42,14 +43,19 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddNewFood([FromBody] Food _food)
+        public async Task<IActionResult> AddNewFood([FromBody] FoodRequestModel _food)
         {
             if (_food == null)
             {
                 return BadRequest("please input  Food information");
             }
-            await _foodService.AddNewFood(_food);
-            return Ok("add successfully");
+
+            var food = new Food();
+            food.Name = _food.Name; 
+            food.Weight = _food.Weight;
+            
+            await   _foodService.AddNewFood(food);
+            return Created("created",food);
 
         }
 
@@ -61,20 +67,25 @@ namespace KoiCareApi.Controllers
             {
             return NotFound("food is no exits");
             }
-            await _foodService.DeleteFoodById(id);
-            return Ok("delete successfully");
+            await _foodService.DeleteFood(id);
+            return NoContent();
         }
 
-        [HttpPatch("update")]
-        public async Task<IActionResult> UpdateById([FromBody]Food _food) 
+        [HttpPatch("update/{id}")]
+        public async Task<IActionResult> UpdateById([FromBody]FoodRequestModel _food ,int id) 
         {
-        var food = await _foodService.GetFoodById(_food.Id);
+        var food = await _foodService.GetFoodById(id);
             if (food == null) 
             {
             return NotFound("this food is not exits");
             }
-            await _foodService.UpdateFoodById(_food);
-            return Ok("update successfully");
+            food.Id = id;
+            food.Name = _food.Name;
+            food.Weight = _food.Weight;
+
+
+            await _foodService.UpdateFood(food);
+            return Ok(food);
         }
 
     }

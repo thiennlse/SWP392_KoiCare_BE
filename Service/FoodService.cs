@@ -1,5 +1,7 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
+using Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace Service
         _foodRepository = foodRepository;
         }
 
-        public async Task<List<Food>> GetAllFood() 
+        public async Task<List<FoodResponseModel>> GetAllFood() 
         {
         return await _foodRepository.GetAllFood();
         }
@@ -32,14 +34,14 @@ namespace Service
          await _foodRepository.AddNewFood(food);
         }
 
-        public async Task DeleteFoodById(int id) 
+        public async Task DeleteFood(int id) 
         {
-            await _foodRepository.DeleteFoodById(id);
+            await _foodRepository.DeleteFood(id);
         }
 
-        public async Task<Food> UpdateFoodById(Food food) 
+        public async Task<Food> UpdateFood(Food food) 
         {
-         return await _foodRepository.UpdateFoodById(food);
+         return await _foodRepository.UpdateFood(food);
         }
     }
 }

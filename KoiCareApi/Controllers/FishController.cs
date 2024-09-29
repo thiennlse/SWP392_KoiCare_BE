@@ -1,7 +1,9 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Reflection.Metadata;
 
 namespace KoiCareApi.Controllers
 {
@@ -42,14 +44,24 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpPost("add")]
-        public async  Task<IActionResult> AddNewFish([FromBody]Fish _fish)
+        public async  Task<IActionResult> AddNewFish([FromBody] FishRequestModel _fish)
         {
             if (_fish == null) 
             { 
             return BadRequest("please input fish information");
             }
-             await _fishService.AddNewFish(_fish);
-            return Ok("add successfully");
+            Fish fish = new Fish();
+           fish.FoodId = _fish.FoodId;
+            fish.PoolId = _fish.PoolId;
+            fish.Name = _fish.Name;
+            fish.Image = _fish.Image;
+            fish.Size = _fish.Size;
+            fish.Weight = _fish.Weight;
+            fish.Age = _fish.Age;
+            fish.Gender = _fish.Gender;
+            fish.Origin = _fish.Origin;
+            await _fishService.AddNewFish(fish);
+            return Created("Created", fish);
         }
 
         [HttpDelete("Delete")]
@@ -60,20 +72,31 @@ namespace KoiCareApi.Controllers
             {
             return NotFound("fish is not exits");
             }
-            await _fishService.DeleteById(id);
-            return Ok("delete scuccessfully");
+            await _fishService.DeleteFish(id);
+            return NoContent();
         }
 
-        [HttpPatch("update")]
-        public async Task<IActionResult> UpdateById([FromBody]Fish _fish) 
+        [HttpPatch("update/{id}")]
+        public async Task<IActionResult> UpdateById([FromBody]FishRequestModel _fish, int id) 
         {
-        var fish = await _fishService.GetFishById(_fish.Id);
-            if (fish == null)
+            var fish = await _fishService.GetFishById(id);
+            if (_fish == null)
             {
                 return NotFound("fish is not exits");
             }
-            await _fishService.UpdateById(_fish);
-            return Ok("update successfully");
+            fish.Id = id;
+            fish.FoodId = _fish.FoodId;
+            fish.PoolId = _fish.PoolId;
+            fish.Name = _fish.Name;
+            fish.Image = _fish.Image;
+            fish.Size = _fish.Size;
+            fish.Weight = _fish.Weight;
+            fish.Age = _fish.Age;
+            fish.Gender = _fish.Gender;
+            fish.Origin = _fish.Origin;
+
+             await _fishService.UpdateById(fish);
+            return Ok(fish);
         }
     }
 }

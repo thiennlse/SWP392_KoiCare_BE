@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.Execution;
 using BusinessObject.IMapperConfig;
+using Repository.Interface;
 
 namespace Repository
 {

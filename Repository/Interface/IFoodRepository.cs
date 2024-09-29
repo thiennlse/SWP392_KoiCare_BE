@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Repository.Interface
 {
     public interface IFoodRepository
     {
-        public Task<List<Food>> GetAllFood();
+        public Task<List<FoodResponseModel>> GetAllFood();
         public Task<Food> GetFoodById(int id);
         public  Task AddNewFood(Food food);
-        public  Task DeleteFoodById(int id);
-        public Task<Food> UpdateFoodById(Food food);
+        public  Task DeleteFood(int id);
+        public Task<Food> UpdateFood(Food food);
     }
 }

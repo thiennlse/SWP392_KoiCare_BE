@@ -1,11 +1,16 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper;
+using BusinessObject.IMapperConfig;
+using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
+using Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Repository
 {
@@ -21,9 +26,17 @@ namespace Repository
 
         List<Food> foodList;
 
-        public async Task<List<Food>> GetAllFood()
+        public async Task<List<FoodResponseModel>> GetAllFood()
         {
-            return await _context.Foods.ToListAsync();
+            List<Food> foods = await _context.Foods.ToListAsync();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+            List<FoodResponseModel> _foods = foods.Select(f => mapper.Map<Food, FoodResponseModel>(f)).ToList();
+
+            return _foods;
         }
 
         public async Task<Food> GetFoodById(int id)
@@ -33,14 +46,13 @@ namespace Repository
 
         public async Task AddNewFood(Food food)
         {
-            if (food != null)
-            {
+
                 _context.Foods.Add(food);
                 await _context.SaveChangesAsync();
-            }
+ 
         }
 
-        public async Task DeleteFoodById(int id)
+        public async Task DeleteFood(int id)
         {
             var food = await GetFoodById(id);
             if (food != null)
@@ -50,7 +62,7 @@ namespace Repository
             }
         }
 
-        public async Task<Food> UpdateFoodById(Food food) 
+        public async Task<Food> UpdateFood(Food food) 
         {
             _context.Entry(food).State = EntityState.Modified;
             await _context.SaveChangesAsync();
