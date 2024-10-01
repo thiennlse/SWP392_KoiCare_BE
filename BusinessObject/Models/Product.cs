@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Product
+    public  class Product
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

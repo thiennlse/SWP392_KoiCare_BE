@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -50,15 +51,12 @@ namespace KoiCareApi.Controllers
                 return BadRequest("please input pool information");
             }
             Pool pool = new Pool();
-            pool.FoodId = _pool.FoodId;
-            pool.PoolId = _pool.PoolId;
-            pool.Name = _pool.Name;
-            pool.Image = _pool.Image;
+            pool.MemberId = _pool.MemberId;
+            pool.Name = _pool.Name;            
             pool.Size = _pool.Size;
-            pool.Weight = _pool.Weight;
-            pool.Age = _pool.Age;
-            pool.Gender = _pool.Gender;
-            pool.Origin = _pool.Origin;
+            pool.Depth = _pool.Depth;
+            pool.Description = _pool.Description;
+            pool.WaterId = _pool.WaterId;
             await _poolService.AddNewPool(pool);
             return Created("Created", pool);
         }
@@ -83,18 +81,15 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("pool is not exits");
             }
-            pool.Id = id;
-            pool.FoodId = _pool.FoodId;
-            pool.PoolId = _pool.PoolId;
-            pool.Name = _pool.Name;
-            pool.Image = _pool.Image;
-            pool.Size = _pool.Size;
-            pool.Weight = _pool.Weight;
-            pool.Age = _pool.Age;
-            pool.Gender = _pool.Gender;
-            pool.Origin = _pool.Origin;
 
-            await _poolService.UpdateById(pool);
+            pool.MemberId = _pool.MemberId;
+            pool.Name = _pool.Name;
+            pool.Size = _pool.Size;
+            pool.Depth = _pool.Depth;
+            pool.Description = _pool.Description;
+            pool.WaterId = _pool.WaterId;
+
+            await _poolService.UpdatePool(pool);
             return Ok(pool);
         }
     }

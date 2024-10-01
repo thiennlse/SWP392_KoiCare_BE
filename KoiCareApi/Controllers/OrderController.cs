@@ -51,15 +51,15 @@ namespace KoiCareApi.Controllers
                 return BadRequest("please input order information");
             }
             Order order = new Order();
-            order.FoodId = _order.FoodId;
-            order.PoolId = _order.PoolId;
-            order.Name = _order.Name;
-            order.Image = _order.Image;
-            order.Size = _order.Size;
-            order.Weight = _order.Weight;
-            order.Age = _order.Age;
-            order.Gender = _order.Gender;
-            order.Origin = _order.Origin;
+            
+            order.MemberId = _order.MemberId;
+            order.ProductId = _order.ProductId;
+            order.TotalCost = _order.TotalCost;
+            order.OrderDate = _order.OrderDate;
+            order.CloseDate = _order.CloseDate;
+            order.Code = _order.Code;
+            order.Description = _order.Description;
+            order.Status = _order.Status;
             await _orderService.AddNewOrder(order);
             return Created("Created", order);
         }
@@ -84,18 +84,17 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("order is not exits");
             }
-            order.Id = id;
-            order.FoodId = _order.FoodId;
-            order.PoolId = _order.PoolId;
-            order.Name = _order.Name;
-            order.Image = _order.Image;
-            order.Size = _order.Size;
-            order.Weight = _order.Weight;
-            order.Age = _order.Age;
-            order.Gender = _order.Gender;
-            order.Origin = _order.Origin;
+            
+            order.MemberId = _order.MemberId;
+            order.ProductId = _order.ProductId;
+            order.TotalCost = _order.TotalCost;
+            order.OrderDate = _order.OrderDate;
+            order.CloseDate = _order.CloseDate;
+            order.Code = _order.Code;
+            order.Description = _order.Description;
+            order.Status = _order.Status;
 
-            await _orderService.UpdateById(order);
+            await _orderService.UpdateOrder(order);
             return Ok(order);
         }
     }

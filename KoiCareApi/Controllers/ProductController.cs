@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -50,12 +51,12 @@ namespace KoiCareApi.Controllers
                 return BadRequest("please input product information");
             }
             Product product = new Product();
-            product.Id = _product.Id;
+            
             product.UserId = _product.UserId;
             product.Name = _product.Name;
             product.Cost = _product.Cost;
             product.Description = _product.Description;
-            product.Origin = _product.Weight;
+            product.Origin = _product.Origin;
             product.Productivity = _product.Productivity;
             product.Code = _product.Code;
             product.InStock = _product.InStock;
@@ -83,12 +84,12 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("product is not exits");
             }
-            product.Id = _product.Id;
+            
             product.UserId = _product.UserId;
             product.Name = _product.Name;
             product.Cost = _product.Cost;
             product.Description = _product.Description;
-            product.Origin = _product.Weight;
+            product.Origin = _product.Origin;
             product.Productivity = _product.Productivity;
             product.Code = _product.Code;
             product.InStock = _product.InStock;
