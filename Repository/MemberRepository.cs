@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Validation_Handler;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.Options; 
 
 namespace Repository
 {
@@ -67,10 +68,13 @@ namespace Repository
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                return false; // Hoặc có thể throw một exception tùy thuộc vào yêu cầu của bạn
+                return false;
             }
 
             return await _context.Members.AnyAsync(m => m.Email.Equals(email));
         }
+
+
+
     }
 }

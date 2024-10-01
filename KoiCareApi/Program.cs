@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
 builder.Services.AddDbContext<KoiCareDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB")));
 builder.Services.AddControllers()
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IFishService, FishService>();
 builder.Services.AddScoped<IFishRepository, FishRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUploadImage,UploadImage>();
 
 var app = builder.Build();
 
