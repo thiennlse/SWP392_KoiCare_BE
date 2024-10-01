@@ -1,14 +1,14 @@
 ﻿using BusinessObject.Models;
-using System;
 using BusinessObject.ResponseModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Interface
+namespace Service
 {
-    public interface IBlogRepository
+    public interface IBlogService
     {
         Task<List<BlogResponseModel>> GetAllBlog();
 

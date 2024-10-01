@@ -9,14 +9,12 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.IMapperConfig
 {
-    public class MappingProfile :Profile
+    public class FoodMapperConfig
     {
-        public MappingProfile()
+        public static void CreateMap(IMapperConfigurationExpression cfg)
         {
-            CreateMap<Member, MemberResponseModel>();
-            CreateMap<Blog, BlogResponseModel>();
-            CreateMap<Fish, FishResponseModel>();
-            CreateMap<Food, FoodResponseModel>();
+            cfg.CreateMap<Food, FoodResponseModel>();
         }
+
     }
 }
