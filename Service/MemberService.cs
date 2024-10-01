@@ -1,6 +1,6 @@
 ﻿using BusinessObject.Models;
-using Microsoft.EntityFrameworkCore;
-using Repository;
+using BusinessObject.ResponseModel;
+using Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +19,19 @@ namespace Service
             _memberRepository = memberRepository;
         }
 
-        public Task<bool> ExistedEmail(string email)
+        public async Task<bool> ExistedEmail(string email)
         {
-            return _memberRepository.ExistedEmail(email);
+           return await _memberRepository.ExistedEmail(email);
         }
 
-        public async Task<List<Member>> GetAllMember()
+        public async Task<List<MemberResponseModel>> GetAllMember()
         {
             return await _memberRepository.GetAllMember();
         }
 
         public async Task<Member> GetMemberById(int id)
         {
-            return await _memberRepository.GetMemberById(id);
+           return await _memberRepository.GetMemberById(id);
         }
 
         public async Task<Member> Login(string email, string password)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.RequestModel
 {
-    public class LoginModel
+    public class AccountRequestModel
     {
         public string Email { get; set; }
         public string Password { get; set; }

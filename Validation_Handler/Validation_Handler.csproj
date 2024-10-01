@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BusinessObject\BusinessObject.csproj" />
-    <ProjectReference Include="..\Validation_Handler\Validation_Handler.csproj" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.25.0" />
+    <PackageReference Include="dotenv.net" Version="3.0.0" />
   </ItemGroup>
 
 </Project>

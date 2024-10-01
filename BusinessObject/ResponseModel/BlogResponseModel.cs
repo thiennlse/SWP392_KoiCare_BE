@@ -1,24 +1,21 @@
-﻿using System;
+﻿using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models
+namespace BusinessObject.ResponseModel
 {
-    public partial class Blog
+    public  class BlogResponseModel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
-        [Required]
-        public int MemberId { get; set; }
 
         [Required]
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
-        [Required]
-        public string Image { get; set; } = string.Empty;
 
         [Required]
         public string Content { get; set; } = string.Empty;
@@ -30,7 +27,7 @@ namespace BusinessObject.Models
         [StringLength(50)]
         public string Status { get; set; } = string.Empty;
 
-        [JsonIgnore]
+        
         public virtual Member? Member { get; set; }
     }
 }
