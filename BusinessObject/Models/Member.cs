@@ -22,6 +22,9 @@ namespace BusinessObject.Models
         [StringLength(100)]
         public string Password { get; set; } = string.Empty;
 
+        [Required]
+        public string Image {  get; set; } = string.Empty;
+
         [Phone]
         [StringLength(20)]
         public string Phone { get; set; } = string.Empty;

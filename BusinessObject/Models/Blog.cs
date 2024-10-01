@@ -17,6 +17,8 @@ namespace BusinessObject.Models
         [Required]
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
+        [Required]
+        public string Image { get; set; } = string.Empty;
 
         [Required]
         public string Content { get; set; } = string.Empty;
