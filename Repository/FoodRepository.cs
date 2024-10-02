@@ -17,7 +17,7 @@ namespace Repository
     public class FoodRepository : IFoodRepository
     {
         private readonly KoiCareDBContext _context;
-
+      
         public FoodRepository(KoiCareDBContext context)
         {
 
@@ -69,4 +69,6 @@ namespace Repository
            return food;
         }
     }
+
+       
 }

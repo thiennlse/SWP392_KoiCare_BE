@@ -87,6 +87,16 @@ namespace KoiCareApi.Controllers
             await _foodService.UpdateFood(food);
             return Ok(food);
         }
+        //[HttpGet("CalculateFood/{id}")]
+        //public async Task<IActionResult> CalculateFoodForFish(int id) 
+        //{
+        //    double result = 0;
+        //    result = await _foodService.CalculateFishFood(id);
+            
+        //    //if(result >) {
+          
+          
+        //} 
 
     }
 }
