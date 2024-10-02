@@ -2,9 +2,10 @@
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Service;
 using System.Reflection.Metadata;
-
+using Validation_Handler;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -12,10 +13,12 @@ namespace KoiCareApi.Controllers
     public class FishController : ControllerBase
     {
         private readonly IFishService _fishService;
+        private readonly IUploadImage _uploadImage;
 
-        public FishController(IFishService fishService)
+        public FishController(IFishService fishService,IUploadImage uploadImage)
         {
             _fishService = fishService;
+            _uploadImage = uploadImage;
         }
 
         [HttpGet]
@@ -43,6 +46,20 @@ namespace KoiCareApi.Controllers
             return Ok(_fish);
         }
 
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadFile(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Tệp không hợp lệ.");
+            }
+
+            var imageURL = await _uploadImage.SaveImage(file);
+
+            return Ok(new { Url = imageURL });
+        }
+
         [HttpPost("add")]
         public async  Task<IActionResult> AddNewFish([FromBody] FishRequestModel _fish)
         {
@@ -54,7 +71,7 @@ namespace KoiCareApi.Controllers
            fish.FoodId = _fish.FoodId;
             fish.PoolId = _fish.PoolId;
             fish.Name = _fish.Name;
-            fish.Image = _fish.Image;
+            fish.Image = _fish.Image; /*Validation_Handler.SaveImageToCloudinary.SaveImage(_fish_image);*/
             fish.Size = _fish.Size;
             fish.Weight = _fish.Weight;
             fish.Age = _fish.Age;
