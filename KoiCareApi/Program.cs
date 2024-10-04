@@ -34,6 +34,8 @@ builder.Services.AddScoped<IFishRepository, FishRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUploadImage,UploadImage>();
+builder.Services.AddScoped<IWaterService, WaterService>();
+builder.Services.AddScoped<IWaterRepository, WaterRepository>();
 
 var app = builder.Build();
 

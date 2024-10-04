@@ -26,7 +26,7 @@ namespace Repository
 
         public async Task<List<FishResponseModel>> GetAllFish()
         {
-            List<Fish> fishs = await _context.Fishes.ToListAsync();
+            List<Fish> fishs = await _context.Fishes.AsNoTracking().ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -40,7 +40,7 @@ namespace Repository
 
         public async Task<Fish> GetFishById(int id)
         {
-            return await _context.Fishes.SingleOrDefaultAsync(f => f.Id.Equals(id));
+            return await _context.Fishes.Include(f => f.Food).SingleOrDefaultAsync(f => f.Id.Equals(id));
         }
 
         public async Task AddNewFish(Fish fish)
@@ -68,5 +68,6 @@ namespace Repository
         }
 
 
+       
     }
 }

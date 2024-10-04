@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace Service
     {
 
         private readonly IWaterRepository _repo;
+        
 
         public WaterService(IWaterRepository repo)
         {
             _repo = repo;
+           
         }
 
         public async Task addWater(Waters water)
@@ -28,7 +31,7 @@ namespace Service
            await _repo.deleteWater(id);
         }
 
-        public async Task<List<Waters>> GetAll()
+        public async Task<List<WaterResponseModel>> GetAll()
         {
             return await _repo.GetAll();
         }
@@ -42,5 +45,10 @@ namespace Service
         {
             return await _repo.updateWater(water);
         }
+
+        
+
+       
+
     }
 }

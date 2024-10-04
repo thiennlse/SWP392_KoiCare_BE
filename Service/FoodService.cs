@@ -54,16 +54,22 @@ namespace Service
             Fish _fish = await _fishRepository.GetFishById(fishId);
             
             if (_fish != null) {              
-                if (_fish.Age >= 25 || _fish.Age <= 50)
+                if (_fish.Age >= 25 && _fish.Age <= 50)
                 {
                     dailyFood = (_fish.Weight * 1.5) / 100;
                     fishFoodResult = dailyFood * 0.3;
                 }
+                if(_fish.Age < 25) 
+                {
+                    fishFoodResult = (_fish.Weight * 0.5) / 100;
+                }
             }
 
-            return fishFoodResult;
+            return Math.Round(fishFoodResult, 2);
              
 
         }
+
+        
     }
 }
