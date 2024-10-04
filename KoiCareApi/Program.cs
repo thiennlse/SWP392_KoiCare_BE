@@ -32,6 +32,13 @@ builder.Services.AddScoped<IFishService, FishService>();
 builder.Services.AddScoped<IFishRepository, FishRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IPoolService, PoolService>();
+builder.Services.AddScoped<IPoolRepository, PoolRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 
 var app = builder.Build();
 
