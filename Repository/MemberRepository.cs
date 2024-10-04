@@ -48,12 +48,13 @@ namespace Repository
         }
         public async Task<Member> Login(string email , string password)
         {
+            password = HashPasswordValidation.HashPasswordToSha256(password);
             return await _context.Members.Include(m => m.Role)
                 .FirstOrDefaultAsync(m => m.Email.Equals(email) && m.Password.Equals(password));
         }
         public async Task Register(Member member)
         {
-            member.Password = HashPasswordValidation.HashPasswordToSha256(member.Password);
+            member.Password =  HashPasswordValidation.HashPasswordToSha256(member.Password);
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
 

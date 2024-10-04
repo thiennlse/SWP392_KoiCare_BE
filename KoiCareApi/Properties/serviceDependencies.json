@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "apis1": {
+      "type": "apis"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:KoiCareDB",
+      "dynamicId": null
+    },
+    "apis2": {
+      "type": "apis"
+    }
+  }
+}
