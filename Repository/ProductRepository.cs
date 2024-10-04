@@ -22,19 +22,23 @@ namespace Repository
 
         public async Task<List<Product>> GetAllProduct()
         {
-            return await _context.Products.Include(b => b.User).ToListAsync();
+            return await _context.Products.Include(b => b.User)
+                .AsNoTracking()
+                .ToListAsync();
         }
-
+        
         public async Task<Product> GetProductById(int id)
         {
-            return await _context.Products.Include(b => b.User).SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _context.Products.Include(b => b.User)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(m => m.Id.Equals(id));
         }
 
         public async Task AddNewProduct(Product product)
         {
             if (product != null)
             {
-                ProductList.Add(product);
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
             }
 
@@ -53,13 +57,9 @@ namespace Repository
 
         public async Task<Product> UpdateProduct(Product product)
         {
-            var _product = await GetProductById(product.Id);
-            if (_product != null)
-            {
-
-            }
+            _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return _product;
+            return product;
         }
 
 

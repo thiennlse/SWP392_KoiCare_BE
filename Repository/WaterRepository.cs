@@ -33,12 +33,16 @@ namespace Repository
 
         public async Task<List<Waters>> GetAll()
         {
-            return await _context.Waters.ToListAsync();
+            return await _context.Waters
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Waters> GetById(int id)
         {
-            return await _context.Waters.SingleOrDefaultAsync(w => w.Id.Equals(id));
+            return await _context.Waters
+                .AsNoTracking()
+                .SingleOrDefaultAsync(w => w.Id.Equals(id));
         }
 
         public async Task<Waters> updateWater(Waters water)
