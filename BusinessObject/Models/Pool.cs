@@ -21,9 +21,6 @@ namespace BusinessObject.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Image { get; set; } = string.Empty;   
-
-        [Required]
         [Range(0, double.MaxValue)]
         public double Size { get; set; }
 
