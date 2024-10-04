@@ -21,27 +21,67 @@ namespace Service
 
         public async Task<List<Order>> GetAllOrder()
         {
-            return await _orderRepository.GetAllOrder();
+            try
+            {
+                return await _orderRepository.GetAllOrder();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new Exception("Error retrieving all orders.", ex);
+            }
         }
 
         public async Task<Order> GetOrderById(int id)
         {
-            return await _orderRepository.GetOrderById(id);
+            try
+            {
+                return await _orderRepository.GetOrderById(id);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new Exception($"Error retrieving the order with ID {id}.", ex);
+            }
         }
 
         public async Task AddNewOrder(Order newOrder)
         {
-            await _orderRepository.UpdateOrder(newOrder);
+            try
+            {
+                await _orderRepository.AddNewOrder(newOrder); // Ensure AddNewOrder method exists in repository
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new Exception("Error adding new order.", ex);
+            }
         }
 
         public async Task DeleteOrder(int id)
         {
-            _orderRepository.DeleteOrder(id);
+            try
+            {
+                await _orderRepository.DeleteOrder(id); // Marking it async and adding await
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new Exception($"Error deleting the order with ID {id}.", ex);
+            }
         }
 
         public async Task<Order> UpdateOrder(Order newOrder)
         {
-            return await _orderRepository.UpdateOrder(newOrder);
+            try
+            {
+                return await _orderRepository.UpdateOrder(newOrder);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new Exception("Error updating the order.", ex);
+            }
         }
     }
 }
