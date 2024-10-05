@@ -18,6 +18,9 @@ namespace BusinessObject.IMapperConfig
             CreateMap<Fish, FishResponseModel>();
             CreateMap<Food, FoodResponseModel>();
             CreateMap<Waters, WaterResponseModel>();
+            CreateMap<Order, OrderResponseModel>();
+            CreateMap<Pool, PoolResponseModel>();
+            CreateMap<Product, ProductResponseModel>();
         }
     }
 }

@@ -36,6 +36,7 @@ namespace Repository
 
         public async Task<List<WaterResponseModel>> GetAll()
         {
+
             List<Waters> waters = await _context.Waters.AsNoTracking().ToListAsync();
             var config = new MapperConfiguration(cfg =>
             {
@@ -43,13 +44,19 @@ namespace Repository
             });
             var mapper = config.CreateMapper();
             List<WaterResponseModel> _waters = waters.Select(w => mapper.Map<Waters, WaterResponseModel>(w)).ToList();
-
             return _waters;
+
         }
 
         public async Task<Waters> GetById(int id)
         {
+
             return await _context.Waters.SingleOrDefaultAsync(w => w.Id == id);
+
+            return await _context.Waters
+                .AsNoTracking()
+                .SingleOrDefaultAsync(w => w.Id.Equals(id));
+
         }
 
         public async Task<Waters> updateWater(Waters water)

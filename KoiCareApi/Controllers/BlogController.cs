@@ -87,7 +87,7 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("blog no exits");
             }
-            blog.Id = id;
+            //blog.Id = id;
             blog.MemberId = _blog.MemberId;
             blog.Title = _blog.Title;
             blog.Content = _blog.Content;

@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/KoiCare/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsKoiCareDB_1994B54669",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/koicare-db/databases/KoiCareDB",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:KoiCareDB",
+      "dynamicId": null
+    },
+    "apis2": {
+      "apiEndpoint": "https://koicareapi.azure-api.net/",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/KoiCareApi/apis/KoiCareApi",
+      "type": "apis.azure"
+    }
+  }
+}

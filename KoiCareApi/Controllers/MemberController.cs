@@ -59,9 +59,6 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest("Vui lòng nhập đúng thông tin");
             }
-
-            loginModel.Password = HashPasswordValidation.HashPasswordToSha256(loginModel.Password);
-
             var member = await _memberService.Login(loginModel.Email, loginModel.Password);
             if (member == null)
             {
@@ -89,7 +86,7 @@ namespace KoiCareApi.Controllers
             }
             Member _member = new Member();
             _member.Email = _registerMember.Email;
-            _member.Password = HashPasswordValidation.HashPasswordToSha256(_member.Password);
+            _member.Password = _registerMember.Password;
             _member.RoleId = 4;
             _member.Role = await _roleService.GetRoleById(_member.RoleId);
             await _memberService.Register(_member);

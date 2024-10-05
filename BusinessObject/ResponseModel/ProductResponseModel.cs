@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models
+namespace BusinessObject.ResponseModel
 {
-    public  class Product
+    public class ProductResponseModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -46,7 +46,7 @@ namespace BusinessObject.Models
         [Range(0, int.MaxValue)]
         public int InStock { get; set; }
 
-        [JsonIgnore]
-        public virtual Member? User { get; set; }
+        //[JsonIgnore]
+        //public virtual Member? User { get; set; }
     }
 }

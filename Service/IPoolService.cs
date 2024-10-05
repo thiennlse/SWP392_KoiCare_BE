@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Interface
+namespace Service
 {
-    public interface IPoolRepository
+    public interface IPoolService
     {
         Task<List<PoolResponseModel>> GetAllPool();
 

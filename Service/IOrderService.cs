@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Interface
+namespace Service
 {
-    public interface IOrderRepository
+    public interface IOrderService
     {
         Task<List<Order>> GetAllOrder();
 
