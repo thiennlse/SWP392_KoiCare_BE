@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -21,19 +22,19 @@ namespace Repository
 
         public async Task<List<Pool>> GetAllPool()
         {
-            return await _context.Pools.Include(b => b.User).ToListAsync();
+            return await _context.Pools.Include(b => b.Member).ToListAsync();
         }
 
         public async Task<Pool> GetPoolById(int id)
         {
-            return await _context.Pools.Include(b => b.User).SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _context.Pools.Include(b => b.Member).SingleOrDefaultAsync(m => m.Id.Equals(id));
         }
 
         public async Task AddNewPool(Pool pool)
         {
             if (pool != null)
             {
-                PoolList.Add(pool);
+                _context.Pools.Add(pool);
                 await _context.SaveChangesAsync();
             }
 
@@ -52,13 +53,9 @@ namespace Repository
 
         public async Task<Pool> UpdatePool(Pool pool)
         {
-            var _pool = await GetPoolById(pool.Id);
-            if (_pool != null)
-            {
-
-            }
+            _context.Entry(pool).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return _pool;
+            return pool;
         }
 
 

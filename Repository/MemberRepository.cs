@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Validation_Handler;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.Options; 
 
 namespace Repository
 {
@@ -47,12 +48,13 @@ namespace Repository
         }
         public async Task<Member> Login(string email , string password)
         {
+            password = HashPasswordValidation.HashPasswordToSha256(password);
             return await _context.Members.Include(m => m.Role)
                 .FirstOrDefaultAsync(m => m.Email.Equals(email) && m.Password.Equals(password));
         }
         public async Task Register(Member member)
         {
-            member.Password = HashPasswordValidation.HashPasswordToSha256(member.Password);
+            member.Password =  HashPasswordValidation.HashPasswordToSha256(member.Password);
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
 
@@ -67,10 +69,13 @@ namespace Repository
         {
             if (string.IsNullOrWhiteSpace(email))
             {
-                return false; // Hoặc có thể throw một exception tùy thuộc vào yêu cầu của bạn
+                return false;
             }
 
             return await _context.Members.AnyAsync(m => m.Email.Equals(email));
         }
+
+
+
     }
 }

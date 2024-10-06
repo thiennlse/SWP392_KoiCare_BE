@@ -22,19 +22,20 @@ namespace Repository
 
         public async Task<List<Order>> GetAllOrder()
         {
-            return await _context.Orders.Include(b => b.MemberId).ToListAsync();
+            return await _context.Orders.Include(b => b.Member).ToListAsync();
         }
 
         public async Task<Order> GetOrderById(int id)
         {
-            return await _context.Orders.Include(b => b.MemberId).SingleOrDefaultAsync(m => m.Id.Equals(id));
+            return await _context.Orders.Include(b => b.Member)
+                .SingleOrDefaultAsync(m => m.Id.Equals(id));
         }
 
         public async Task AddNewOrder(Order order)
         {
             if (order != null)
             {
-                OrderList.Add(order);
+                _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
             }
 
@@ -53,13 +54,9 @@ namespace Repository
 
         public async Task<Order> UpdateOrder(Order order)
         {
-            var _order = await GetOrderById(order.Id);
-            if (_order != null)
-            {
-                
-            }
+            _context.Entry(order).State = EntityState.Modified; 
             await _context.SaveChangesAsync();
-            return _order;
+            return order;
         }
 
 
