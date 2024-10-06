@@ -1,10 +1,8 @@
 ﻿using BusinessObject.Models;
-using Validation_Handler;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
 using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using Service.Interface;
 namespace KoiCareApi.Controllers
 {
     [Route("api/Member")]
@@ -70,6 +68,7 @@ namespace KoiCareApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AccountRequestModel _registerMember)
         {
+
             if (_registerMember == null)
             {
                 return BadRequest(new { message = "Vui lòng nhập đúng thông tin" });
@@ -91,6 +90,28 @@ namespace KoiCareApi.Controllers
             _member.Role = await _roleService.GetRoleById(_member.RoleId);
             await _memberService.Register(_member);
             return Created("Created", _member);
+        }
+        [HttpPatch("update/{id}")]
+        public async Task<IActionResult> Update([FromBody] MemberRequestModel model, int id)
+        {
+            if ( await _memberService.GetMemberById(id) != null)
+            {
+                if (model != null)
+                {
+                    Member member = await _memberService.GetMemberById(id);
+                    member.Email = model.Email;
+                    member.Password = model.Password;
+                    member.Image = model.Image;
+                    member.Phone = model.Phone;
+                    member.FullName = model.FullName;
+                    member.Address = model.Address;
+                    member.RoleId = model.RoleId;
+                    await _memberService.UpdateMember(member);
+                    return Ok(member);
+                }
+                return BadRequest("Error with input");
+            }
+            return NotFound();
         }
     }
 }

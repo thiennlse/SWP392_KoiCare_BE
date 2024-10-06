@@ -2,7 +2,7 @@
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.Interface;
 
 namespace KoiCareApi.Controllers
 {

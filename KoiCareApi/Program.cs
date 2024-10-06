@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Repository;
 using Repository.Interface;
 using Service;
+using Service.Interface;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);

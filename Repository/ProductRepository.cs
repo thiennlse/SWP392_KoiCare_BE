@@ -36,12 +36,8 @@ namespace Repository
 
         public async Task AddNewProduct(Product product)
         {
-            if (product != null)
-            {
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
-            }
-
         }
 
         public async Task DeleteProduct(int id)
