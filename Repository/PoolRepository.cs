@@ -38,7 +38,7 @@ namespace Repository
 
         public async Task<Pool> GetPoolById(int id)
         {
-            return await _context.Pools.SingleOrDefaultAsync(p => p.Id.Equals(id));
+            return await _context.Pools.Include(p => p.Water).SingleOrDefaultAsync(p => p.Id.Equals(id)); 
         }
 
         public async Task AddNewPool(Pool pool)
