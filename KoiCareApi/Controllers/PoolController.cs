@@ -116,11 +116,11 @@ namespace KoiCareApi.Controllers
 
            double result = 0.001 *volume;
             if (WaterOfPool.Salt > result) { 
-            return Ok("the salt in pool is too much . Need to descrease");
+            return Ok(" Need to descrease");
             }
             if (WaterOfPool.Salt <result)
             {
-                return Ok("the salt in pool is too little . Need to increase");
+                return Ok(" Need to increase");
             }
             return Ok("ok");
         }

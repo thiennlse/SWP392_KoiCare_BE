@@ -4,6 +4,9 @@ using Microsoft.Extensions.Options;
 using Repository;
 using Repository.Interface;
 using Service;
+using Validation_Handler.BlogValidation;
+using Validation_Handler.FishValidation;
+using Validation_Handler.FoodValidation;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +53,9 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IWaterService, WaterService>();
 builder.Services.AddScoped<IWaterRepository, WaterRepository>();
 builder.Services.AddScoped<IUploadImage,UploadImage>();
-
+builder.Services.AddScoped<BlogValidation>();
+builder.Services.AddScoped<FishValidation>();
+builder.Services.AddScoped<FoodValidation>();
 
 var app = builder.Build();
 
