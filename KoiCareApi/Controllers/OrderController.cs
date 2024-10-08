@@ -2,6 +2,7 @@
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 using Service.Interface;
 
 namespace KoiCareApi.Controllers
@@ -96,6 +97,27 @@ namespace KoiCareApi.Controllers
 
             await _orderService.UpdateOrder(order);
             return Ok(order);
+        }
+
+        [HttpGet("CalculateOrder/{id}")]
+        public async Task<IActionResult> CalculateDateforOrder(int id)
+        {
+            double result = 0;
+            result = await _orderService.CalculateOrderDate(id);
+            Order _order = new Order();
+            _order = await _orderService.GetOrderById(id);
+
+            if (_fish.Food.Weight > result)
+            {
+                return Ok("need to descrease");
+
+            }
+            if (_fish.Food.Weight < result)
+            {
+                return Ok("need to increase");
+            }
+            return Ok("ok");
+
         }
     }
 }
