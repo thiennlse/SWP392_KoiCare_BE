@@ -3,9 +3,8 @@ using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Service;
+using Service.Interface;
 using System.Reflection.Metadata;
-using Validation_Handler;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -71,7 +70,7 @@ namespace KoiCareApi.Controllers
            fish.FoodId = _fish.FoodId;
             fish.PoolId = _fish.PoolId;
             fish.Name = _fish.Name;
-            fish.Image = _fish.Image; /*Validation_Handler.SaveImageToCloudinary.SaveImage(_fish_image);*/
+            fish.Image = _fish.Image;
             fish.Size = _fish.Size;
             fish.Weight = _fish.Weight;
             fish.Age = _fish.Age;

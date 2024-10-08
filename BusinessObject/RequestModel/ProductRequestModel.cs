@@ -13,35 +13,14 @@ namespace BusinessObject.RequestModel
     public class ProductRequestModel
     {
 
-        
+        public string Image { get; set; }
         public int UserId { get; set; }
-
-        
-        
         public string Name { get; set; } = string.Empty;
-
-        
-        
         public double Cost { get; set; }
-
-        
-        
-        public string Description { get; set; } = string.Empty;
-
-        
-        
+        public string Description { get; set; } = string.Empty;   
         public string Origin { get; set; } = string.Empty;
-
-        
-        
         public double Productivity { get; set; }
-
-        
-        
         public string Code { get; set; } = string.Empty;
-
-        
-        
         public int InStock { get; set; }
 
       
