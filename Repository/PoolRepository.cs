@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System;
@@ -52,7 +53,6 @@ namespace Repository
             await _context.SaveChangesAsync();
             return pool;
         }
-
 
     }
 }

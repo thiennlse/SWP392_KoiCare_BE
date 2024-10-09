@@ -46,7 +46,6 @@ namespace Repository
                 _context.Fishes.Remove(_fish);
                 await _context.SaveChangesAsync();
             }
-
         }
 
         public async Task<Fish> UpdateById(Fish fish)

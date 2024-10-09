@@ -19,8 +19,6 @@ namespace Service
             _productRepository = productRepository;
         }
 
-
-
         public async Task<List<Product>> GetAllProduct(int page, int pageSize, string? searchTerm)
         {
             return await _productRepository.GetAllProductAsync(page, pageSize, searchTerm);
@@ -31,10 +29,9 @@ namespace Service
             var result = await _productRepository.GetById(id);
             return result;
         }
-
         public async Task AddNewProduct(Product newProduct)
         {
-            await _productRepository.UpdateProduct(newProduct);
+            await _productRepository.AddNewProduct(newProduct);
         }
 
         public async Task DeleteProduct(int id)

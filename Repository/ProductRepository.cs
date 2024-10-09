@@ -1,11 +1,7 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository
 {
@@ -13,7 +9,7 @@ namespace Repository
     {
         private readonly KoiCareDBContext _context;
 
-        public ProductRepository(KoiCareDBContext context) : base(context)
+        public ProductRepository(KoiCareDBContext context) :base(context) 
         {
             _context = context;
         }
@@ -63,5 +59,6 @@ namespace Repository
             await _context.SaveChangesAsync();
             return product;
         }
+
     }
 }
