@@ -33,12 +33,8 @@ namespace Repository
 
         public async Task AddNewOrder(Order order)
         {
-            if (order != null)
-            {
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-            }
-
         }
 
         public async Task DeleteOrder(int id)
