@@ -1,12 +1,14 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Service;
 using System.Reflection.Metadata;
 using Validation_Handler;
+using Validation_Handler.FishValidation;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -15,11 +17,12 @@ namespace KoiCareApi.Controllers
     {
         private readonly IFishService _fishService;
         private readonly IUploadImage _uploadImage;
-
-        public FishController(IFishService fishService,IUploadImage uploadImage)
+        private readonly FishValidation _fishValidation;
+        public FishController(IFishService fishService,IUploadImage uploadImage, FishValidation fishValidation)
         {
             _fishService = fishService;
             _uploadImage = uploadImage;
+            _fishValidation = fishValidation;
         }
 
         [HttpGet]
@@ -74,6 +77,12 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async  Task<IActionResult> AddNewFish([FromBody] FishRequestModel _fish)
         {
+            ValidationResult validationResult = _fishValidation.Validate(_fish);
+
+            if (!validationResult.IsValid) {
+                return BadRequest(validationResult.ToString());
+            }
+
             if (_fish == null) 
             { 
             return BadRequest("please input fish information");
@@ -107,11 +116,21 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody]FishRequestModel _fish, int id) 
         {
+
+
             var fish = await _fishService.GetFishById(id);
             if (_fish == null)
             {
                 return NotFound("fish is not exits");
             }
+            ValidationResult validationResult = _fishValidation.Validate(_fish);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.ToString());
+            }
+
+
             fish.Id = id;
             fish.FoodId = _fish.FoodId;
             fish.PoolId = _fish.PoolId;

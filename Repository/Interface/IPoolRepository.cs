@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IPoolRepository
     {
-        Task<List<Pool>> GetAllPool();
+        Task<List<PoolResponseModel>> GetAllPool();
 
         Task<Pool> GetPoolById(int id);
 

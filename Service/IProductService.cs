@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Service
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAllProduct();
+        Task<List<ProductResponseModel>> GetAllProduct();
 
         Task<Product> GetProductById(int id);
 

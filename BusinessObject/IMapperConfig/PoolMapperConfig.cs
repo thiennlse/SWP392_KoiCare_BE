@@ -14,7 +14,7 @@ namespace BusinessObject.IMapperConfig
     {
         public static void CreateMap(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<Food, PoolResponseModel>();
+            cfg.CreateMap<Pool, PoolResponseModel>();
         }
     }
 }

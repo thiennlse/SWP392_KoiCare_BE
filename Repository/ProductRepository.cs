@@ -1,4 +1,7 @@
-﻿using BusinessObject.Models;
+﻿using AutoMapper;
+using BusinessObject.IMapperConfig;
+using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System;
@@ -20,11 +23,18 @@ namespace Repository
 
         List<Product> ProductList;
 
-        public async Task<List<Product>> GetAllProduct()
+        public async Task<List<ProductResponseModel>> GetAllProduct()
         {
-            return await _context.Products.Include(b => b.User)
-                .AsNoTracking()
-                .ToListAsync();
+            List<Product> products = await _context.Products.AsNoTracking().ToListAsync();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
+            var mapper = config.CreateMapper();
+            List<ProductResponseModel> _products = products.Select(p =>  mapper.Map<Product,ProductResponseModel>(p)).ToList();
+
+            return _products;
         }
         
         public async Task<Product> GetProductById(int id)
@@ -36,11 +46,10 @@ namespace Repository
 
         public async Task AddNewProduct(Product product)
         {
-            if (product != null)
-            {
+          
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
-            }
+            
 
         }
 

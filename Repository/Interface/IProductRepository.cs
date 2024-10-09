@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IProductRepository
     {
-        public Task<List<Product>> GetAllProduct();
+        public Task<List<ProductResponseModel>> GetAllProduct();
 
         public Task<Product> GetProductById(int id);
 

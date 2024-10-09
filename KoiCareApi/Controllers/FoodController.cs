@@ -1,8 +1,11 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Validation_Handler.FoodValidation;
 
 namespace KoiCareApi.Controllers
 {
@@ -12,10 +15,12 @@ namespace KoiCareApi.Controllers
     {
         private  readonly IFoodService _foodService;
         private readonly   IFishService _fishService;
-        public FoodController(IFoodService foodService, IFishService fishService)
+        private readonly FoodValidation _foodValidation;
+        public FoodController(IFoodService foodService, IFishService fishService, FoodValidation foodValidation)
         {
             _foodService = foodService;
             _fishService = fishService;
+            _foodValidation = foodValidation;
         }
 
         [HttpGet]
@@ -45,7 +50,14 @@ namespace KoiCareApi.Controllers
 
         [HttpPost("add")]
         public async Task<IActionResult> AddNewFood([FromBody] FoodRequestModel _food)
-        {
+        {   
+           ValidationResult validationResult = _foodValidation.Validate(_food);
+
+            if (!validationResult.IsValid) 
+            {
+                return BadRequest(validationResult.ToString());
+            }
+
             if (_food == null)
             {
                 return BadRequest("please input  Food information");
@@ -75,11 +87,20 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody]FoodRequestModel _food ,int id) 
         {
+
         var food = await _foodService.GetFoodById(id);
             if (food == null) 
             {
             return NotFound("this food is not exits");
             }
+
+            ValidationResult validationResult = _foodValidation.Validate(_food);
+
+            if (!validationResult.IsValid) 
+            {
+                return BadRequest(validationResult.ToString() );
+            }
+
             food.Id = id;
             food.Name = _food.Name;
             food.Weight = _food.Weight;

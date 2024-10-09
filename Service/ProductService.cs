@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
 using Repository.Interface;
 using System;
@@ -19,7 +20,7 @@ namespace Service
 
 
 
-        public async Task<List<Product>> GetAllProduct()
+        public async Task<List<ProductResponseModel>> GetAllProduct()
         {
             return await _productRepository.GetAllProduct();
         }
@@ -31,12 +32,12 @@ namespace Service
 
         public async Task AddNewProduct(Product newProduct)
         {
-            await _productRepository.UpdateProduct(newProduct);
+            await _productRepository.AddNewProduct(newProduct);
         }
 
         public async Task DeleteProduct(int id)
         {
-            _productRepository.DeleteProduct(id);
+           await _productRepository.DeleteProduct(id);
         }
 
         public async Task<Product> UpdateProduct(Product newProduct)

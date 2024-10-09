@@ -54,6 +54,7 @@ namespace KoiCareApi.Controllers
             
             product.UserId = _product.UserId;
             product.Name = _product.Name;
+            product.Image = _product.Image;
             product.Cost = _product.Cost;
             product.Description = _product.Description;
             product.Origin = _product.Origin;
@@ -84,9 +85,10 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("product is not exits");
             }
-            
+            product.Id = id;
             product.UserId = _product.UserId;
             product.Name = _product.Name;
+            product.Image = _product.Image;
             product.Cost = _product.Cost;
             product.Description = _product.Description;
             product.Origin = _product.Origin;
