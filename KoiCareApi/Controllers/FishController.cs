@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using BusinessObject.ResponseModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -35,15 +36,25 @@ namespace KoiCareApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFishById(int id) 
         {
+            FishResponseModel fishResponse = new FishResponseModel();
             if (id <= 0) 
             {
                 return BadRequest("phease input id >0");
             }
             var _fish = await _fishService.GetFishById(id);
+            fishResponse.Size = _fish.Size;
+            fishResponse.FoodId = _fish.FoodId;
+            fishResponse.PoolId = _fish.PoolId;
+            fishResponse.Age = _fish.Age;
+            fishResponse.Weight = _fish.Weight;
+            fishResponse.Origin = _fish.Origin;
+            fishResponse.Gender = _fish.Gender;
+            fishResponse.Image = _fish.Image;
+            fishResponse.Food = _fish.Food;
             if (_fish == null) {
                 return NotFound("fish is not exit");
             }
-            return Ok(_fish);
+            return Ok(fishResponse);
         }
 
 

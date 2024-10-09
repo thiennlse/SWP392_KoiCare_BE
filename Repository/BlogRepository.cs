@@ -26,7 +26,7 @@ namespace Repository
 
         public async Task<List<BlogResponseModel>> GetAllBlog()
         {
-              List<Blog> blogs =  await _context.Blogs.Include(b => b.Member).ToListAsync();
+              List<Blog> blogs =  await _context.Blogs.Include(b => b.Member).AsNoTracking().ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {

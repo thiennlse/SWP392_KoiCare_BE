@@ -11,10 +11,11 @@ namespace KoiCareApi.Controllers
     public class FoodController : ControllerBase
     {
         private  readonly IFoodService _foodService;
-
-        public FoodController(IFoodService foodService)
+        private readonly   IFishService _fishService;
+        public FoodController(IFoodService foodService, IFishService fishService)
         {
             _foodService = foodService;
+            _fishService = fishService;
         }
 
         [HttpGet]
@@ -86,6 +87,27 @@ namespace KoiCareApi.Controllers
 
             await _foodService.UpdateFood(food);
             return Ok(food);
+        }
+
+        [HttpGet("CalculateFood/{id}")]
+        public async Task<IActionResult> CalculateFoodForFish(int id)
+        {
+            double result = 0;
+            result = await _foodService.CalculateFishFood(id);
+            Fish _fish = new Fish();
+            _fish = await _fishService.GetFishById(id);
+            
+            if(_fish.Food.Weight > result)
+            {
+                return Ok("need to descrease");
+
+            }
+            if(_fish.Food.Weight < result)
+            {
+                return Ok("need to increase");
+            }
+            return Ok("ok");
+
         }
 
     }

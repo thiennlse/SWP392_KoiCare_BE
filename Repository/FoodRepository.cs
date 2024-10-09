@@ -17,7 +17,7 @@ namespace Repository
     public class FoodRepository : IFoodRepository
     {
         private readonly KoiCareDBContext _context;
-
+      
         public FoodRepository(KoiCareDBContext context)
         {
 
@@ -28,7 +28,7 @@ namespace Repository
 
         public async Task<List<FoodResponseModel>> GetAllFood()
         {
-            List<Food> foods = await _context.Foods.ToListAsync();
+            List<Food> foods = await _context.Foods.AsNoTracking().ToListAsync();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new MappingProfile());
@@ -69,4 +69,6 @@ namespace Repository
            return food;
         }
     }
+
+       
 }

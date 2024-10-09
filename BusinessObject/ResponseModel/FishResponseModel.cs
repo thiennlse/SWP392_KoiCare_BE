@@ -46,9 +46,9 @@ namespace BusinessObject.ResponseModel
         [Required]
         [StringLength(100)]
         public string Origin { get; set; } = string.Empty;
-        [JsonIgnore]
+        
         public virtual Food? Food { get; set; }
-        [JsonIgnore]
+        
         public virtual Pool? Pool { get; set; } = null!;
     }
 }
