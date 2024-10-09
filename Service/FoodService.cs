@@ -27,7 +27,7 @@ namespace Service
 
         public async Task<Food> GetFoodById(int id) 
         {
-        return await _foodRepository.GetFoodById(id);
+        return await _foodRepository.GetById(id);
         }
 
         public async Task AddNewFood(Food food) 

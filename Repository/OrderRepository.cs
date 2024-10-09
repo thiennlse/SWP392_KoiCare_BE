@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : BaseRepository<Order>, IOrderRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public OrderRepository(KoiCareDBContext context)
+        public OrderRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
         }
@@ -25,36 +25,27 @@ namespace Repository
             return await _context.Orders.Include(b => b.Member).ToListAsync();
         }
 
-        public async Task<Order> GetOrderById(int id)
-        {
-            return await _context.Orders.Include(b => b.Member)
-                .SingleOrDefaultAsync(m => m.Id.Equals(id));
-        }
-
         public async Task AddNewOrder(Order order)
         {
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteOrder(int id)
         {
-            var order = await GetOrderById(id);
+            var order = await GetById(id);
             if (order != null)
             {
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
             }
-
         }
 
         public async Task<Order> UpdateOrder(Order order)
         {
-            _context.Entry(order).State = EntityState.Modified; 
+            _context.Entry(order).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return order;
         }
-
-
     }
 }

@@ -27,7 +27,7 @@ namespace Service
 
         public async Task<Pool> GetPoolById(int id)
         {
-            return await _poolRepository.GetPoolById(id);
+            return await _poolRepository.GetById(id);
         }
 
         public async Task AddNewPool(Pool newPool)

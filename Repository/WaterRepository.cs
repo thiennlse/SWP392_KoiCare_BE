@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class WaterRepository : IWaterRepository
+    public class WaterRepository :BaseRepository<Waters> ,IWaterRepository
     {
         private readonly KoiCareDBContext _context;
-        public WaterRepository(KoiCareDBContext context) 
+        public WaterRepository(KoiCareDBContext context) :base(context)
         {
             _context = context;
         }
-
 
         public async Task addWater(Waters water)
         {
@@ -36,13 +35,6 @@ namespace Repository
             return await _context.Waters
                 .AsNoTracking()
                 .ToListAsync();
-        }
-
-        public async Task<Waters> GetById(int id)
-        {
-            return await _context.Waters
-                .AsNoTracking()
-                .SingleOrDefaultAsync(w => w.Id.Equals(id));
         }
 
         public async Task<Waters> updateWater(Waters water)

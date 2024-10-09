@@ -6,17 +6,12 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Waters
+    public partial class Waters : BaseEntity
     {
         public Waters()
         {
             Pools = new HashSet<Pool>();
         }
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         [Required]
         [Range(-273.15, double.MaxValue)]
         public double Temperature { get; set; }

@@ -26,7 +26,7 @@ namespace Service
 
         public async Task<Blog> GetBLogById(int id)
         {
-            return await _blogRepository.GetBLogById(id);
+            return await _blogRepository.GetById(id);
         }
 
         public async Task AddNewBlog(Blog newBlog)

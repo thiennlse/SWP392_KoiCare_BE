@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IWaterRepository
+    public interface IWaterRepository : IBaseRepository<Waters>
     {
         Task<List<Waters>> GetAll();
-
-        Task<Waters> GetById(int id);
 
         Task addWater(Waters water);
 

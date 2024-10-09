@@ -6,11 +6,8 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public  class Product
+    public class Product : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
 
         [Required]
         public int UserId { get; set; }

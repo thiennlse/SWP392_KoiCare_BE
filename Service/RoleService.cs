@@ -20,7 +20,7 @@ namespace Service
 
         public async Task<Role> GetRoleById(int id)
         {
-            return await _repository.GetRoleById(id);
+            return await _repository.GetById(id);
         }
     }
 }

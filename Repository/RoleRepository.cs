@@ -9,18 +9,14 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class RoleRepository : IRoleRepository
+    public class RoleRepository : BaseRepository<Role> ,IRoleRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public RoleRepository(KoiCareDBContext context)
+        public RoleRepository(KoiCareDBContext context) : base(context) 
         {
             _context = context;
         }
 
-        public async Task<Role> GetRoleById(int id)
-        {
-            return await _context.Roles.FirstOrDefaultAsync( r => r.Id.Equals(id));
-        }
     }
 }
