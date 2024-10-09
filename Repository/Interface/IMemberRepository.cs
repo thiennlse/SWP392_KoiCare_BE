@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IMemberRepository
+    public interface IMemberRepository : IBaseRepository<Member>
     {
         Task<List<MemberResponseModel>> GetAllMember();
-        Task<Member> GetMemberById(int id);
         Task<Member> Login(string email, string password);
         Task Register(Member member);
         Task<Member> UpdateMember(Member member);

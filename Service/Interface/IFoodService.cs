@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.Interface
 {
-     public interface IFoodService
+    public interface IFoodService
     {
         public Task<List<FoodResponseModel>> GetAllFood();
         public Task<Food> GetFoodById(int id);

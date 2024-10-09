@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.ResponseModel;
 using Repository.Interface;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Service
 
         public async Task<Member> GetMemberById(int id)
         {
-           return await _memberRepository.GetMemberById(id);
+           return await _memberRepository.GetById(id);
         }
 
         public async Task<Member> Login(string email, string password)

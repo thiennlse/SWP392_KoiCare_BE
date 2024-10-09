@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models;
 using Repository;
 using Repository.Interface;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Service
 
         public async Task<Order> GetOrderById(int id)
         {
-            return await _orderRepository.GetOrderById(id);
+            return await _orderRepository.GetById(id);
         }
 
         public async Task AddNewOrder(Order newOrder)

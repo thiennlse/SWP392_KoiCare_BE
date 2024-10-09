@@ -2,7 +2,8 @@
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Microsoft.VisualBasic;
+using Service.Interface;
 
 namespace KoiCareApi.Controllers
 {
@@ -11,16 +12,17 @@ namespace KoiCareApi.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
+        private readonly IMemberService _memberService;
+        public ProductController(IProductService productService, IMemberService memberService)
         {
             _productService = productService;
+            _memberService = memberService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProduct()
+        public async Task<IActionResult> GetAllProduct(int page = 1, int pagesize = 10, string? searchTerm = null)
         {
-            var product = await _productService.GetAllProduct();
+            var product = await _productService.GetAllProduct(page, pagesize, searchTerm);
             if (product == null)
             {
                 return NotFound("empty Product");
@@ -50,17 +52,19 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest("please input product information");
             }
-            Product product = new Product();
-            
-            product.UserId = _product.UserId;
-            product.Name = _product.Name;
-            product.Image = _product.Image;
-            product.Cost = _product.Cost;
-            product.Description = _product.Description;
-            product.Origin = _product.Origin;
-            product.Productivity = _product.Productivity;
-            product.Code = _product.Code;
-            product.InStock = _product.InStock;
+            Product product = new Product
+            {
+                Image = _product.Image,
+                UserId = _product.UserId,
+                Name = _product.Name,
+                Cost = _product.Cost,
+                Description = _product.Description,
+                Origin = _product.Origin,
+                Productivity = _product.Productivity,
+                Code = _product.Code,
+                InStock = _product.InStock
+            };
+
             await _productService.AddNewProduct(product);
             return Created("Created", product);
         }
@@ -85,10 +89,9 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("product is not exits");
             }
-            product.Id = id;
+
             product.UserId = _product.UserId;
             product.Name = _product.Name;
-            product.Image = _product.Image;
             product.Cost = _product.Cost;
             product.Description = _product.Description;
             product.Origin = _product.Origin;

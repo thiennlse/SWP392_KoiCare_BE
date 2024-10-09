@@ -1,16 +1,15 @@
 ﻿using BusinessObject.Models;
-using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.Interface
 {
     public interface IProductService
     {
-        Task<List<ProductResponseModel>> GetAllProduct();
+        Task<List<Product>> GetAllProduct(int page, int pageSize, string? searchTerm);
 
         Task<Product> GetProductById(int id);
 

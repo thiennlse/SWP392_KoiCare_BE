@@ -2,7 +2,7 @@
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
+using Service.Interface;
 
 namespace KoiCareApi.Controllers
 {
@@ -11,10 +11,13 @@ namespace KoiCareApi.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-
-        public OrderController(IOrderService orderService)
+        private readonly IMemberService _memberService;
+        private readonly IProductService _productService;
+        public OrderController(IOrderService orderService, IProductService productService, IMemberService memberService)
         {
             _orderService = orderService;
+            _productService = productService;
+            _memberService = memberService;
         }
 
         [HttpGet]
@@ -55,11 +58,14 @@ namespace KoiCareApi.Controllers
             order.MemberId = _order.MemberId;
             order.ProductId = _order.ProductId;
             order.TotalCost = _order.TotalCost;
-            order.OrderDate = _order.OrderDate;
+            order.OrderDate = DateTime.Now;
             order.CloseDate = _order.CloseDate;
             order.Code = _order.Code;
             order.Description = _order.Description;
             order.Status = _order.Status;
+            order.Member = await _memberService.GetMemberById(order.MemberId);
+            order.Product = await _productService.GetProductById(order.ProductId);
+
             await _orderService.AddNewOrder(order);
             return Created("Created", order);
         }
@@ -88,7 +94,6 @@ namespace KoiCareApi.Controllers
             order.MemberId = _order.MemberId;
             order.ProductId = _order.ProductId;
             order.TotalCost = _order.TotalCost;
-            order.OrderDate = _order.OrderDate;
             order.CloseDate = _order.CloseDate;
             order.Code = _order.Code;
             order.Description = _order.Description;

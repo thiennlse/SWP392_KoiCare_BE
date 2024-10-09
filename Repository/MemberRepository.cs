@@ -3,24 +3,18 @@ using BusinessObject.IMapperConfig;
 using BusinessObject.Models;
 using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Validation_Handler;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.Extensions.Options; 
+
+using System.Security.Cryptography;
 
 namespace Repository
 {
-    public class MemberRepository : IMemberRepository
+    public class MemberRepository : BaseRepository<Member> ,IMemberRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public MemberRepository(KoiCareDBContext context)
+        public MemberRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
         }
@@ -41,20 +35,16 @@ namespace Repository
 
             return _member;
         }
-        public async Task<Member> GetMemberById( int id)
-        {
-            return await _context.Members.Include(m => m.Role)
-                .SingleOrDefaultAsync(m => m.Id.Equals(id));
-        }
+
         public async Task<Member> Login(string email , string password)
         {
-            password = HashPasswordValidation.HashPasswordToSha256(password);
+            password = HashPasswordToSha256(password);
             return await _context.Members.Include(m => m.Role)
                 .FirstOrDefaultAsync(m => m.Email.Equals(email) && m.Password.Equals(password));
         }
         public async Task Register(Member member)
         {
-            member.Password =  HashPasswordValidation.HashPasswordToSha256(member.Password);
+            member.Password =  HashPasswordToSha256(member.Password);
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
 
@@ -75,7 +65,17 @@ namespace Repository
             return await _context.Members.AnyAsync(m => m.Email.Equals(email));
         }
 
-
+        public string HashPasswordToSha256(string password)
+        {
+            using var sha256 = SHA256.Create();
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var sb = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                sb.Append(bytes[i].ToString("x2"));
+            }
+            return sb.ToString();
+        }
 
     }
 }

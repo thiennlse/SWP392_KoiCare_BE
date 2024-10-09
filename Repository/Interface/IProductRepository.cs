@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IProductRepository
+    public interface IProductRepository : IBaseRepository<Product>
     {
         public Task<List<ProductResponseModel>> GetAllProduct();
 
-        public Task<Product> GetProductById(int id);
+        Task<List<Product>> GetAllProductAsync(int page, int pageSize, string? searchTerm);
 
         public Task AddNewProduct(Product product);
 
         public Task DeleteProduct(int id);
-
         public Task<Product> UpdateProduct(Product product);
     }
 }

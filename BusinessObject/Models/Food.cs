@@ -6,12 +6,8 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Food
+    public partial class Food : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         [Required]
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;

@@ -1,12 +1,9 @@
 ﻿using BusinessObject.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Components.Web;
-using FluentValidation.Results;
-using Validation_Handler.BlogValidation;
-
+using Service.Interface;
 
 namespace KoiCareApi.Controllers
 {
@@ -16,12 +13,11 @@ namespace KoiCareApi.Controllers
     {
         private readonly IBlogService _blogService;
         private readonly IMemberService _memberService;
-        private readonly BlogValidation _blogValidation;
-        public BlogController(IBlogService blogService, IMemberService memberService, BlogValidation blogValidaion)
+
+        public BlogController(IBlogService blogService, IMemberService memberService)
         {
             _blogService = blogService;
             _memberService = memberService;
-            _blogValidation = blogValidaion;
         }
 
         [HttpGet]
@@ -53,13 +49,6 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewBlog([FromBody] BlogRequestModel _blog)
         {
-            ValidationResult validationResult = _blogValidation.Validate(_blog);
-
-            if (!validationResult.IsValid) 
-            {
-
-                return BadRequest(validationResult.ToString() );
-            }
 
             if (_blog == null)
             {
@@ -98,14 +87,7 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("blog no exits");
             }
-
-            ValidationResult validationResult = _blogValidation.Validate(_blog);
-            if (!validationResult.IsValid) 
-            {
-                return BadRequest(validationResult.ToString());
-            }
-
-            //blog.Id = id;
+            blog.Id = id;
             blog.MemberId = _blog.MemberId;
             blog.Title = _blog.Title;
             blog.Content = _blog.Content;

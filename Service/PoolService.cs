@@ -2,6 +2,7 @@
 using BusinessObject.ResponseModel;
 using Repository;
 using Repository.Interface;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Service
 
         public async Task<Pool> GetPoolById(int id)
         {
-            return await _poolRepository.GetPoolById(id);
+            return await _poolRepository.GetById(id);
         }
 
         public async Task AddNewPool(Pool newPool)

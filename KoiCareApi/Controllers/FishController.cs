@@ -1,14 +1,10 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
-using BusinessObject.ResponseModel;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Service;
+using Service.Interface;
 using System.Reflection.Metadata;
-using Validation_Handler;
-using Validation_Handler.FishValidation;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -17,12 +13,11 @@ namespace KoiCareApi.Controllers
     {
         private readonly IFishService _fishService;
         private readonly IUploadImage _uploadImage;
-        private readonly FishValidation _fishValidation;
-        public FishController(IFishService fishService,IUploadImage uploadImage, FishValidation fishValidation)
+
+        public FishController(IFishService fishService,IUploadImage uploadImage)
         {
             _fishService = fishService;
             _uploadImage = uploadImage;
-            _fishValidation = fishValidation;
         }
 
         [HttpGet]
@@ -39,25 +34,15 @@ namespace KoiCareApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFishById(int id) 
         {
-            FishResponseModel fishResponse = new FishResponseModel();
             if (id <= 0) 
             {
                 return BadRequest("phease input id >0");
             }
             var _fish = await _fishService.GetFishById(id);
-            fishResponse.Size = _fish.Size;
-            fishResponse.FoodId = _fish.FoodId;
-            fishResponse.PoolId = _fish.PoolId;
-            fishResponse.Age = _fish.Age;
-            fishResponse.Weight = _fish.Weight;
-            fishResponse.Origin = _fish.Origin;
-            fishResponse.Gender = _fish.Gender;
-            fishResponse.Image = _fish.Image;
-            fishResponse.Food = _fish.Food;
             if (_fish == null) {
                 return NotFound("fish is not exit");
             }
-            return Ok(fishResponse);
+            return Ok(_fish);
         }
 
 
@@ -77,12 +62,6 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async  Task<IActionResult> AddNewFish([FromBody] FishRequestModel _fish)
         {
-            ValidationResult validationResult = _fishValidation.Validate(_fish);
-
-            if (!validationResult.IsValid) {
-                return BadRequest(validationResult.ToString());
-            }
-
             if (_fish == null) 
             { 
             return BadRequest("please input fish information");
@@ -91,7 +70,7 @@ namespace KoiCareApi.Controllers
            fish.FoodId = _fish.FoodId;
             fish.PoolId = _fish.PoolId;
             fish.Name = _fish.Name;
-            fish.Image = _fish.Image; /*Validation_Handler.SaveImageToCloudinary.SaveImage(_fish_image);*/
+            fish.Image = _fish.Image;
             fish.Size = _fish.Size;
             fish.Weight = _fish.Weight;
             fish.Age = _fish.Age;
@@ -116,21 +95,11 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody]FishRequestModel _fish, int id) 
         {
-
-
             var fish = await _fishService.GetFishById(id);
             if (_fish == null)
             {
                 return NotFound("fish is not exits");
             }
-            ValidationResult validationResult = _fishValidation.Validate(_fish);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.ToString());
-            }
-
-
             fish.Id = id;
             fish.FoodId = _fish.FoodId;
             fish.PoolId = _fish.PoolId;

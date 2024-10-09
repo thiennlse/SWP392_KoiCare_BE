@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Service.Interface
 {
     public interface IUploadImage
     {
-        Task<String> SaveImage(IFormFile file);
+        Task<string> SaveImage(IFormFile file);
     }
 }

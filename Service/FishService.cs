@@ -2,6 +2,7 @@
 using BusinessObject.ResponseModel;
 using Repository;
 using Repository.Interface;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Service
 
         public async Task<Fish> GetFishById(int id) 
         {
-        return await _fishRepository.GetFishById(id);
+        return await _fishRepository.GetById(id);
         }
 
         public async Task AddNewFish(Fish fish) 

@@ -7,16 +7,13 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IBaseRepository<Order>
     {
         Task<List<Order>> GetAllOrder();
-
-        Task<Order> GetOrderById(int id);
 
         Task AddNewOrder(Order order);
 
         Task DeleteOrder(int id);
-
         Task<Order> UpdateOrder(Order order);
     }
 }

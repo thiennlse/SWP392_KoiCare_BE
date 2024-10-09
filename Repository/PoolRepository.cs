@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using BusinessObject.IMapperConfig;
-using BusinessObject.Models;
-using BusinessObject.ResponseModel;
+﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System;
@@ -12,44 +9,35 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class PoolRepository : IPoolRepository
+    public class PoolRepository : BaseRepository<Pool> ,IPoolRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public PoolRepository(KoiCareDBContext context)
+        public PoolRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
         }
 
         List<Pool> PoolList;
 
-        public async Task<List<PoolResponseModel>> GetAllPool()
+        public async Task<List<Pool>> GetAllPool()
         {
-          List<Pool> pool =  await _context.Pools.AsNoTracking().ToListAsync();
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfile());
-            });
-            var mapper = config.CreateMapper();
-            List<PoolResponseModel> _pool = pool.Select(p => mapper.Map<Pool,PoolResponseModel>(p)).ToList();
-            return _pool;
-
-        }
-
-        public async Task<Pool> GetPoolById(int id)
-        {
-            return await _context.Pools.Include(p => p.Water).SingleOrDefaultAsync(p => p.Id.Equals(id)); 
+            return await _context.Pools.Include(b => b.Member).ToListAsync();
         }
 
         public async Task AddNewPool(Pool pool)
         {
+            if (pool != null)
+            {
                 _context.Pools.Add(pool);
                 await _context.SaveChangesAsync();
+            }
+
         }
 
         public async Task DeletePool(int id)
         {
-            var pool = await GetPoolById(id);
+            var pool = await GetById(id);
             if (pool != null)
             {
                 _context.Pools.Remove(pool);

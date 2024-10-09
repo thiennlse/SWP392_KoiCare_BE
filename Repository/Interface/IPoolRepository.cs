@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IPoolRepository
+    public interface IPoolRepository : IBaseRepository<Pool>
     {
         Task<List<PoolResponseModel>> GetAllPool();
-
-        Task<Pool> GetPoolById(int id);
 
         Task AddNewPool(Pool pool);
 
