@@ -4,18 +4,13 @@ using BusinessObject.Models;
 using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace Repository
 {
-    public class FishRepository : IFishRepository
+    public class FishRepository : BaseRepository<Fish> ,IFishRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public FishRepository(KoiCareDBContext context)
+        public FishRepository(KoiCareDBContext context) : base(context) 
         {
             _context = context;
 
@@ -37,11 +32,6 @@ namespace Repository
             return _fishs;
         }
 
-        public async Task<Fish> GetFishById(int id)
-        {
-            return await _context.Fishes.SingleOrDefaultAsync(f => f.Id.Equals(id));
-        }
-
         public async Task AddNewFish(Fish fish)
         {
             _context.Fishes.AddAsync(fish);
@@ -50,7 +40,7 @@ namespace Repository
 
         public async Task DeleteFish(int id)
         {
-            var _fish = await GetFishById(id);
+            var _fish = await GetById(id);
             if (_fish != null)
             {
                 _context.Fishes.Remove(_fish);

@@ -6,13 +6,8 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Member
+    public partial class Member : BaseEntity
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         [Required]
         [EmailAddress]
         [StringLength(100)]
@@ -23,7 +18,7 @@ namespace BusinessObject.Models
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public string Image {  get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
 
         [Phone]
         [StringLength(20)]

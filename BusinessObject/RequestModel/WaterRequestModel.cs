@@ -1,17 +1,17 @@
-﻿using System;
+﻿using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
-namespace BusinessObject.Models
+namespace BusinessObject.RequestModel
 {
-    public partial class Waters : BaseEntity
+    public class WaterRequestModel
     {
-        public Waters()
-        {
-            Pools = new HashSet<Pool>();
-        }
+
         [Required]
         [Range(-273.15, double.MaxValue)]
         public double Temperature { get; set; }
@@ -39,7 +39,6 @@ namespace BusinessObject.Models
         [Required]
         [Range(0, double.MaxValue)]
         public double Po4 { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Pool>? Pools { get; set; }
+      
     }
 }

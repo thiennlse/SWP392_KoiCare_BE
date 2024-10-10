@@ -27,7 +27,7 @@ namespace Service
 
         public async Task<Fish> GetFishById(int id) 
         {
-        return await _fishRepository.GetFishById(id);
+        return await _fishRepository.GetById(id);
         }
 
         public async Task AddNewFish(Fish fish) 

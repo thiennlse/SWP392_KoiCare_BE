@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IFishRepository
+    public interface IFishRepository : IBaseRepository<Fish>
     {
         public  Task<List<FishResponseModel>> GetAllFish();
-        public  Task<Fish> GetFishById(int id);
         public  Task AddNewFish(Fish fish);
         public  Task DeleteFish(int id);
         public  Task<Fish> UpdateById(Fish fish);

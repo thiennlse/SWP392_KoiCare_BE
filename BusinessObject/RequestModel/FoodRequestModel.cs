@@ -11,11 +11,11 @@ namespace BusinessObject.RequestModel
 {
    public  class FoodRequestModel
     {
-        [Required]
+        
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
+        
         [Range(0, double.MaxValue)]
         public double Weight { get; set; }
         
