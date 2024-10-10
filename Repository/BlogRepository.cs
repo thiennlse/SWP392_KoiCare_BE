@@ -13,11 +13,11 @@ using Repository.Interface;
 
 namespace Repository
 {
-    public class BlogRepository : IBlogRepository
+    public class BlogRepository : BaseRepository<Blog>, IBlogRepository
     {
-        private readonly KoiCareDBContext _context;
+        private KoiCareDBContext _context;
 
-        public BlogRepository(KoiCareDBContext context)
+        public BlogRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
         }
@@ -26,7 +26,7 @@ namespace Repository
 
         public async Task<List<BlogResponseModel>> GetAllBlog()
         {
-              List<Blog> blogs =  await _context.Blogs.Include(b => b.Member).ToListAsync();
+            List<Blog> blogs = await _context.Blogs.Include(b => b.Member).ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -39,30 +39,26 @@ namespace Repository
 
         }
 
-        public async Task<Blog> GetBLogById(int id)
-        {
-            return await _context.Blogs.Include(b => b.Member).SingleOrDefaultAsync(m => m.Id.Equals(id));
-        }
-
         public async Task AddNewBlog(Blog blog)
         {
-               _context.Blogs.Add(blog); 
-               await _context.SaveChangesAsync();
+            _context.Blogs.Add(blog);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBlog(int id)
         {
-            var blog = await GetBLogById(id);
-            if (blog != null) { 
-            _context.Blogs.Remove(blog);
+            var blog = await GetById(id);
+            if (blog != null)
+            {
+                _context.Blogs.Remove(blog);
                 await _context.SaveChangesAsync();
             }
-            
+
         }
 
         public async Task<Blog> UpdateBlog(Blog blog)
         {
-          _context.Entry(blog).State = EntityState.Modified;
+            _context.Entry(blog).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return blog;
         }

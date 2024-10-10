@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
 using Repository.Interface;
 using Service.Interface;
@@ -20,29 +21,29 @@ namespace Service
 
 
 
-        public async Task<List<Pool>> GetAllPool()
+        public async Task<List<PoolResponseModel>> GetAllPool()
         {
             return await _poolRepository.GetAllPool();
         }
 
         public async Task<Pool> GetPoolById(int id)
         {
-            return await _poolRepository.GetPoolById(id);
+            return await _poolRepository.GetById(id);
         }
 
         public async Task AddNewPool(Pool newPool)
         {
-            await _poolRepository.UpdatePool(newPool);
+            await _poolRepository.AddNewPool(newPool);
         }
 
         public async Task DeletePool(int id)
-        {
-            _poolRepository.DeletePool(id);
+        { 
+           await _poolRepository.DeletePool(id);
         }
 
-        public async Task<Pool> UpdatePool(Pool newPool)
+        public async Task<Pool> UpdatePool(Pool pool)
         {
-            return await _poolRepository.UpdatePool(newPool);
+            return await _poolRepository.UpdatePool(pool);
         }
     }
 }

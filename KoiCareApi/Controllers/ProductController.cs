@@ -20,9 +20,9 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProduct()
+        public async Task<IActionResult> GetAllProduct(int page = 1, int pagesize = 10, string? searchTerm = null)
         {
-            var product = await _productService.GetAllProduct();
+            var product = await _productService.GetAllProduct(page, pagesize, searchTerm);
             if (product == null)
             {
                 return NotFound("empty Product");

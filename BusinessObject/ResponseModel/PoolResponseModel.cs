@@ -38,10 +38,10 @@ namespace BusinessObject.ResponseModel
         [Required]
         public int WaterId { get; set; }
 
-        [JsonIgnore]
+      
         public virtual Member Member { get; set; } = null!;
 
-        [JsonIgnore]
+        
         public virtual Waters Water { get; set; } = null!;
        
     }

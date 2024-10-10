@@ -4,21 +4,14 @@ using BusinessObject.Models;
 using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Repository
 {
-    public class FoodRepository : IFoodRepository
+    public class FoodRepository : BaseRepository<Food> ,IFoodRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public FoodRepository(KoiCareDBContext context)
+        public FoodRepository(KoiCareDBContext context) : base(context)
         {
 
             _context = context;
@@ -39,22 +32,15 @@ namespace Repository
             return _foods;
         }
 
-        public async Task<Food> GetFoodById(int id)
-        {
-            return await _context.Foods.SingleOrDefaultAsync(f => f.Id.Equals(id));
-        }
-
         public async Task AddNewFood(Food food)
         {
-
                 _context.Foods.Add(food);
                 await _context.SaveChangesAsync();
- 
         }
 
         public async Task DeleteFood(int id)
         {
-            var food = await GetFoodById(id);
+            var food = await GetById(id);
             if (food != null)
             {
                 _context.Foods.Remove(food);

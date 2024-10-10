@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IBlogRepository
+    public interface IBlogRepository : IBaseRepository<Blog>
     {
         Task<List<BlogResponseModel>> GetAllBlog();
-
-        Task<Blog> GetBLogById(int id);
 
         Task AddNewBlog(Blog blog);
 

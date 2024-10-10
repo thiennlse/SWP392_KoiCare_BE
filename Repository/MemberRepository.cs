@@ -10,11 +10,11 @@ using System.Security.Cryptography;
 
 namespace Repository
 {
-    public class MemberRepository : IMemberRepository
+    public class MemberRepository : BaseRepository<Member> ,IMemberRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public MemberRepository(KoiCareDBContext context)
+        public MemberRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
         }
@@ -35,11 +35,7 @@ namespace Repository
 
             return _member;
         }
-        public async Task<Member> GetMemberById( int id)
-        {
-            return await _context.Members.Include(m => m.Role)
-                .SingleOrDefaultAsync(m => m.Id.Equals(id));
-        }
+
         public async Task<Member> Login(string email , string password)
         {
             password = HashPasswordToSha256(password);

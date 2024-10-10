@@ -13,10 +13,8 @@ namespace BusinessObject.RequestModel
     public class PoolRequestModel
     {
 
-        
-        public int Id { get; set; }
+       
 
-        
         public int MemberId { get; set; }
 
         

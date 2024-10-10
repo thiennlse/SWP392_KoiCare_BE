@@ -5,12 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Fish
+    public partial class Fish : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         [Required]
         public int PoolId { get; set; }
 

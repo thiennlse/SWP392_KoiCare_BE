@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Repository;
 using Repository.Interface;
 using Service.Interface;
@@ -20,14 +21,15 @@ namespace Service
 
 
 
-        public async Task<List<Product>> GetAllProduct()
+        public async Task<List<Product>> GetAllProduct(int page, int pageSize, string? searchTerm)
         {
-            return await _productRepository.GetAllProduct();
+            return await _productRepository.GetAllProductAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Product> GetProductById(int id)
         {
-            return await _productRepository.GetProductById(id);
+            var result = await _productRepository.GetById(id);
+            return result;
         }
 
         public async Task AddNewProduct(Product newProduct)
@@ -43,6 +45,23 @@ namespace Service
         public async Task<Product> UpdateProduct(Product newProduct)
         {
             return await _productRepository.UpdateProduct(newProduct);
+        }
+
+        private ProductResponseModel MapToResponse(Product product)
+        {
+            return new ProductResponseModel
+            {
+                Id = product.Id,
+                UserId = product.UserId,
+                Name = product.Name,
+                Image = product.Image,
+                Cost = product.Cost,
+                Description = product.Description,
+                Origin = product.Origin,
+                Productivity = product.Productivity,
+                Code = product.Code,
+                InStock = product.InStock
+            };
         }
     }
 }

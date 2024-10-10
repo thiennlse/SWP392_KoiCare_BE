@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class PoolRepository : IPoolRepository
+    public class PoolRepository : BaseRepository<Pool> ,IPoolRepository
     {
         private readonly KoiCareDBContext _context;
 
-        public PoolRepository(KoiCareDBContext context)
+        public PoolRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
         }
@@ -23,11 +23,6 @@ namespace Repository
         public async Task<List<Pool>> GetAllPool()
         {
             return await _context.Pools.Include(b => b.Member).ToListAsync();
-        }
-
-        public async Task<Pool> GetPoolById(int id)
-        {
-            return await _context.Pools.Include(b => b.Member).SingleOrDefaultAsync(m => m.Id.Equals(id));
         }
 
         public async Task AddNewPool(Pool pool)
@@ -42,7 +37,7 @@ namespace Repository
 
         public async Task DeletePool(int id)
         {
-            var pool = await GetPoolById(id);
+            var pool = await GetById(id);
             if (pool != null)
             {
                 _context.Pools.Remove(pool);

@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interface
 {
-    public interface IWaterRepository
+    public interface IWaterRepository : IBaseRepository<Waters>
     {
-        Task<List<Waters>> GetAll();
-
-        Task<Waters> GetById(int id);
+        Task<List<WaterResponseModel>> GetAll();
 
         Task addWater(Waters water);
 
