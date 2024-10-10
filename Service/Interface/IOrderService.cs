@@ -19,8 +19,8 @@ namespace Service.Interface
 
         Task<Order> UpdateOrder(Order order);
 
-        public Task<double> CalculateOrderdate(int orderId);
+        Task<Order> CalculateOrderdate(int orderId);
 
-        public Task<List<Order>> GetOrdersByDateRange(DateTime orderDate, DateTime closeDate);
+        Task<List<Order>> GetOrdersByDateRange(DateTime orderDate, DateTime closeDate);
     }
 }
