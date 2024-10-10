@@ -18,5 +18,7 @@ namespace Service.Interface
         Task DeleteOrder(int id);
 
         Task<Order> UpdateOrder(Order order);
+
+        public Task<double> CalculateOrderdate(int orderId);
     }
 }
