@@ -44,7 +44,7 @@ namespace Service
         {
             return await _orderRepository.UpdateOrder(newOrder);
         }
-        public async Task<int> CalculateOrderdate(int id)
+        public async Task<double> CalculateOrderdate(int id)
         {
             var order = await _orderRepository.GetOrderById(id);
             if (order != null)
