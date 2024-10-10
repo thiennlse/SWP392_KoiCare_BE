@@ -44,5 +44,22 @@ namespace Service
         {
             return await _orderRepository.UpdateOrder(newOrder);
         }
+        public async Task<int> CalculateOrderdate(int orderId)
+        {
+            var order = await _orderRepository.GetOrderById(orderId);
+            if (order != null)
+            {
+                if (order.OrderDate != DateTime.MinValue && order.CloseDate != DateTime.MinValue)
+                {
+                    TimeSpan duration = order.CloseDate - order.OrderDate;
+                    return duration.Days;
+                }
+                else
+                {
+                    throw new Exception("OrderDate or CloseDate is not set.");
+                }
+            }
+            throw new Exception("Order not found");
+        }
     }
 }
