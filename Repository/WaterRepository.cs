@@ -52,5 +52,10 @@ namespace Repository
             await _context.SaveChangesAsync();
             return water;
         }
+
+        Task<List<Waters>> IWaterRepository.GetAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

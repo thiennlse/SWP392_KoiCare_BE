@@ -10,14 +10,14 @@ namespace Service.Interface
 {
     public interface IPoolService
     {
-        Task<List<PoolResponseModel>> GetAllPool();
+        public Task<List<PoolResponseModel>> GetAllPool();
 
-        Task<Pool> GetPoolById(int id);
+        public Task<Pool> GetPoolById(int id);
 
-        Task AddNewPool(Pool pool);
+        public Task AddNewPool(Pool pool);
 
-        Task DeletePool(int id);
+        public Task DeletePool(int id);
 
-        Task<Pool> UpdatePool(Pool pool);
+        public Task<Pool> UpdatePool(Pool pool);
     }
 }

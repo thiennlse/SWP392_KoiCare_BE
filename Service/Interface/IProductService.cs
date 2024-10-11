@@ -9,14 +9,14 @@ namespace Service.Interface
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAllProduct(int page, int pageSize, string? searchTerm);
+        public Task<List<Product>> GetAllProduct(int page, int pageSize, string? searchTerm);
 
-        Task<Product> GetProductById(int id);
+        public Task<Product> GetProductById(int id);
 
-        Task AddNewProduct(Product product);
+        public Task AddNewProduct(Product product);
 
-        Task DeleteProduct(int id);
+        public Task DeleteProduct(int id);
 
-        Task<Product> UpdateProduct(Product product);
+        public Task<Product> UpdateProduct(Product product);
     }
 }
