@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System;
@@ -26,6 +27,7 @@ namespace Repository
                 .AsNoTracking()
                 .ToListAsync();
         }
+        
 
         public async Task<List<Product>> GetAllProductAsync(int page, int pageSize, string? searchTerm)
         {
@@ -63,5 +65,7 @@ namespace Repository
             await _context.SaveChangesAsync();
             return product;
         }
+
+       
     }
 }

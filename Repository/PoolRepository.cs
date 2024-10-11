@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
+using BusinessObject.ResponseModel;
 using Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace Repository
             return await _context.Pools.Include(b => b.Member).ToListAsync();
         }
 
+       
         public async Task AddNewPool(Pool pool)
         {
             if (pool != null)
@@ -53,6 +55,6 @@ namespace Repository
             return pool;
         }
 
-
+        
     }
 }

@@ -10,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        public Task<List<ProductResponseModel>> GetAllProduct();
+        public Task<List<Product>> GetAllProduct();
 
         Task<List<Product>> GetAllProductAsync(int page, int pageSize, string? searchTerm);
 
