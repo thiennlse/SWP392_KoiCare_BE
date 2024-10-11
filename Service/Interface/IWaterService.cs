@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface IWaterService
     {
-        Task<List<WaterResponseModel>> GetAll();
+        Task<List<Waters>> GetAll();
 
         Task<Waters> GetById(int id);
 

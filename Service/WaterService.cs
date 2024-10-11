@@ -32,7 +32,7 @@ namespace Service
            await _repo.deleteWater(id);
         }
 
-        public async Task<List<WaterResponseModel>> GetAll()
+        public async Task<List<Waters>> GetAll()
         {
             return await _repo.GetAll();
         }
