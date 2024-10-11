@@ -52,15 +52,15 @@ namespace Service
             double dailyFood =  0;
             double fishFoodResult = 0;
            
-            Fish _fish = await _fishRepository.GetFishById(fishId);
-            
+            Fish _fish = await _fishRepository.GetById(fishId);
+            var age = DateTime.Now.Year - _fish.Dob.Year;
             if (_fish != null) {              
-                if (_fish.Age >= 25 && _fish.Age <= 50)
+                if (age >= 25 && age <= 50)
                 {
                     dailyFood = (_fish.Weight * 1.5) / 100;
                     fishFoodResult = dailyFood * 0.3;
                 }
-                if(_fish.Age < 25) 
+                if(age < 25) 
                 {
                     fishFoodResult = (_fish.Weight * 0.5) / 100;
                 }

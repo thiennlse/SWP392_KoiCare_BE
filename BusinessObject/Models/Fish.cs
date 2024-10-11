@@ -31,7 +31,7 @@ namespace BusinessObject.Models
 
         [Required]
         [Range(0, int.MaxValue)]
-        public int Age { get; set; }
+        public DateTime Dob { get; set; }
 
         [Required]
         [StringLength(20)]

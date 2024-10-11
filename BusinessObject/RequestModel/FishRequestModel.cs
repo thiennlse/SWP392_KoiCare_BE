@@ -34,7 +34,7 @@ namespace BusinessObject.RequestModel
 
         
         [Range(0, int.MaxValue)]
-        public int Age { get; set; }
+        public DateTime Dob { get; set; }
 
        
         [StringLength(20)]

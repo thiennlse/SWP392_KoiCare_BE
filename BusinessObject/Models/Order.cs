@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Order :BaseEntity
+    public partial class Order : BaseEntity
     {
         [Required]
         public int MemberId { get; set; }
