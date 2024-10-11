@@ -52,7 +52,7 @@ namespace Service
             double dailyFood =  0;
             double fishFoodResult = 0;
            
-            Fish _fish = await _fishRepository.GetAllFish(fishId);
+            Fish _fish = await _fishRepository.GetById(fishId);
             
             if (_fish != null) {              
                 if (_fish.Age >= 25 && _fish.Age <= 50)

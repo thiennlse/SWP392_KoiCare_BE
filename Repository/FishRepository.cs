@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 namespace Repository
 {
-    public class FishRepository : BaseRepository<Fish> ,IFishRepository
+    public class FishRepository : BaseRepository<Fish>, IFishRepository
     {
         private readonly KoiCareDBContext _context;
 
