@@ -27,7 +27,7 @@ namespace Service
 
         public async Task<Order> GetOrderById(int id)
         {
-            return await _orderRepository.GetOrderById(id);
+            return await _orderRepository.GetById(id);
         }
 
         public async Task AddNewOrder(Order newOrder)
@@ -46,7 +46,7 @@ namespace Service
         }
         public async Task<double> CalculateOrderdate(int id)
         {
-            var order = await _orderRepository.GetOrderById(id);
+            var order = await _orderRepository.GetById(id);
             if (order != null)
             {
                 if (order.OrderDate != DateTime.MinValue && order.CloseDate != DateTime.MinValue)

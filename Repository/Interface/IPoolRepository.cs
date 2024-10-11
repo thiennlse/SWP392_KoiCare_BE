@@ -10,12 +10,12 @@ namespace Repository.Interface
 {
     public interface IPoolRepository : IBaseRepository<Pool>
     {
-        Task<List<PoolResponseModel>> GetAllPool();
+         Task<List<PoolResponseModel>> GetAllPool();
 
-        Task AddNewPool(Pool pool);
+         Task AddNewPool(Pool pool);
 
-        Task DeletePool(int id);
+         Task DeletePool(int id);
 
-        Task<Pool> UpdatePool(Pool pool);
+         Task<Pool> UpdatePool(Pool pool);
     }
 }
