@@ -32,9 +32,9 @@ namespace Service
            await _repo.deleteWater(id);
         }
 
-        public async Task<List<Waters>> GetAllWaterAsync(int page, int pageSize, string? searchTerm)
+        public async Task<List<Waters>> GetAllWaterAsync(int page, int pageSize)
         {
-            return await _repo.GetAllWaterAsync(page, pageSize, searchTerm);
+            return await _repo.GetAllWaterAsync(page, pageSize);
         }
 
         public async Task<Waters> GetById(int id)

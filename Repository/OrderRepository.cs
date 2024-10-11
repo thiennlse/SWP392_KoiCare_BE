@@ -26,7 +26,7 @@ namespace Repository
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 query = query.Where(o => o.Code.Contains(searchTerm) 
-                || o.Description.Contains(searchTerm) || o.Status.Contains(searchTerm));
+                || o.Description.Contains(searchTerm));
             }
 
             var orders = await query.Skip((page - 1) * pageSize)

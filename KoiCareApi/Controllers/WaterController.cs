@@ -19,9 +19,9 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllWaterAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
+        public async Task<IActionResult> GetAllWaterAsync(int page = 1, int pageSize = 10)
         {
-            var _water = await _waterService.GetAllWaterAsync(page, pageSize, searchTerm);
+            var _water = await _waterService.GetAllWaterAsync(page, pageSize);
 
             if (_water == null) { 
             return NotFound("water is empty");

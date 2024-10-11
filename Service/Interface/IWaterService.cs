@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface IWaterService 
     {
-        public  Task<List<Waters>> GetAllWaterAsync(int page, int pageSize, string? searchTerm);
+        public  Task<List<Waters>> GetAllWaterAsync(int page, int pageSize);
 
         Task<Waters> GetById(int id);
 

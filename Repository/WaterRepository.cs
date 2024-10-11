@@ -33,14 +33,10 @@ namespace Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Waters>> GetAllWaterAsync(int page, int pageSize, string? searchTerm)
+        public async Task<List<Waters>> GetAllWaterAsync(int page, int pageSize)
         {
             var query = GetQueryable();
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(w => w.Salt.ToString().Contains(searchTerm));
-            }
-
+            
             var products = await query.Skip((page - 1) * pageSize)
                                        .Take(pageSize)
                                        .ToListAsync();

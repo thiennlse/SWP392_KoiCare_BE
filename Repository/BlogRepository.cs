@@ -36,8 +36,7 @@ namespace Repository
             var query = GetQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm)) {
-                query = query.Where(p => p.Title.Contains(searchTerm) ||
-                p.Status.Contains(searchTerm) || p.Content.Contains(searchTerm));
+                query = query.Where(p => p.Title.Contains(searchTerm) || p.Content.Contains(searchTerm));
             }
             var Blogs = await query.Skip((page - 1) * pageSize)
                .Take(pageSize).ToListAsync();
