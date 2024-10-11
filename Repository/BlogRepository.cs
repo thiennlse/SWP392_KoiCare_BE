@@ -24,19 +24,24 @@ namespace Repository
 
         List<Blog> blogList;
 
-        public async Task<List<BlogResponseModel>> GetAllBlog()
+        public async Task<List<Blog>> GetAllBlog()
         {
-            List<Blog> blogs = await _context.Blogs.Include(b => b.Member).ToListAsync();
+            return await _context.Blogs
+                .Include(b => b.Member)
+                .ToListAsync();
+        }
 
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfile());
-            });
-            var mapper = config.CreateMapper();
-            List<BlogResponseModel> _blogs = blogs.Select(b => mapper.Map<Blog, BlogResponseModel>(b)).ToList();
+        public async Task<List<Blog>> GetAllBlogAsync(int page, int pageSize, String? searchTerm)
+        {
+            var query = GetQueryable();
 
-            return _blogs;
-
+            if (!string.IsNullOrEmpty(searchTerm)) {
+                query = query.Where(p => p.Title.Contains(searchTerm) ||
+                p.Status.Contains(searchTerm) || p.Content.Contains(searchTerm));
+            }
+            var Blogs = await query.Skip((page - 1) * pageSize)
+               .Take(pageSize).ToListAsync();
+            return Blogs;
         }
 
         public async Task AddNewBlog(Blog blog)

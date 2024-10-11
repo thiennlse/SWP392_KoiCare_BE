@@ -19,17 +19,18 @@ namespace Repository
 
         List<Food> foodList;
 
-        public async Task<List<FoodResponseModel>> GetAllFood()
+        public async Task<List<Food>> GetAllFoodAsync(int page, int pageSize, string? searchTerm)
         {
-            List<Food> foods = await _context.Foods.ToListAsync();
-            var config = new MapperConfiguration(cfg =>
+            var query = GetQueryable();
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                cfg.AddProfile(new MappingProfile());
-            });
-            var mapper = config.CreateMapper();
-            List<FoodResponseModel> _foods = foods.Select(f => mapper.Map<Food, FoodResponseModel>(f)).ToList();
+                query = query.Where(f => f.Name.Contains(searchTerm));
+            }
 
-            return _foods;
+            var foods = await query.Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToListAsync();
+            return foods.ToList();
         }
 
         public async Task AddNewFood(Food food)

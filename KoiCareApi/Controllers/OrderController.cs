@@ -21,9 +21,9 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrder()
+        public async Task<IActionResult> GetAllOrderAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
         {
-            var order = await _orderService.GetAllOrder();
+            var order = await _orderService.GetAllOrderAsync(page, pageSize, searchTerm);
             if (order == null)
             {
                 return NotFound("empty Order");

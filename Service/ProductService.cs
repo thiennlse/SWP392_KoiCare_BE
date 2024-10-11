@@ -34,7 +34,7 @@ namespace Service
 
         public async Task AddNewProduct(Product newProduct)
         {
-            await _productRepository.UpdateProduct(newProduct);
+            await _productRepository.AddNewProduct(newProduct);
         }
 
         public async Task DeleteProduct(int id)

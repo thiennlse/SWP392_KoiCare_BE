@@ -19,9 +19,9 @@ namespace Service
             _blogRepository = blogRepository;
         }
 
-        public async Task<List<BlogResponseModel>> GetAllBlog()
+        public async Task<List<Blog>> GetAllBlogAsync(int page, int pageSize, String? searchTerm)
         {
-            return await _blogRepository.GetAllBlog();
+            return await _blogRepository.GetAllBlogAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Blog> GetBLogById(int id)

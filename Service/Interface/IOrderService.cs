@@ -9,7 +9,7 @@ namespace Service.Interface
 {
     public interface IOrderService
     {
-        Task<List<Order>> GetAllOrder();
+        public  Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm);
 
         Task<Order> GetOrderById(int id);
 

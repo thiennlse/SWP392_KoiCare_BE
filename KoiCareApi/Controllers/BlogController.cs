@@ -21,9 +21,9 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBlog()
+        public async Task<IActionResult> GetAllBlogAsync(int page = 1, int pageSize = 10, String? searchTerm = null)
         {
-            var blog = await _blogService.GetAllBlog();
+            var blog = await _blogService.GetAllBlogAsync(page, pageSize, searchTerm);
             if (blog == null)
             {
                 return NotFound("No have any Blog");

@@ -10,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IBlogRepository : IBaseRepository<Blog>
     {
-        Task<List<BlogResponseModel>> GetAllBlog();
+        public  Task<List<Blog>> GetAllBlogAsync(int page, int pageSize, String? searchTerm);
 
         Task AddNewBlog(Blog blog);
 

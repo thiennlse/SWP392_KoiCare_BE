@@ -21,9 +21,9 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFish() 
+        public async Task<IActionResult> GetAllFishAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
         {
-        var fish = await _fishService.GetAllFish();
+        var fish = await _fishService.GetAllFishAsync(page, pageSize, searchTerm);
             if (fish == null) 
             {
             return NotFound("empty Fish");

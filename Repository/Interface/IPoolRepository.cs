@@ -10,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IPoolRepository : IBaseRepository<Pool>
     {
-        Task<List<PoolResponseModel>> GetAllPool();
+        public  Task<List<Pool>> GetAllPooltAsync(int page, int pageSize, String? searchTerm);
 
         Task AddNewPool(Pool pool);
 

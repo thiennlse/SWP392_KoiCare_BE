@@ -18,19 +18,21 @@ namespace Repository
 
         private List<Fish> fishtList;
 
-        public async Task<List<FishResponseModel>> GetAllFish()
+        public async Task<List<Fish>> GetAllFishAsync(int page, int pageSize, string? searchTerm)
         {
-            List<Fish> fishs = await _context.Fishes.ToListAsync();
-
-            var config = new MapperConfiguration(cfg =>
+            var query = GetQueryable();
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                cfg.AddProfile(new MappingProfile());
-            });
-            var mapper = config.CreateMapper();
-            List<FishResponseModel> _fishs = fishs.Select(f => mapper.Map<Fish, FishResponseModel>(f)).ToList();
+                query = query.Where(f => f.Name.Contains(searchTerm) || f.Origin.Contains(searchTerm));
+            }
 
-            return _fishs;
+            var fishs = await query.Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToListAsync();
+            return fishs.ToList();
         }
+
+
 
         public async Task AddNewFish(Fish fish)
         {
@@ -55,6 +57,8 @@ namespace Repository
             await _context.SaveChangesAsync();
             return fish;
         }
+
+        
 
 
     }

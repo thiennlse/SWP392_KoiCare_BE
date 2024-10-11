@@ -20,9 +20,9 @@ namespace Service
 
 
 
-        public async Task<List<Order>> GetAllOrder()
+        public async Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm)
         {
-            return await _orderRepository.GetAllOrder();
+            return await _orderRepository.GetAllOrderAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Order> GetOrderById(int id)

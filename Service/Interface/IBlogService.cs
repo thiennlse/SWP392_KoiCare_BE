@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface IBlogService
     {
-        Task<List<BlogResponseModel>> GetAllBlog();
+        public  Task<List<Blog>> GetAllBlogAsync(int page, int pageSize, String? searchTerm);
 
         Task<Blog> GetBLogById(int id);
 

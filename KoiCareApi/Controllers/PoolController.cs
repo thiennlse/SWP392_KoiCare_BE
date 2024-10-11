@@ -18,12 +18,12 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPool()
+        public async Task<IActionResult> GetAllPoolAsync(int page = 1, int pageSize = 10, String? searchTerm = null)
         {
-            var pool = await _poolService.GetAllPool();
-            if (pool == null)
+            var pool = await _poolService.GetAllPoolAsync(page, pageSize, searchTerm);
+            if (pool == null) 
             {
-                return NotFound("empty Pool");
+            return NotFound("empty Pool");
             }
             return Ok(pool);
         }

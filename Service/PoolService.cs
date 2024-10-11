@@ -21,9 +21,9 @@ namespace Service
 
 
 
-        public async Task<List<PoolResponseModel>> GetAllPool()
+        public async Task<List<Pool>> GetAllPoolAsync(int page, int pageSize, String? searchTerm)
         {
-            return await _poolRepository.GetAllPool();
+            return await _poolRepository.GetAllPooltAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Pool> GetPoolById(int id)

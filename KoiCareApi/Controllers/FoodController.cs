@@ -18,9 +18,10 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFood() {
+        public async Task<IActionResult> GetAllFoodAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
+        {
 
-            var _food = await _foodService.GetAllFood();
+            var _food = await _foodService.GetAllFoodAsync(page, pageSize, searchTerm);
             if (_food == null)
             {
                 return NotFound("Empty Food");

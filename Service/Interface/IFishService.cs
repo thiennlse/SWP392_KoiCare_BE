@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface IFishService
     {
-        public Task<List<FishResponseModel>> GetAllFish();
+        public  Task<List<Fish>> GetAllFishAsync(int page, int pageSize, string? searchTerm);
         public Task<Fish> GetFishById(int id);
         public Task AddNewFish(Fish fish);
         public Task DeleteFish(int id);

@@ -3,6 +3,7 @@ using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Interface;
 
 namespace KoiCareApi.Controllers
 {
@@ -18,9 +19,9 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllWaterAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
         {
-            var _water = await _waterService.GetAll();
+            var _water = await _waterService.GetAllWaterAsync(page, pageSize, searchTerm);
 
             if (_water == null) { 
             return NotFound("water is empty");

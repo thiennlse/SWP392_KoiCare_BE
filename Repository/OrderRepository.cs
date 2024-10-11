@@ -20,9 +20,19 @@ namespace Repository
 
         List<Order> OrderList;
 
-        public async Task<List<Order>> GetAllOrder()
+        public async Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm)
         {
-            return await _context.Orders.Include(b => b.Member).ToListAsync();
+            var query = GetQueryable();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(o => o.Code.Contains(searchTerm) 
+                || o.Description.Contains(searchTerm) || o.Status.Contains(searchTerm));
+            }
+
+            var orders = await query.Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToListAsync();
+            return orders.ToList();
         }
 
         public async Task AddNewOrder(Order order)
