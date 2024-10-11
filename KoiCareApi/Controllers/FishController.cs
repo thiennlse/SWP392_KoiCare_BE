@@ -73,7 +73,7 @@ namespace KoiCareApi.Controllers
             fish.Image = _fish.Image;
             fish.Size = _fish.Size;
             fish.Weight = _fish.Weight;
-            fish.Age = _fish.Age;
+            fish.Dob = _fish.Dob;
             fish.Gender = _fish.Gender;
             fish.Origin = _fish.Origin;
             await _fishService.AddNewFish(fish);
@@ -107,7 +107,7 @@ namespace KoiCareApi.Controllers
             fish.Image = _fish.Image;
             fish.Size = _fish.Size;
             fish.Weight = _fish.Weight;
-            fish.Age = _fish.Age;
+            fish.Dob = _fish.Dob;
             fish.Gender = _fish.Gender;
             fish.Origin = _fish.Origin;
 

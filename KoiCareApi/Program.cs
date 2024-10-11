@@ -5,6 +5,11 @@ using Repository;
 using Repository.Interface;
 using Service;
 using Service.Interface;
+using Validation.Blog;
+using Validation.Fish;
+using Validation.Food;
+using Validation.Member;
+using Validation.Order;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +57,11 @@ builder.Services.AddScoped<IUploadImage,UploadImage>();
 builder.Services.AddScoped<IWaterService, WaterService>();
 builder.Services.AddScoped<IWaterRepository, WaterRepository>();
 
+builder.Services.AddScoped<BlogValidation>();
+builder.Services.AddScoped<FishValidation>();
+builder.Services.AddScoped<FoodValidation>();
+builder.Services.AddScoped<MemberValidation>();
+builder.Services.AddScoped<OrderValidation>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

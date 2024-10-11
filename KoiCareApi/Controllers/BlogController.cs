@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Components.Web;
 using Service.Interface;
+using Validation.Blog;
+using FluentValidation.Results;
 
 namespace KoiCareApi.Controllers
 {
@@ -13,11 +15,13 @@ namespace KoiCareApi.Controllers
     {
         private readonly IBlogService _blogService;
         private readonly IMemberService _memberService;
+        private BlogValidation _validation;
 
-        public BlogController(IBlogService blogService, IMemberService memberService)
+        public BlogController(IBlogService blogService, IMemberService memberService, BlogValidation validation)
         {
             _blogService = blogService;
             _memberService = memberService;
+            _validation = validation;
         }
 
         [HttpGet]
@@ -49,22 +53,32 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewBlog([FromBody] BlogRequestModel _blog)
         {
-
-            if (_blog == null)
+            try
             {
-                return BadRequest("please input Blog information");
+                ValidationResult validationResult = _validation.Validate(_blog);
+                if (!validationResult.IsValid)
+                {
+                    var error = validationResult.Errors.ToString();
+                    return BadRequest(error);
+                }
+                Blog blog = new Blog
+                {
+                    MemberId = _blog.MemberId,
+                    Title = _blog.Title,
+                    Content = _blog.Content,
+                    DateOfPublish = _blog.DateOfPublish,
+                    Status = _blog.Status,
+                    Member = await _memberService.GetMemberById(_blog.MemberId),
+                };
+
+                await _blogService.AddNewBlog(blog);
+
+                return Ok(blog);
             }
-
-            Blog blog = new Blog();
-            blog.MemberId = _blog.MemberId;
-            blog.Title = _blog.Title;
-            blog.Content = _blog.Content;
-            blog.DateOfPublish = _blog.DateOfPublish;
-            blog.Status = _blog.Status;
-            blog.Member = await _memberService.GetMemberById(blog.MemberId);
-
-            await _blogService.AddNewBlog(blog);
-            return Created("Created", blog);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("delete")]

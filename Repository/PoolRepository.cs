@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class PoolRepository : BaseRepository<Pool> ,IPoolRepository
+    public class PoolRepository : BaseRepository<Pool>, IPoolRepository
     {
         private readonly KoiCareDBContext _context;
 
