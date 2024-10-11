@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface IPoolService
     {
-        public Task<List<PoolResponseModel>> GetAllPool();
+        public Task<List<Pool>> GetAllPool();
 
         public Task<Pool> GetPoolById(int id);
 

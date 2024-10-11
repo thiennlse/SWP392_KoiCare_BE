@@ -107,22 +107,15 @@ namespace KoiCareApi.Controllers
         [HttpGet("CalculateOrder/{id}")]
         public async Task<IActionResult> CalculateDateforOrder(int id)
         {
-            double result = 0;
-            result = await _orderService.CalculateOrderDate(id);
-            Order _order = new Order();
-            _order = await _orderService.GetOrderById(id);
-
-            if (_fish.Food.Weight > result)
+            try
             {
-                return Ok("need to descrease");
-
+                double duration = await _orderService.CalculateOrderdate(id);
+                return Ok(duration);  // Return the calculated duration (in days)
             }
-            if (_fish.Food.Weight < result)
+            catch (Exception ex)
             {
-                return Ok("need to increase");
+                return BadRequest(new { message = ex.Message });
             }
-            return Ok("ok");
-
         }
     }
 }
