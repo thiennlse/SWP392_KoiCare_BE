@@ -65,9 +65,9 @@ namespace Service
         {
             var allOrders = await _orderRepository.GetAllOrder();
 
-            // Filter orders that have StartDate and CloseDate within the given range
+            // Filter orders that match the given StartDate
             var filteredOrders = allOrders
-                .Where(order => order.OrderDate >= orderDate && order.CloseDate <= closeDate)
+                .Where(order => order.OrderDate.Date == orderDate.Date)
                 .ToList();
 
             return filteredOrders;

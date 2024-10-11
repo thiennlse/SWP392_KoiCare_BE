@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class WaterRepository :BaseRepository<Waters> ,IWaterRepository
+    public class WaterRepository : BaseRepository<Waters>, IWaterRepository
     {
         private readonly KoiCareDBContext _context;
         public WaterRepository(KoiCareDBContext context) :base(context)
