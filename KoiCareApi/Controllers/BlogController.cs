@@ -56,24 +56,17 @@ namespace KoiCareApi.Controllers
             try
             {
                 ValidationResult validationResult = _validation.Validate(_blog);
-                if (!validationResult.IsValid)
+                if (validationResult.IsValid)
                 {
-                    var error = validationResult.Errors.ToString();
-                    return BadRequest(error);
+                    var data = await _blogService.AddNewBlog(_blog);
+                    return Ok(data);
                 }
-                Blog blog = new Blog
+                var errors = validationResult.Errors.Select(e => (object)new
                 {
-                    MemberId = _blog.MemberId,
-                    Title = _blog.Title,
-                    Content = _blog.Content,
-                    DateOfPublish = _blog.DateOfPublish,
-                    Status = _blog.Status,
-                    Member = await _memberService.GetMemberById(_blog.MemberId),
-                };
-
-                await _blogService.AddNewBlog(blog);
-
-                return Ok(blog);
+                    e.PropertyName,
+                    e.ErrorMessage
+                }).ToList();
+                return BadRequest(errors);
             }
             catch (Exception ex)
             {
@@ -96,22 +89,25 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateBlog([FromBody] BlogRequestModel _blog, int id)
         {
-            var blog = await _blogService.GetBLogById(id);
-            if (_blog == null)
+            try
             {
-                return NotFound("blog no exits");
+                ValidationResult validationResult = _validation.Validate(_blog);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => (object)new
+                    {
+                        e.PropertyName,
+                        e.ErrorMessage
+                    }).ToList();
+                    return BadRequest(errors);
+                }
+                var data = await _blogService.UpdateBlog(id, _blog);
+                return Ok(data);
             }
-            blog.Id = id;
-            blog.MemberId = _blog.MemberId;
-            blog.Title = _blog.Title;
-            blog.Content = _blog.Content;
-            blog.DateOfPublish = _blog.DateOfPublish;
-            blog.Status = _blog.Status;
-            blog.Member = await _memberService.GetMemberById(blog.MemberId);
-
-            await _blogService.UpdateBlog(blog);
-
-            return Ok(blog);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
