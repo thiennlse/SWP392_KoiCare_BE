@@ -1,10 +1,12 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Service.Interface;
 using System.Reflection.Metadata;
+using Validation.Fish;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -13,11 +15,12 @@ namespace KoiCareApi.Controllers
     {
         private readonly IFishService _fishService;
         private readonly IUploadImage _uploadImage;
-
-        public FishController(IFishService fishService,IUploadImage uploadImage)
+        private readonly FishValidation _validation;
+        public FishController(IFishService fishService, IUploadImage uploadImage, FishValidation validation)
         {
             _fishService = fishService;
             _uploadImage = uploadImage;
+            _validation = validation;
         }
 
         [HttpGet]
@@ -51,7 +54,7 @@ namespace KoiCareApi.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest("Tệp không hợp lệ.");
+                return BadRequest("Not a valid file");
             }
 
             var imageURL = await _uploadImage.SaveImage(file);
@@ -62,22 +65,37 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async  Task<IActionResult> AddNewFish([FromBody] FishRequestModel _fish)
         {
-            if (_fish == null) 
-            { 
-            return BadRequest("please input fish information");
+            try
+            {
+                ValidationResult validationResult = _validation.Validate(_fish);
+                if (validationResult.IsValid)
+                {
+                    Fish fish = new Fish
+                    {
+                        FoodId = _fish.FoodId,
+                        PoolId = _fish.PoolId,
+                        Name = _fish.Name,
+                        Image = _fish.Image,
+                        Size = _fish.Size,
+                        Weight = _fish.Weight,
+                        Dob = _fish.Dob,
+                        Gender = _fish.Gender,
+                        Origin = _fish.Origin
+                    };
+                    await _fishService.AddNewFish(fish);
+                    return Created("Created", fish);
+                }
+                var errors = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+                }).ToList();
+                return BadRequest(errors);
             }
-            Fish fish = new Fish();
-           fish.FoodId = _fish.FoodId;
-            fish.PoolId = _fish.PoolId;
-            fish.Name = _fish.Name;
-            fish.Image = _fish.Image;
-            fish.Size = _fish.Size;
-            fish.Weight = _fish.Weight;
-            fish.Dob = _fish.Dob;
-            fish.Gender = _fish.Gender;
-            fish.Origin = _fish.Origin;
-            await _fishService.AddNewFish(fish);
-            return Created("Created", fish);
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("Delete")]
@@ -95,24 +113,39 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody]FishRequestModel _fish, int id) 
         {
-            var fish = await _fishService.GetFishById(id);
-            if (_fish == null)
+            try
             {
-                return NotFound("fish is not exits");
+                ValidationResult validationResult = _validation.Validate(_fish);
+                var errors = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+                }).ToList();
+                if (validationResult.IsValid)
+                {
+                    var fish = await _fishService.GetFishById(id);
+                    if (fish != null)
+                    {
+                        fish.Id = id;
+                        fish.FoodId = _fish.FoodId;
+                        fish.PoolId = _fish.PoolId;
+                        fish.Name = _fish.Name;
+                        fish.Image = _fish.Image;
+                        fish.Size = _fish.Size;
+                        fish.Weight = _fish.Weight;
+                        fish.Dob = _fish.Dob;
+                        fish.Gender = _fish.Gender;
+                        fish.Origin = _fish.Origin;
+                        await _fishService.UpdateById(fish);
+                        return Ok(fish);
+                    }
+                }
+                return BadRequest(errors);
             }
-            fish.Id = id;
-            fish.FoodId = _fish.FoodId;
-            fish.PoolId = _fish.PoolId;
-            fish.Name = _fish.Name;
-            fish.Image = _fish.Image;
-            fish.Size = _fish.Size;
-            fish.Weight = _fish.Weight;
-            fish.Dob = _fish.Dob;
-            fish.Gender = _fish.Gender;
-            fish.Origin = _fish.Origin;
-
-             await _fishService.UpdateById(fish);
-            return Ok(fish);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -12,10 +12,10 @@ namespace Repository.Interface
     {
         Task<List<BlogResponseModel>> GetAllBlog();
 
-        Task AddNewBlog(Blog blog);
+        Task<BlogResponseModel> AddNewBlog(Blog blog);
 
         Task DeleteBlog(int id);
 
-        Task<Blog> UpdateBlog(Blog blog);
+        Task<BlogResponseModel> UpdateBlog(Blog blog);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
 using Repository;
 using Repository.Interface;
@@ -6,6 +7,7 @@ using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +16,11 @@ namespace Service
     public class BlogService : IBlogService
     {
         private readonly IBlogRepository _blogRepository;
-        public BlogService(IBlogRepository blogRepository)
+        private readonly IMemberRepository _memberRepository;
+        public BlogService(IBlogRepository blogRepository, IMemberRepository memberRepository)
         {
             _blogRepository = blogRepository;
+            _memberRepository = memberRepository;
         }
 
         public async Task<List<BlogResponseModel>> GetAllBlog()
@@ -29,19 +33,34 @@ namespace Service
             return await _blogRepository.GetById(id);
         }
 
-        public async Task AddNewBlog(Blog newBlog)
-        {
-            await _blogRepository.AddNewBlog(newBlog);
-        }
-
         public async Task DeleteBlog(int id)
         {
             await _blogRepository.DeleteBlog(id);
         }
 
-        public async Task<Blog> UpdateBlog(Blog newBlog)
+        private Blog MapToDto(BlogRequestModel blog)
         {
-            return await _blogRepository.UpdateBlog(newBlog);
+            return new Blog
+            {
+                Title = blog.Title,
+                Content = blog.Content,
+                DateOfPublish = blog.DateOfPublish,
+                Status = blog.Status,
+                MemberId = blog.MemberId
+            };
+        }
+
+        public async Task<BlogResponseModel> AddNewBlog(BlogRequestModel blog)
+        {
+            var _blog = MapToDto(blog);
+            return await _blogRepository.AddNewBlog(_blog);
+        }
+
+        public async Task<BlogResponseModel> UpdateBlog(int id, BlogRequestModel blog)
+        {
+            var _blog = MapToDto(blog);
+            _blog.Id = id;
+            return await _blogRepository.UpdateBlog(_blog);
         }
     }
 }

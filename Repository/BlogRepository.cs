@@ -1,15 +1,10 @@
 ﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.ResponseModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Execution;
 using BusinessObject.IMapperConfig;
 using Repository.Interface;
+using System.Reflection.Metadata;
 
 namespace Repository
 {
@@ -39,29 +34,34 @@ namespace Repository
 
         }
 
-        public async Task AddNewBlog(Blog blog)
+        public async Task<BlogResponseModel> AddNewBlog(Blog blog)
         {
             _context.Blogs.Add(blog);
             await _context.SaveChangesAsync();
+            return MapToResponse(blog);
         }
 
-        public async Task DeleteBlog(int id)
-        {
-            var blog = await GetById(id);
-            if (blog != null)
-            {
-                _context.Blogs.Remove(blog);
-                await _context.SaveChangesAsync();
-            }
-
-        }
-
-        public async Task<Blog> UpdateBlog(Blog blog)
+        public async Task<BlogResponseModel> UpdateBlog(Blog blog)
         {
             _context.Entry(blog).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return blog;
+            return MapToResponse(blog);
         }
-
+        public async Task DeleteBlog(int id)
+        {
+            _dbSet.Remove(await GetById(id));
+            await _context.SaveChangesAsync();
+        }
+        private BlogResponseModel MapToResponse(Blog blog)
+        {
+            return new BlogResponseModel
+            {
+                Title = blog.Title,
+                Content = blog.Content,
+                DateOfPublish = blog.DateOfPublish,
+                Status = blog.Status,
+                Member = _context.Members.FirstOrDefault(b => b.Id == blog.MemberId)
+            };
+        }
     }
 }

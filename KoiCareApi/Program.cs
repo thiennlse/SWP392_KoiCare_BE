@@ -1,6 +1,5 @@
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Repository;
 using Repository.Interface;
 using Service;
@@ -20,6 +19,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+#region CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -28,15 +28,14 @@ builder.Services.AddCors(options =>
                           policy.WithOrigins("http://localhost:3000");
                       });
 });
+#endregion
+#region Add DBContext, SQL, Cloundinary
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
 builder.Services.AddDbContext<KoiCareDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB")));
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.IgnoreNullValues = true;
-    });
+#endregion
+#region Add Scope
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IBlogService, BlogService>();
@@ -53,17 +52,17 @@ builder.Services.AddScoped<IPoolService, PoolService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IUploadImage,UploadImage>();
+builder.Services.AddScoped<IUploadImage, UploadImage>();
 builder.Services.AddScoped<BlogValidation>();
 builder.Services.AddScoped<FishValidation>();
 builder.Services.AddScoped<FoodValidation>();
 builder.Services.AddScoped<MemberValidation>();
 builder.Services.AddScoped<OrderValidation>();
+#endregion
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

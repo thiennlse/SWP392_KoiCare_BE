@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,10 @@ namespace Service.Interface
 
         Task<Blog> GetBLogById(int id);
 
-        Task AddNewBlog(Blog blog);
+        Task<BlogResponseModel> AddNewBlog(BlogRequestModel blog);
 
         Task DeleteBlog(int id);
 
-        Task<Blog> UpdateBlog(Blog blog);
+        Task<BlogResponseModel> UpdateBlog(int id,BlogRequestModel blog);
     }
 }
