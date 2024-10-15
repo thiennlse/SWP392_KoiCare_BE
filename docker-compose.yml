@@ -1,0 +1,6 @@
+services:
+  koicareapi:
+    image: ${DOCKER_REGISTRY-}koicareapi
+    build:
+      context: .
+      dockerfile: KoiCareApi/Dockerfile

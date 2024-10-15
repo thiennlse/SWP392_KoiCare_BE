@@ -13,7 +13,7 @@ namespace BusinessObject.Models
         public KoiCareDBContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<KoiCareDBContext>();
-            optionsBuilder.UseSqlServer("Server=tcp:koicare-db.database.windows.net,1433;Initial Catalog=KoiCareDB;Persist Security Info=False;User ID=koicaredb;Password=0965015422Th;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer("Password=KoiCaredb123@;Persist Security Info=True;User ID=sa;Initial Catalog=koicaredb;Data Source=localhost,1444");
 
             return new KoiCareDBContext(optionsBuilder.Options);
         }
