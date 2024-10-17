@@ -61,15 +61,15 @@ namespace Service
             }
             throw new Exception("Order not found");
         }
-        public async Task<List<Order>> GetOrdersByDateRange(DateTime orderDate, DateTime closeDate) //startdate
+        public async Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate) //startdate
         {
             
             var allOrders = await _orderRepository.GetAllOrder(); //
 
             // Filter orders that match the given StartDate
-            var filteredOrders = allOrders                                  //
-                .Where(order => order.OrderDate.Date == orderDate.Date)     // Làm sao cho filter dc giữa startdate và closedate
-                .ToList();                                                  //
+            var filteredOrders = allOrders
+            .Where(order => order.OrderDate.Date >= startDate.Date && order.OrderDate.Date <= closeDate.Date) // Between start and end date
+            .ToList();
 
             return filteredOrders;
         }
