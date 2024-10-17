@@ -1,6 +1,7 @@
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Net.payOS;
 using Repository;
 using Repository.Interface;
 using Service;
@@ -13,6 +14,17 @@ using Validation.Order;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
+
+// Add configuration settings for PayOS
+
+IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+#region PayOS
+PayOS payOS = new PayOS(configuration["Environment:PAYOS_CLIENT_ID"] ?? throw new Exception("can not find Environment"),
+                        configuration["Environment:PAYOS_API_KEY"] ?? throw new Exception("can not find Environment"),
+                        configuration["Environment:PAYOS_CHECKSUM_KEY"] ?? throw new Exception("can not find Environment")
+                        );
+#endregion
+
 
 // Add services to the container.
 
@@ -37,6 +49,7 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.IgnoreNullValues = true;
     });
+builder.Services.AddSingleton(payOS);// add singleton
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IBlogService, BlogService>();
@@ -56,7 +69,8 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUploadImage,UploadImage>();
 builder.Services.AddScoped<IWaterService, WaterService>();
 builder.Services.AddScoped<IWaterRepository, WaterRepository>();
-
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<BlogValidation>();
 builder.Services.AddScoped<FishValidation>();
 builder.Services.AddScoped<FoodValidation>();
