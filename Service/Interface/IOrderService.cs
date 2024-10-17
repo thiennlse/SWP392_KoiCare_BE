@@ -21,6 +21,6 @@ namespace Service.Interface
 
         public Task<double> CalculateOrderdate(int orderId);
 
-        public Task<List<Order>> GetOrdersByDateRange(DateTime orderDate, DateTime closeDate);
+        public Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate);
     }
 }
