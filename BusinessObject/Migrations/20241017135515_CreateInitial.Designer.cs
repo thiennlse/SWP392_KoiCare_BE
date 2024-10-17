@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(KoiCareDBContext))]
-    [Migration("20241011030829_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241017135515_CreateInitial")]
+    partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
