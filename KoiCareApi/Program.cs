@@ -10,31 +10,38 @@ using Validation.Food;
 using Validation.Member;
 using Validation.Order;
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+#region Add DBContext, SQL, Cloundinary
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
+builder.Services.AddDbContext<KoiCareDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB"), sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    }));
+#endregion
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 #region CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:3000");
+                          policy.WithOrigins("http://localhost:3000", "http://localhost:5000", "https://localhost:5001");
+                          policy.AllowAnyMethod();
+                          policy.AllowAnyHeader();
                       });
 });
 #endregion
-#region Add DBContext, SQL, Cloundinary
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
-builder.Services.AddDbContext<KoiCareDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB")));
-#endregion
+
 #region Add Scope
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
@@ -62,14 +69,17 @@ builder.Services.AddScoped<FoodValidation>();
 builder.Services.AddScoped<MemberValidation>();
 builder.Services.AddScoped<OrderValidation>();
 #endregion
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

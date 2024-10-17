@@ -8,10 +8,13 @@ namespace BusinessObject.Models
 {
     public partial class KoiCareDBContext : DbContext
     {
+        public KoiCareDBContext() { }
+
         public KoiCareDBContext(DbContextOptions<KoiCareDBContext> options)
             : base(options)
         {
         }
+
 
         public virtual DbSet<Blog> Blogs { get; set; } = null!;
         public virtual DbSet<Fish> Fishes { get; set; } = null!;
@@ -22,6 +25,16 @@ namespace BusinessObject.Models
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Waters> Waters { get; set; } = null!;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json")
+                .SetBasePath(Directory.GetCurrentDirectory()).Build();
+
+            var connectionString = configuration.GetSection("ConnectionStrings:KoiCareDB");
+
+            optionsBuilder.UseSqlServer(connectionString.Value);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

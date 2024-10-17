@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{5E1EB155-CED3-4D88-8CA1-01D992BA9071}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation", "Validation\Validation.csproj", "{E53805F2-D0EC-4BFA-B4B8-18890128ADD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Validation", "Validation\Validation.csproj", "{E53805F2-D0EC-4BFA-B4B8-18890128ADD8}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8C46A067-ACD0-4F66-8266-EC5753BFA307}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E53805F2-D0EC-4BFA-B4B8-18890128ADD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E53805F2-D0EC-4BFA-B4B8-18890128ADD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E53805F2-D0EC-4BFA-B4B8-18890128ADD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C46A067-ACD0-4F66-8266-EC5753BFA307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C46A067-ACD0-4F66-8266-EC5753BFA307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C46A067-ACD0-4F66-8266-EC5753BFA307}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C46A067-ACD0-4F66-8266-EC5753BFA307}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
