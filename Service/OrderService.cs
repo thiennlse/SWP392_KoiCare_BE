@@ -30,9 +30,9 @@ namespace Service
             return await _orderRepository.GetById(id);
         }
 
-        public async Task AddNewOrder(Order newOrder)
+        public async Task AddNewOrder(Order order)
         {
-            await _orderRepository.UpdateOrder(newOrder);
+            await _orderRepository.UpdateOrder(order);
         }
 
         public async Task DeleteOrder(int id)
