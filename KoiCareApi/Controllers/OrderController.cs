@@ -59,7 +59,7 @@ namespace KoiCareApi.Controllers
             order.MemberId = _order.MemberId;
             order.ProductId = _order.ProductId;
             order.TotalCost = _order.TotalCost;
-            order.OrderDate = DateTime.Now;
+            order.OrderDate = _order.OrderDate;
             order.CloseDate = _order.CloseDate;
             order.Code = _order.Code;
             order.Description = _order.Description;
