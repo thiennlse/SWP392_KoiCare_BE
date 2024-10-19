@@ -8,12 +8,10 @@ namespace BusinessObject.RequestModel
 {
     public class PaymentRequestModel
     {
-        public List<int> orderId { get; set; }
+        public int ProductId { get; set; }
 
-        public double TotalCost { get; set; }
+        public double Cost { get; set; }
 
-        public string cancelUrl { get; set; }
-
-        public string returnUrl { get; set; }
+        public int quantity { get; set; }
     }
 }

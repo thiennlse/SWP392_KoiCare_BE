@@ -8,26 +8,12 @@ namespace BusinessObject.Models
 {
     public partial class Member : BaseEntity
     {
-        [Required]
         [EmailAddress]
-        [StringLength(100)]
         public string Email { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(100)]
         public string Password { get; set; } = string.Empty;
-
-        [Required]
         public string Image { get; set; } = string.Empty;
-
-        [Phone]
-        [StringLength(20)]
         public string Phone { get; set; } = string.Empty;
-
-        [StringLength(100)]
         public string FullName { get; set; } = string.Empty;
-
-        [StringLength(200)]
         public string Address { get; set; } = string.Empty;
 
         [Required]

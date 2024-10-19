@@ -32,7 +32,7 @@ namespace Service
 
         public async Task AddNewOrder(Order newOrder)
         {
-            await _orderRepository.UpdateOrder(newOrder);
+            await _orderRepository.AddNewOrder(newOrder);
         }
 
         public async Task DeleteOrder(int id)
