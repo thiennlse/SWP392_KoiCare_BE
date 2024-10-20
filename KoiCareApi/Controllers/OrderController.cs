@@ -14,14 +14,14 @@ namespace KoiCareApi.Controllers
         private readonly IMemberService _memberService;
         private readonly IProductService _productService;
         private readonly IPaymentService _paymentService;
-        
-        public OrderController(IOrderService orderService, IProductService productService, IMemberService memberService,IPaymentService paymentService)
-        { 
-           
+
+        public OrderController(IOrderService orderService, IProductService productService, IMemberService memberService, IPaymentService paymentService)
+        {
+
             _orderService = orderService;
             _productService = productService;
             _memberService = memberService;
-            _paymentService = paymentService;           
+            _paymentService = paymentService;
         }
 
         [HttpGet]
@@ -58,9 +58,14 @@ namespace KoiCareApi.Controllers
                 return BadRequest("please input order information");
             }
             Order order = new Order();
-            
+            List<Product> products = new List<Product>();
+            foreach (var item in _order.ProductId)
+            {
+                var product = await _productService.GetProductById(item);
+                products.Add(product);
+            }
+
             order.MemberId = _order.MemberId;
-            order.ProductId = _order.ProductId;
             order.TotalCost = _order.TotalCost;
             order.OrderDate = DateTime.Now;
             order.CloseDate = _order.CloseDate;
@@ -68,8 +73,7 @@ namespace KoiCareApi.Controllers
             order.Description = _order.Description;
             order.Status = _order.Status;
             order.Member = await _memberService.GetMemberById(order.MemberId);
-            order.Product = await _productService.GetProductById(order.ProductId);
-
+            order.Product = products;
             await _orderService.AddNewOrder(order);
             return Created("Created", order);
         }
@@ -94,19 +98,23 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound("order is not exits");
             }
-            
+            List<Product> products = new List<Product>();
+            foreach (var item in _order.ProductId)
+            {
+                var product = await _productService.GetProductById(item);
+                products.Add(product);
+            }
             order.MemberId = _order.MemberId;
-            order.ProductId = _order.ProductId;
             order.TotalCost = _order.TotalCost;
             order.CloseDate = _order.CloseDate;
             order.Code = _order.Code;
             order.Description = _order.Description;
             order.Status = _order.Status;
-
+            order.Product = products;
             await _orderService.UpdateOrder(order);
             return Ok(order);
         }
 
-       
+
     }
 }
