@@ -1,11 +1,15 @@
 using BusinessObject.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Net.payOS;
 using Repository;
 using Repository.Interface;
 using Service;
 using Service.Interface;
+using System.Text;
 using Validation.Blog;
 using Validation.Fish;
 using Validation.Food;
@@ -24,7 +28,25 @@ PayOS payOS = new PayOS(configuration["Environment:PAYOS_CLIENT_ID"] ?? throw ne
                         );
 #endregion
 
-
+#region JWT
+var jwtIssuer = builder.Configuration.GetSection("JWT:Issuer").Get<string>();
+var jwtAudience = builder.Configuration.GetSection("JWT:Audience").Get<string>();
+var jwtKey = builder.Configuration.GetSection("JWT:Key").Get<string>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ .AddJwtBearer(options =>
+ {
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidIssuer = jwtIssuer,
+         ValidAudience = jwtIssuer,
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+     };
+ });
+#endregion
 // Add services to the container.
 #region Add DBContext, SQL, Cloundinary
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -96,7 +118,34 @@ builder.Services.AddScoped<OrderValidation>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Please enter your token with this format: ''Bearer YOUR_TOKEN''",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 var app = builder.Build();
 
 app.UseSwagger();
