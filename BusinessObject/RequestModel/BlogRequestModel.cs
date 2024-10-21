@@ -10,13 +10,10 @@ namespace BusinessObject.RequestModel
     {
         public int MemberId { get; set; }
         public string Title { get; set; }
-
         public string Content { get; set; }
-
         public DateTime DateOfPublish { get; set; }
-
         public string Status { get; set; }
-
+        public string Image { get; set; }
 
     }
 }

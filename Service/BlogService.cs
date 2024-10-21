@@ -42,6 +42,7 @@ namespace Service
         {
             return new Blog
             {
+                Image = blog.Image,
                 Title = blog.Title,
                 Content = blog.Content,
                 DateOfPublish = blog.DateOfPublish,
