@@ -1,11 +1,13 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
 using CloudinaryDotNet.Actions;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
 using Service.Interface;
+using System.Runtime.CompilerServices;
 
 namespace KoiCareApi.Controllers
 {
@@ -17,6 +19,7 @@ namespace KoiCareApi.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
+        
 
         public CheckoutController(PayOS payOS, IPaymentService paymentService, IOrderService orderService, IProductService productService)
         {
@@ -24,6 +27,7 @@ namespace KoiCareApi.Controllers
             _paymentService = paymentService;
             _orderService = orderService;
             _productService = productService;
+         
         }
 
         [HttpPost("create-payment-link")]
@@ -62,18 +66,27 @@ namespace KoiCareApi.Controllers
                     cancelUrl,
                     returnUrl
                 );
-
+                    
+            
                 // Truyền tổng số tiền vào PaymentData
 
                 // Tạo đường dẫn thanh toán
                 CreatePaymentResult paymentResult = await _paymentService.createPaymentLink(paymentData);
+               
+                return Ok(new
+                {
+                    Url = paymentResult.checkoutUrl,
+                    orderCode = paymentResult.orderCode
 
-                return Ok(paymentResult.checkoutUrl);
+                });
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+
     }
 }

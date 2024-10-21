@@ -16,11 +16,13 @@ namespace KoiCareApi.Controllers
         private readonly IFishService _fishService;
         private readonly IUploadImage _uploadImage;
         private readonly FishValidation _validation;
-        public FishController(IFishService fishService, IUploadImage uploadImage, FishValidation validation)
+        private readonly IFoodService _foodService;
+        public FishController(IFishService fishService, IUploadImage uploadImage, FishValidation validation, IFoodService foodService)
         {
             _fishService = fishService;
             _uploadImage = uploadImage;
             _validation = validation;
+            _foodService = foodService;
         }
 
         [HttpGet]
@@ -146,6 +148,38 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("calculateFoodFish/{id}")]
+        public async Task<IActionResult> CalculateFoodForFish(int id) {
+            if (id <= 0)
+            {
+                return BadRequest("fish id must greater than 0");
+
+            }
+            Fish fish =  await _fishService.GetFishById(id);
+            if (fish == null) 
+            {
+            return NotFound("fish is not exits");
+            }
+            double result = await _foodService.CalculateFishFood(id);
+            
+            Food foodOfFish = await _foodService.GetFoodById(fish.FoodId);
+                
+            if(foodOfFish.Weight > result)
+            {
+                return Ok("Fish food need to descrease");
+            }
+            if(foodOfFish.Weight < result)
+            {
+                return Ok("fish food need to increase");
+            }
+            if (foodOfFish.Weight == result) 
+            {
+                return Ok("number of Food is Ok for fish");
+            }
+            return Ok();
+        
         }
     }
 }

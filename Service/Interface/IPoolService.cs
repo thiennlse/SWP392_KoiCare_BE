@@ -19,5 +19,6 @@ namespace Service.Interface
         Task DeletePool(int id);
 
         Task<Pool> UpdatePool(Pool pool);
+        public Task<Double> CalCulateSaltPoolNeed(int poolId);
     }
 }
