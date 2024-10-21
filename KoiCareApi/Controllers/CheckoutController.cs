@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
 using Service.Interface;
+using System.Collections.Generic;
 
 namespace KoiCareApi.Controllers
 {
@@ -32,27 +33,26 @@ namespace KoiCareApi.Controllers
             try
             {
                 List<ItemData> items = new List<ItemData>();
-                int ordercode = int.Parse(DateTimeOffset.Now.ToString("ffffff")); // Tạo mã đơn hàng
+                int ordercode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
                 int totalAmount = 0;
-
+                List<int> productids = new List<int>();
+                List<string> productName = new List<string>();
                 foreach (var request in orderRequest)
                 {
                     Product product = await _productService.GetProductById(request.ProductId);
-
+                    
+                    
                     if (product == null)
                     {
                         return BadRequest($"Product or order not found for orderId {request.ProductId}");
                     }
-
-                    // Tính tổng giá cho mỗi sản phẩm
+                    productids.Add(product.Id);
+                    productName.Add(product.Name);
                     int price = (int)(request.Cost * request.quantity);
                     totalAmount += price;
-                    // Tạo ItemData cho từng sản phẩm
                     ItemData item = new ItemData(product.Name, request.quantity, price);
                     items.Add(item);
                 }
-
-                // Chuẩn bị dữ liệu thanh toán với tổng số tiền
                 PaymentData paymentData = new PaymentData
                 (
                     ordercode,
@@ -62,11 +62,19 @@ namespace KoiCareApi.Controllers
                     cancelUrl,
                     returnUrl
                 );
-
-                // Truyền tổng số tiền vào PaymentData
-
-                // Tạo đường dẫn thanh toán
                 CreatePaymentResult paymentResult = await _paymentService.createPaymentLink(paymentData);
+
+                OrderRequestModel order = new OrderRequestModel
+                {
+                    ProductId = productids,
+                    TotalCost = totalAmount,
+                    CloseDate = DateTime.Now,
+                    Code = paymentResult.orderCode.ToString(),
+                    Description = string.Join(",",productName),
+                    Status = "Đã thanh toán"
+                };
+
+                await _orderService.AddNewOrder(order);
 
                 return Ok(paymentResult.checkoutUrl);
             }

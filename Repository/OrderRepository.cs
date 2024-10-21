@@ -57,5 +57,10 @@ namespace Repository
             await _context.SaveChangesAsync();
             return order;
         }
+
+        public Order getById(int id)
+        {
+            return _context.Orders.FirstOrDefault(o => o.Id.Equals(id));
+        }
     }
 }

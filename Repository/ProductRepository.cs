@@ -64,5 +64,10 @@ namespace Repository
             await _context.SaveChangesAsync();
             return product;
         }
+
+        public Product getById(int id)
+        {
+            return _context.Products.SingleOrDefault(p => p.Id == id);
+        }
     }
 }

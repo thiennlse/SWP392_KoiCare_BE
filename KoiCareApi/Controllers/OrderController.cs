@@ -1,8 +1,11 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using CloudinaryDotNet.Actions;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interface;
+using Validation.Order;
 
 namespace KoiCareApi.Controllers
 {
@@ -14,14 +17,16 @@ namespace KoiCareApi.Controllers
         private readonly IMemberService _memberService;
         private readonly IProductService _productService;
         private readonly IPaymentService _paymentService;
+        private readonly OrderValidation _orderValidate;
 
-        public OrderController(IOrderService orderService, IProductService productService, IMemberService memberService, IPaymentService paymentService)
+        public OrderController(OrderValidation orderValidate, IOrderService orderService, IProductService productService, IMemberService memberService, IPaymentService paymentService)
         {
 
             _orderService = orderService;
             _productService = productService;
             _memberService = memberService;
             _paymentService = paymentService;
+            _orderValidate = orderValidate;
         }
 
         [HttpGet]
@@ -53,29 +58,21 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewOrder([FromBody] OrderRequestModel _order)
         {
-            if (_order == null)
+            try
             {
-                return BadRequest("please input order information");
+                ValidationResult validationResult = _orderValidate.Validate(_order);
+                if (validationResult.IsValid)
+                {
+                    await _orderService.AddNewOrder(_order);
+                    return Ok("Created");
+                }
+                var error = validationResult.Errors;
+                return BadRequest(error);
             }
-            Order order = new Order();
-            List<Product> products = new List<Product>();
-            foreach (var item in _order.ProductId)
+            catch (Exception ex)
             {
-                var product = await _productService.GetProductById(item);
-                products.Add(product);
+                return BadRequest(ex.Message);
             }
-
-            order.MemberId = _order.MemberId;
-            order.TotalCost = _order.TotalCost;
-            order.OrderDate = DateTime.Now;
-            order.CloseDate = _order.CloseDate;
-            order.Code = _order.Code;
-            order.Description = _order.Description;
-            order.Status = _order.Status;
-            order.Member = await _memberService.GetMemberById(order.MemberId);
-            order.Product = products;
-            await _orderService.AddNewOrder(order);
-            return Created("Created", order);
         }
 
         [HttpDelete("Delete")]
@@ -93,28 +90,21 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody] OrderRequestModel _order, int id)
         {
-            var order = await _orderService.GetOrderById(id);
-            if (_order == null)
+            try
             {
-                return NotFound("order is not exits");
+                ValidationResult validationResult = _orderValidate.Validate(_order);
+                if (validationResult.IsValid)
+                {
+                    await _orderService.UpdateOrder(id, _order);
+                    return Ok("Update Successful");
+                }
+                var error = validationResult.Errors;
+                return BadRequest(error);
             }
-            List<Product> products = new List<Product>();
-            foreach (var item in _order.ProductId)
+            catch (Exception ex)
             {
-                var product = await _productService.GetProductById(item);
-                products.Add(product);
+                return BadRequest(ex.Message);
             }
-            order.MemberId = _order.MemberId;
-            order.TotalCost = _order.TotalCost;
-            order.CloseDate = _order.CloseDate;
-            order.Code = _order.Code;
-            order.Description = _order.Description;
-            order.Status = _order.Status;
-            order.Product = products;
-            await _orderService.UpdateOrder(order);
-            return Ok(order);
         }
-
-
     }
 }
