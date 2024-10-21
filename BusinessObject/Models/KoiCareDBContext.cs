@@ -108,22 +108,45 @@ namespace BusinessObject.Models
             {
                 entity.Property(e => e.Id).IsUnicode(false);
 
-                entity.Property(e => e.CloseDate).HasColumnType("datetime");
+                entity.Property(e => e.OrderDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.Code).HasMaxLength(50);
+                entity.Property(e => e.CloseDate)
+                    .HasColumnType("datetime");
 
-                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasDefaultValue(string.Empty);
 
-                entity.Property(e => e.OrderDate).HasColumnType("datetime")
-                .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasDefaultValue(string.Empty);
 
-                entity.Property(e => e.Status).HasMaxLength(50);
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasDefaultValue(string.Empty);
 
+                entity.Property(e => e.TotalCost)
+                    .IsRequired()
+                    .HasColumnType("decimal(18, 2)");
+
+                // Define relationship with Member
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Orders_MemberId");
+
+                // Define relationship with Product
+                entity.HasMany(e => e.Product)
+                    .WithMany(p => p.Orders)
+                    .UsingEntity(j => j.ToTable("OrderProducts")); // Assuming you have a joining table for this many-to-many relationship
             });
+
 
             modelBuilder.Entity<Pool>(entity =>
             {

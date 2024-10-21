@@ -32,19 +32,26 @@ PayOS payOS = new PayOS(configuration["Environment:PAYOS_CLIENT_ID"] ?? throw ne
 var jwtIssuer = builder.Configuration.GetSection("JWT:Issuer").Get<string>();
 var jwtAudience = builder.Configuration.GetSection("JWT:Audience").Get<string>();
 var jwtKey = builder.Configuration.GetSection("JWT:Key").Get<string>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
- .AddJwtBearer(options =>
- {
-     options.TokenValidationParameters = new TokenValidationParameters
-     {
-         ValidateIssuer = true,
-         ValidateAudience = true,
-         ValidateLifetime = true,
-         ValidateIssuerSigningKey = true,
-         ValidIssuer = jwtIssuer,
-         ValidAudience = jwtIssuer,
-         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-     };
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
  });
 #endregion
 // Add services to the container.
@@ -104,7 +111,7 @@ builder.Services.AddScoped<IPoolService, PoolService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IUploadImage,UploadImage>();
+builder.Services.AddScoped<IUploadImage, UploadImage>();
 builder.Services.AddScoped<IWaterService, WaterService>();
 builder.Services.AddScoped<IWaterRepository, WaterRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
@@ -117,6 +124,7 @@ builder.Services.AddScoped<OrderValidation>();
 #endregion
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -152,6 +160,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
+app.UseAuthentication();
 app.UseHttpsRedirection();
 
 app.MapControllers();

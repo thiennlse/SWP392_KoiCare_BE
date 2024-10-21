@@ -37,16 +37,19 @@ namespace Repository
         public void add(T entity)
         {
             _dbSet.Add(entity);
+            _context.SaveChanges();
         }
 
         public void delete(T entity)
         {
             _dbSet.Remove(entity);
+            _context.SaveChanges();
         }
         
         public void update(T entity)
         {
             _dbSet.Update(entity);
+            _context.SaveChanges();
         }
 
         public void CheckCancellationToken(CancellationToken cancellationToken = default)

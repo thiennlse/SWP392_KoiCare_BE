@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,10 @@ namespace Service.Interface
 
         Task<Order> GetOrderById(int id);
 
-        Task AddNewOrder(Order order);
+        Task AddNewOrder(OrderRequestModel order);
 
         Task DeleteOrder(int id);
 
-        Task<Order> UpdateOrder(Order order);
+        Task<Order> UpdateOrder(int id,OrderRequestModel order);
     }
 }

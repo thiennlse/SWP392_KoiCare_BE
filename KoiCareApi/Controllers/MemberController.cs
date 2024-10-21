@@ -6,6 +6,7 @@ using Service.Interface;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Security.Claims;
 namespace KoiCareApi.Controllers
 {
     [Route("api/Member")]
@@ -71,10 +72,16 @@ namespace KoiCareApi.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claim = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, member.Id.ToString()),
+                new Claim(ClaimTypes.Role, member.Role.Name),
+            };
+
             var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(3),
+              claims: claim,
+              expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
 
             var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);

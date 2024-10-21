@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using CloudinaryDotNet.Actions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +17,16 @@ namespace KoiCareApi.Controllers
         private readonly IMemberService _memberService;
         private readonly IProductService _productService;
         private readonly IPaymentService _paymentService;
-        private readonly OrderValidation _validation;
-        public OrderController(IOrderService orderService, IProductService productService, IMemberService memberService,IPaymentService paymentService, OrderValidation validations)
-        { 
-           
+        private readonly OrderValidation _orderValidate;
+
+        public OrderController(OrderValidation orderValidate, IOrderService orderService, IProductService productService, IMemberService memberService, IPaymentService paymentService)
+        {
+
             _orderService = orderService;
             _productService = productService;
             _memberService = memberService;
-            _paymentService = paymentService;           
-            _validation = validations;
+            _paymentService = paymentService;
+            _orderValidate = orderValidate;
         }
 
         [HttpGet]
@@ -58,35 +60,18 @@ namespace KoiCareApi.Controllers
         {
             try
             {
-                ValidationResult validationResult = _validation.Validate(_order);
-                if (validationResult.IsValid) {
-                    Order order = new Order
-                    {
-                        MemberId = _order.MemberId,
-                        ProductId = _order.ProductId,
-                        TotalCost = _order.TotalCost,
-                        OrderDate = DateTime.Now,
-                        CloseDate = _order.CloseDate,
-                        Code = _order.Code,
-                        Description = _order.Description,
-                        Status = _order.Status,
-                        Member = await _memberService.GetMemberById(_order.MemberId),
-                        Product = await _productService.GetProductById(_order.ProductId)
-
-                    };
-                    await _orderService.AddNewOrder(order);
-                    return Created("Created", order);
-                }
-                var errors = validationResult.Errors.Select(e => (object)new
+                ValidationResult validationResult = _orderValidate.Validate(_order);
+                if (validationResult.IsValid)
                 {
-                    e.PropertyName,
-                    e.ErrorMessage
-
-                }).ToList();
-                return BadRequest(errors);
+                    await _orderService.AddNewOrder(_order);
+                    return Ok("Created");
+                }
+                var error = validationResult.Errors;
+                return BadRequest(error);
             }
-            catch (Exception ex) { 
-            return BadRequest(ex.Message);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -107,40 +92,19 @@ namespace KoiCareApi.Controllers
         {
             try
             {
-                ValidationResult validationResult = _validation.Validate(_order);
-                var errors = validationResult.Errors.Select(e => (object)new
+                ValidationResult validationResult = _orderValidate.Validate(_order);
+                if (validationResult.IsValid)
                 {
-                    e.PropertyName,
-                    e.ErrorMessage
-                }).ToList();
-
-                if (validationResult.IsValid) { 
-                Order order = await _orderService.GetOrderById(id);
-                    if (order != null) {
-                    order.Id = id;
-                    order.MemberId = _order.MemberId;
-                    order.ProductId = _order.ProductId;
-                    order.TotalCost = _order.TotalCost;
-                    order.OrderDate = DateTime.Now;
-                    order.CloseDate = _order.CloseDate;
-                    order.Status = _order.Status;
-                    order.Code = _order.Code;
-                    order.Description = _order.Description;
-                    order.Member = await _memberService.GetMemberById(_order.MemberId);
-                    order.Product = await _productService.GetProductById(_order.ProductId);
-                        await _orderService.UpdateOrder(order);
-                        return Ok(order);
-                    }
+                    await _orderService.UpdateOrder(id, _order);
+                    return Ok("Update Successful");
                 }
-                    return  BadRequest(errors);
+                var error = validationResult.Errors;
+                return BadRequest(error);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-            return BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
-                 
         }
-
-       
     }
 }
