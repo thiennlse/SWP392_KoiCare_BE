@@ -14,7 +14,6 @@ namespace BusinessObject.RequestModel
     {
 
         public string Image { get; set; }
-        public int UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public double Cost { get; set; }
         public string Description { get; set; } = string.Empty;   

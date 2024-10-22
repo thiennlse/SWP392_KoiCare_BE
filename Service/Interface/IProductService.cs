@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,10 @@ namespace Service.Interface
 
         Task<Product> GetProductById(int id);
 
-        Task AddNewProduct(Product product);
+        Task AddNewProduct(ProductRequestModel product);
 
         Task DeleteProduct(int id);
 
-        Task<Product> UpdateProduct(Product product);
+        Task<Product> UpdateProduct(int id, ProductRequestModel product);
     }
 }
