@@ -53,6 +53,11 @@ namespace KoiCareApi.Controllers
                     {
                         return BadRequest($"Product or order not found for orderId {request.ProductId}");
                     }
+                    if(product.InStock < request.quantity)
+                    {
+                        return BadRequest("Not enough product");
+                    }
+                    product.InStock -= request.quantity;
                     productids.Add(product.Id);
                     productName.Add(product.Name);
                     int price = (int)(request.Cost * request.quantity);
@@ -85,7 +90,7 @@ namespace KoiCareApi.Controllers
                     CloseDate = DateTime.Now,
                     Code = paymentResult.orderCode.ToString(),
                     Description = string.Join(",",productName),
-                    Status = "Đã thanh toán"
+                    Status = "Chưa thanh toán"
                 };
 
                 await _orderService.AddNewOrder(order);

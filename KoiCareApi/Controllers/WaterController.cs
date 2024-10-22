@@ -23,20 +23,21 @@ namespace KoiCareApi.Controllers
         {
             var _water = await _waterService.GetAllWaterAsync(page, pageSize);
 
-            if (_water == null) { 
-            return NotFound("water is empty");
+            if (_water == null)
+            {
+                return NotFound("water is empty");
             }
             return Ok(_water);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id) 
+        public async Task<IActionResult> GetById(int id)
         {
-            if (id <= 0) 
+            if (id <= 0)
             {
                 return BadRequest("id is not <= 0");
             }
-            var _water =  await _waterService.GetById(id);
+            var _water = await _waterService.GetById(id);
             if (_water == null)
             {
                 return NotFound("water is not exits");
@@ -45,9 +46,10 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddWater([FromBody]WaterRequestModel _water)
+        public async Task<IActionResult> AddWater([FromBody] WaterRequestModel _water)
         {
-            if (_water == null) {
+            if (_water == null)
+            {
                 return BadRequest("please input information");
             }
             Waters waters = new Waters();
@@ -64,11 +66,12 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpPatch("update/{id}")]
-         public async Task<IActionResult> UpdateWater([FromBody]WaterRequestModel _water, int id)
+        public async Task<IActionResult> UpdateWater([FromBody] WaterRequestModel _water, int id)
         {
             var waters = await _waterService.GetById(id);
-            if (waters == null) { 
-            return NotFound(" water is not exit");  
+            if (waters == null)
+            {
+                return NotFound(" water is not exit");
             }
             waters.Id = id;
             waters.Salt = _water.Salt;
@@ -83,7 +86,7 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteWater(int id) 
+        public async Task<IActionResult> DeleteWater(int id)
         {
             var _water = await _waterService.GetById(id);
             if (_water == null)
@@ -93,10 +96,6 @@ namespace KoiCareApi.Controllers
             await _waterService.deleteWater(id);
             return NoContent();
         }
-
-
-
-
-        }
-
     }
+
+}

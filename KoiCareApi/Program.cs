@@ -15,6 +15,7 @@ using Validation.Fish;
 using Validation.Food;
 using Validation.Member;
 using Validation.Order;
+using Validation.Product;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -122,6 +123,7 @@ builder.Services.AddScoped<FishValidation>();
 builder.Services.AddScoped<FoodValidation>();
 builder.Services.AddScoped<MemberValidation>();
 builder.Services.AddScoped<OrderValidation>();
+builder.Services.AddScoped<ProductValidation>();
 #endregion
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
