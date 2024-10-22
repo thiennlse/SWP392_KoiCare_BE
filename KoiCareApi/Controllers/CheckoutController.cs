@@ -104,42 +104,46 @@ namespace KoiCareApi.Controllers
         [HttpPost("send/{orderCode}")]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequestModel emailRequest, int orderCode)
         {
-            PaymentLinkInformation paymentLinkInformation = await _paymentService.getPaymentLinkInformation(orderCode);
-
-            string body = $@"
-        <html>
-            <body style='font-family: Arial, sans-serif;'>
-                 <p>Hi,</p>
-                 <p>Here are the details of your payment:</p>
-            <table style='border-collapse: collapse;'>
-                     <tr>
-                     <td style='padding: 8px;'><strong>Order Code:</strong></td>
-                     <td style='padding: 8px;'>{paymentLinkInformation.orderCode}</td>
-                     </tr>
-                     <tr>
-                     <td style='padding: 8px;'><strong>Created At:</strong></td>
-                    <td style='padding: 8px;'>{paymentLinkInformation.createdAt:yyyy-MM-dd HH:mm:ss}</td>
-                     </tr>
-                     <tr>
-                   <td style='padding: 8px;'><strong>Amount Paid:</strong></td>
-                  <td style='padding: 8px;'>{paymentLinkInformation.amountPaid:C}</td>
-                 </tr>
-                <tr>
-                 <td style='padding: 8px;'><strong>Status:</strong></td>
-                  <td style='padding: 8px;'>{paymentLinkInformation.status}</td>
-             </tr>
-                 </table>
-                <p>Thank you for your payment!</p>
-                </body>
-                 </html>";
-
-            if (emailRequest == null || string.IsNullOrEmpty(emailRequest.RecipientEmail))
-            {
-                return BadRequest("invalid email Request");
-            }
-
             try
             {
+                PaymentLinkInformation paymentLinkInformation = await _paymentService.getPaymentLinkInformation(orderCode);
+
+                string body = $@"
+<html>
+  <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;'>
+    <div style='max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);'>
+      <p style='font-size: 16px;'>Xin chào,</p>
+      <p style='font-size: 16px;'>Đây là hóa đơn mua hàng của bạn:</p>
+      <table style='width: 100%; border-collapse: collapse; margin-top: 20px;'>
+        <tr style='background-color: #f8f8f8;'>
+          <td style='padding: 12px; border: 1px solid #ddd; font-weight: bold;'>Mã đơn hàng:</td>
+          <td style='padding: 12px; border: 1px solid #ddd;'>{paymentLinkInformation.orderCode}</td>
+        </tr>
+        <tr>
+          <td style='padding: 12px; border: 1px solid #ddd; font-weight: bold;'>Ngày thanh toán:</td>
+          <td style='padding: 12px; border: 1px solid #ddd;'>{paymentLinkInformation.createdAt:yyyy-MM-dd HH:mm:ss}</td>
+        </tr>
+        <tr style='background-color: #f8f8f8;'>
+          <td style='padding: 12px; border: 1px solid #ddd; font-weight: bold;'>Tổng tiền:</td>
+          <td style='padding: 12px; border: 1px solid #ddd;'>{paymentLinkInformation.amountPaid:#,##0} ₫</td>
+        </tr>
+        <tr>
+          <td style='padding: 12px; border: 1px solid #ddd; font-weight: bold;'>Trạng thái thanh toán:</td>
+          <td style='padding: 12px; border: 1px solid #ddd;'>{paymentLinkInformation.status}</td>
+        </tr>
+      </table>
+      <p style='font-size: 16px; margin-top: 20px;'>Cám ơn đã sử dụng dịch vụ của chúng tôi</p>
+    </div>
+  </body>
+</html>";
+
+
+                if (emailRequest == null || string.IsNullOrEmpty(emailRequest.RecipientEmail))
+                {
+                    return BadRequest("invalid email Request");
+                }
+
+
                 await _emailService.SendEmailAsync(emailRequest.RecipientEmail, emailRequest.Subject, body);
                 return Ok("Email sent");
             }
