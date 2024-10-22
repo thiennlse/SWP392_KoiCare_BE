@@ -121,5 +121,29 @@ namespace KoiCareApi.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("search-by-user/{id}")]
+        public async Task<IActionResult> SearchOrdersByUserId(int userId, int page = 1, int pageSize = 100, string? searchTerm = null)
+        {
+            try
+            {
+                // Call the service method
+                var orders = await _orderService.SearchOrdersByUserId(userId, page, pageSize, searchTerm);
+
+                // If no orders are found, return 404 Not Found
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new { message = "No orders found for the specified user." });
+                }
+
+                // Return the list of filtered orders with 200 OK
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions and return a 500 Internal Server Error
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message });
+            }
+        }
     }
 }

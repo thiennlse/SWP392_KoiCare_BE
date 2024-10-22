@@ -72,6 +72,20 @@ namespace Service
 
             return filteredOrders;
         }
+
+        public async Task<List<Order>> SearchOrdersByUserId(int userId, int page = 1, int pageSize = 100, string? searchTerm = null)
+        {
+            // Fetch orders using pagination and an optional search term
+            var allOrders = await _orderRepository.GetAllOrderAsync(page, pageSize, searchTerm);
+
+            // Filter orders by userId
+            var filteredOrders = allOrders
+                .Where(order => order.MemberId == userId) // Use MemberId as the UserId field
+                .ToList();
+
+            return filteredOrders;
+        }
+
         private Order MapToOrder(OrderRequestModel request)
         {
 
