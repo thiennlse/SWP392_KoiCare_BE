@@ -1,9 +1,9 @@
-﻿using BusinessObject.Models;
-using BusinessObject.RequestModel;
-using Microsoft.AspNetCore.Http;
+﻿using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using Service.Interface;
+using Validation.Product;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace KoiCareApi.Controllers
 {
@@ -13,10 +13,12 @@ namespace KoiCareApi.Controllers
     {
         private readonly IProductService _productService;
         private readonly IMemberService _memberService;
-        public ProductController(IProductService productService, IMemberService memberService)
+        private readonly ProductValidation _productValidation;
+        public ProductController(IProductService productService, IMemberService memberService, ProductValidation productValidation)
         {
             _productService = productService;
             _memberService = memberService;
+            _productValidation = productValidation;
         }
 
         [HttpGet]
@@ -48,59 +50,65 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewProduct([FromBody] ProductRequestModel _product)
         {
-            if (_product == null)
+            try
             {
-                return BadRequest("please input product information");
+                ValidationResult validationResult = _productValidation.Validate(_product);
+                if (validationResult.IsValid)
+                {
+                    await _productService.AddNewProduct(_product);
+                    return Ok("Created");
+                }
+                var error = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+                });
+                return BadRequest(error);
             }
-            Product product = new Product
+            catch (Exception ex) 
             {
-                Image = _product.Image,
-                UserId = _product.UserId,
-                Name = _product.Name,
-                Cost = _product.Cost,
-                Description = _product.Description,
-                Origin = _product.Origin,
-                Productivity = _product.Productivity,
-                Code = _product.Code,
-                InStock = _product.InStock
-            };
-
-            await _productService.AddNewProduct(product);
-            return Created("Created", product);
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteById(int id)
         {
-            var _product = await _productService.GetProductById(id);
-            if (_product == null)
+            try
             {
-                return NotFound("product is not exits");
+                await _productService.DeleteProduct(id);
+                return Ok("Deleted");
             }
-            await _productService.DeleteProduct(id);
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody] ProductRequestModel _product, int id)
         {
-            var product = await _productService.GetProductById(id);
-            if (_product == null)
+            try
             {
-                return NotFound("product is not exits");
+                ValidationResult validationResult = _productValidation.Validate(_product);
+                if (validationResult.IsValid)
+                {
+                    await _productService.UpdateProduct(id, _product);
+                    return Ok("Updated Successful");
+                }
+                var error = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+                });
+                return BadRequest(error);
+
             }
-
-            product.UserId = _product.UserId;
-            product.Name = _product.Name;
-            product.Cost = _product.Cost;
-            product.Description = _product.Description;
-            product.Origin = _product.Origin;
-            product.Productivity = _product.Productivity;
-            product.Code = _product.Code;
-            product.InStock = _product.InStock;
-
-            await _productService.UpdateProduct(product);
-            return Ok(product);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
