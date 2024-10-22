@@ -49,7 +49,6 @@ namespace Repository
                 _context.Pools.Add(pool);
                 await _context.SaveChangesAsync();
             }
-
         }
 
         public async Task DeletePool(int id)

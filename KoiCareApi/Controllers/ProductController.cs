@@ -75,13 +75,15 @@ namespace KoiCareApi.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteById(int id)
         {
-            var _product = await _productService.GetProductById(id);
-            if (_product == null)
+            try
             {
-                return NotFound("product is not exits");
+                await _productService.DeleteProduct(id);
+                return Ok("Deleted");
             }
-            await _productService.DeleteProduct(id);
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPatch("update/{id}")]

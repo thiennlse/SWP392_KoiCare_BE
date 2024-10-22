@@ -46,19 +46,15 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewPool([FromBody] PoolRequestModel _pool)
         {
-            if (_pool == null)
+            try
             {
-                return BadRequest("please input pool information");
+                await _poolService.AddNewPool(_pool);
+                return Ok("Create Successful");
             }
-            Pool pool = new Pool();
-            pool.MemberId = _pool.MemberId;
-            pool.Name = _pool.Name;            
-            pool.Size = _pool.Size;
-            pool.Depth = _pool.Depth;
-            pool.Description = _pool.Description;
-            pool.WaterId = _pool.WaterId;
-            await _poolService.AddNewPool(pool);
-            return Created("Created", pool);
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("Delete")]
@@ -76,21 +72,15 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody] PoolRequestModel _pool, int id)
         {
-            var pool = await _poolService.GetPoolById(id);
-            if (_pool == null)
+            try
             {
-                return NotFound("pool is not exits");
+                await _poolService.UpdatePool(id, _pool);
+                return Ok("Updated Succesfully");
             }
-
-            pool.MemberId = _pool.MemberId;
-            pool.Name = _pool.Name;
-            pool.Size = _pool.Size;
-            pool.Depth = _pool.Depth;
-            pool.Description = _pool.Description;
-            pool.WaterId = _pool.WaterId;
-
-            await _poolService.UpdatePool(pool);
-            return Ok(pool);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

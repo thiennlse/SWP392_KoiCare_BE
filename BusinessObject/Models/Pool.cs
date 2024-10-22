@@ -31,7 +31,7 @@ namespace BusinessObject.Models
         public int WaterId { get; set; }
 
         [JsonIgnore]
-        public virtual Member Member { get; set; } = null!;
+        public virtual Member? Member { get; set; } = null!;
 
         [JsonIgnore]
         public virtual Waters Water { get; set; } = null!;

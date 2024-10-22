@@ -1,11 +1,14 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using Microsoft.AspNetCore.Http;
 using Repository;
 using Repository.Interface;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +17,13 @@ namespace Service
     public class PoolService : IPoolService
     {
         private readonly IPoolRepository _poolRepository;
-        public PoolService(IPoolRepository poolRepository)
+        private readonly IMemberRepository _memberRepository;
+        private readonly IHttpContextAccessor _contextAccessor;
+        public PoolService(IPoolRepository poolRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository)
         {
             _poolRepository = poolRepository;
+            _contextAccessor = contextAccessor;
+            _memberRepository = memberRepository;
         }
 
 
@@ -31,9 +38,10 @@ namespace Service
             return await _poolRepository.GetById(id);
         }
 
-        public async Task AddNewPool(Pool newPool)
+        public async Task AddNewPool(PoolRequestModel newPool)
         {
-            await _poolRepository.AddNewPool(newPool);
+            Pool pool = MapToPool(newPool);
+            await _poolRepository.AddNewPool(pool);
         }
 
         public async Task DeletePool(int id)
@@ -41,9 +49,35 @@ namespace Service
            await _poolRepository.DeletePool(id);
         }
 
-        public async Task<Pool> UpdatePool(Pool pool)
+        public async Task UpdatePool(int id,PoolRequestModel request)
         {
-            return await _poolRepository.UpdatePool(pool);
+            Pool pool = MapToPool(request);
+            pool.Id = id;
+            await _poolRepository.UpdatePool(pool);
+        }
+
+        private Pool MapToPool(PoolRequestModel request)
+        {
+            var currUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int currUserId = int.Parse(currUser);
+            return new Pool
+            {
+                Name = request.Name,
+                Size = request.Size,
+                Depth = request.Depth,
+                MemberId = currUserId,
+                Description = request.Description,
+                Water = new Waters
+                {
+                    No2 = 0,
+                    No3 = 0,
+                    O2 = 0,
+                    Salt = 0,
+                    Ph = 0,
+                    Po4 = 0,
+                    Temperature = 0,
+                }
+            };
         }
     }
 }

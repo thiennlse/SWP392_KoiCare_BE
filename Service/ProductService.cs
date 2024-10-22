@@ -59,9 +59,10 @@ namespace Service
                 Description = product.Description,
                 Origin = product.Origin,
                 Productivity = product.Productivity,
-                Code = product.Code,
+                Code = GenerateUniqueCode(),
                 InStock = product.InStock
             };
         }
+        private string GenerateUniqueCode() => Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
     }
 }
