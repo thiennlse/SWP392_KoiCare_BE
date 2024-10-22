@@ -20,9 +20,9 @@ namespace Service
             _fishRepository = fishRepository;
         }
 
-        public async Task<List<FishResponseModel>> GetAllFish() 
+        public async Task<List<Fish>> GetAllFishAsync(int page, int pageSize, string? searchTerm)
         {
-        return await _fishRepository.GetAllFish();
+        return await _fishRepository.GetAllFishAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Fish> GetFishById(int id) 

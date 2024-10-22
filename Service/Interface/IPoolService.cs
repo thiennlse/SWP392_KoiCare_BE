@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,15 @@ namespace Service.Interface
 {
     public interface IPoolService
     {
-        public Task<List<Pool>> GetAllPool();
+        public Task<List<Pool>> GetAllPoolAsync(int page, int pageSize, String? searchTerm);
 
-        public Task<Pool> GetPoolById(int id);
+        Task<Pool> GetPoolById(int id);
 
-        public Task AddNewPool(Pool pool);
+        Task AddNewPool(PoolRequestModel pool);
 
-        public Task DeletePool(int id);
+        Task DeletePool(int id);
 
-        public Task<Pool> UpdatePool(Pool pool);
+        Task UpdatePool(int id,PoolRequestModel request);
+        Task<double> CalCulateSaltPoolNeed(int id);
     }
 }

@@ -10,7 +10,7 @@ namespace Service.Interface
 {
     public interface IFoodService
     {
-        public Task<List<FoodResponseModel>> GetAllFood();
+        public  Task<List<Food>> GetAllFoodAsync(int page, int pageSize, string? searchTerm);
         public Task<Food> GetFoodById(int id);
         public Task AddNewFood(Food food);
         public Task DeleteFood(int id);

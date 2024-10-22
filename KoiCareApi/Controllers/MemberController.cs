@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
 using Service.Interface;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using System.Security.Claims;
 namespace KoiCareApi.Controllers
 {
     [Route("api/Member")]
@@ -11,11 +15,13 @@ namespace KoiCareApi.Controllers
     {
         private readonly IMemberService _memberService;
         private readonly IRoleService _roleService;
+        private IConfiguration _config;
 
-        public MemberController(IMemberService memberService, IRoleService roleService)
+        public MemberController(IMemberService memberService, IRoleService roleService, IConfiguration config)
         {
             _memberService = memberService;
             _roleService = roleService;
+            _config = config;
         }
 
         [HttpGet]
@@ -63,7 +69,30 @@ namespace KoiCareApi.Controllers
                 return Unauthorized("Sai tài khoản hoặc mật khẩu");
             }
 
-            return Ok(member);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claim = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, member.Id.ToString()),
+                new Claim(ClaimTypes.Role, member.Role.Name),
+            };
+
+            var Sectoken = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              claims: claim,
+              expires: DateTime.Now.AddMinutes(60),
+              signingCredentials: credentials);
+
+            var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
+            AccountResponse response = new AccountResponse
+            {
+                Success = true,
+                Token = token,
+                Role = member.Role.Name,
+                UserId = member.Id
+            };
+            return Ok(response);
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AccountRequestModel _registerMember)

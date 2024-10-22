@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Service.Interface
 {
-    public interface IWaterService
+    public interface IWaterService 
     {
-        Task<List<Waters>> GetAll();
+        public  Task<List<Waters>> GetAllWaterAsync(int page, int pageSize);
 
         Task<Waters> GetById(int id);
 

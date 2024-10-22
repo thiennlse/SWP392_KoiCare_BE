@@ -1,22 +1,18 @@
-﻿using BusinessObject.Models;
-using BusinessObject.ResponseModel;
-using Repository;
+﻿using BusinessObject.RequestModel;
+using Microsoft.AspNetCore.Http;
 using Repository.Interface;
 using Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Security.Claims;
 namespace Service
 {
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        public ProductService(IProductRepository productRepository)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public ProductService(IProductRepository productRepository, IHttpContextAccessor contextAccessor)
         {
             _productRepository = productRepository;
+            _contextAccessor = contextAccessor;
         }
 
 
@@ -32,36 +28,41 @@ namespace Service
             return result;
         }
 
-        public async Task AddNewProduct(Product newProduct)
+        public async Task AddNewProduct(ProductRequestModel newProduct)
         {
-            await _productRepository.UpdateProduct(newProduct);
+            Product product = MapToProduct(newProduct);
+            await _productRepository.AddNewProduct(product);
         }
 
         public async Task DeleteProduct(int id)
         {
-            _productRepository.DeleteProduct(id);
+            await _productRepository.DeleteProduct(id);
         }
 
-        public async Task<Product> UpdateProduct(Product newProduct)
+        public async Task<Product> UpdateProduct(int id, ProductRequestModel newProduct)
         {
-            return await _productRepository.UpdateProduct(newProduct);
+            Product product = MapToProduct(newProduct);
+            product.Id = id;
+            return await _productRepository.UpdateProduct(product);
         }
 
-        private ProductResponseModel MapToResponse(Product product)
+        private Product MapToProduct(ProductRequestModel product)
         {
-            return new ProductResponseModel
+            var currUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int currUserId = int.Parse(currUser);
+            return new Product
             {
-                Id = product.Id,
-                UserId = product.UserId,
+                UserId = currUserId,
                 Name = product.Name,
                 Image = product.Image,
                 Cost = product.Cost,
                 Description = product.Description,
                 Origin = product.Origin,
                 Productivity = product.Productivity,
-                Code = product.Code,
+                Code = GenerateUniqueCode(),
                 InStock = product.InStock
             };
         }
+        private string GenerateUniqueCode() => Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
     }
 }

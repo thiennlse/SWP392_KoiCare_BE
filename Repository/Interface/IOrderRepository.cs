@@ -9,11 +9,11 @@ namespace Repository.Interface
 {
     public interface IOrderRepository : IBaseRepository<Order>
     {
-        Task<List<Order>> GetAllOrder();
+        public  Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm);
 
         Task AddNewOrder(Order order);
-
         Task DeleteOrder(int id);
         Task<Order> UpdateOrder(Order order);
+        Order getById(int id);
     }
 }

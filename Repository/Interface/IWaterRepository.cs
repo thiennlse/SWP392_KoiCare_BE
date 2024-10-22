@@ -10,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IWaterRepository : IBaseRepository<Waters>
     {
-        Task<List<Waters>> GetAll();
+        public Task<List<Waters>> GetAllWaterAsync(int page, int pageSize);
 
         Task addWater(Waters water);
 

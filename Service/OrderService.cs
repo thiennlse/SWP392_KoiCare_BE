@@ -1,10 +1,14 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 using Repository;
 using Repository.Interface;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,16 +17,20 @@ namespace Service
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        public OrderService(IOrderRepository orderRepository)
+        private readonly IProductRepository _productRepository;
+        private readonly IHttpContextAccessor _contextAccessor;
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IHttpContextAccessor contextAccessor)
         {
             _orderRepository = orderRepository;
+            _productRepository = productRepository;
+            _contextAccessor = contextAccessor;
         }
 
 
 
-        public async Task<List<Order>> GetAllOrder()
+        public async Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm)
         {
-            return await _orderRepository.GetAllOrder();
+            return await _orderRepository.GetAllOrderAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Order> GetOrderById(int id)
@@ -30,8 +38,9 @@ namespace Service
             return await _orderRepository.GetById(id);
         }
 
-        public async Task AddNewOrder(Order order)
+        public async Task AddNewOrder(OrderRequestModel newOrder)
         {
+            Order order = MapToOrder(newOrder);
             await _orderRepository.AddNewOrder(order);
         }
 
@@ -40,39 +49,36 @@ namespace Service
             _orderRepository.DeleteOrder(id);
         }
 
-        public async Task<Order> UpdateOrder(Order newOrder)
+        public async Task<Order> UpdateOrder(int id, OrderRequestModel newOrder)
         {
-            return await _orderRepository.UpdateOrder(newOrder);
+            var order = MapToOrder(newOrder);
+            order.Id = id;
+            return await _orderRepository.UpdateOrder(order);
         }
-        public async Task<double> CalculateOrderdate(int id)
+
+        private Order MapToOrder(OrderRequestModel request)
         {
-            var order = await _orderRepository.GetById(id);
-            if (order != null)
+
+
+            List<Product> products = new List<Product>();
+            foreach (var item in request.ProductId)
             {
-                if (order.OrderDate != DateTime.MinValue && order.CloseDate != DateTime.MinValue)
-                {
-                    TimeSpan duration = order.CloseDate - order.OrderDate;
-                    return duration.Days;
-                }
-                else
-                {
-                    throw new Exception("OrderDate or CloseDate is not set.");
-                }
+                var product = _productRepository.getById(item);
+                products.Add(product);
             }
-            throw new Exception("Order not found");
-        }
-        public async Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate) //startdate
-        {
-            
-            var allOrders = await _orderRepository.GetAllOrder(); //
 
-            // Filter orders that match the given StartDate
-            var filteredOrders = allOrders
-            .Where(order => order.OrderDate.Date >= startDate.Date && order.OrderDate.Date <= closeDate.Date) // Between start and end date
-            .ToList();
-
-            return filteredOrders;
+            var user = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userid = int.Parse(user);
+            return new Order
+            {
+                MemberId = userid,
+                TotalCost = request.TotalCost,
+                CloseDate = request.CloseDate,
+                Code = request.Code,
+                Description = request.Description,
+                Status = request.Status,
+                Product = products
+            };
         }
-        //làm một chức năng tìm kiếm order theo id của người dùng
     }
 }

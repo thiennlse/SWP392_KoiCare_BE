@@ -27,7 +27,6 @@ namespace Repository
                 .AsNoTracking()
                 .ToListAsync();
         }
-        
 
         public async Task<List<Product>> GetAllProductAsync(int page, int pageSize, string? searchTerm)
         {
@@ -66,6 +65,9 @@ namespace Repository
             return product;
         }
 
-       
+        public Product getById(int id)
+        {
+            return _context.Products.SingleOrDefault(p => p.Id == id);
+        }
     }
 }

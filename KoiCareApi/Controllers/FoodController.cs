@@ -1,8 +1,11 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interface;
+using Validation.Food;
+
 
 namespace KoiCareApi.Controllers
 {
@@ -11,16 +14,18 @@ namespace KoiCareApi.Controllers
     public class FoodController : ControllerBase
     {
         private  readonly IFoodService _foodService;
-
-        public FoodController(IFoodService foodService)
+        private   readonly FoodValidation _validation;
+        public FoodController(IFoodService foodService, FoodValidation validations)
         {
             _foodService = foodService;
+            _validation = validations;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFood() {
+        public async Task<IActionResult> GetAllFoodAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
+        {
 
-            var _food = await _foodService.GetAllFood();
+            var _food = await _foodService.GetAllFoodAsync(page, pageSize, searchTerm);
             if (_food == null)
             {
                 return NotFound("Empty Food");
@@ -45,18 +50,31 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewFood([FromBody] FoodRequestModel _food)
         {
-            if (_food == null)
+            try
             {
-                return BadRequest("please input  Food information");
+                ValidationResult validationResult = _validation.Validate(_food);
+                if (validationResult.IsValid) 
+              {
+                    Food food = new Food
+                    {
+                       Name = _food.Name,
+                       Weight = _food.Weight,  
+                    };
+                    await _foodService.AddNewFood(food);
+                    return Created("create", food);
+              }
+                var errors = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+
+                }).ToList();
+                return BadRequest(errors);
             }
-
-            var food = new Food();
-            food.Name = _food.Name; 
-            food.Weight = _food.Weight;
-            
-            await   _foodService.AddNewFood(food);
-            return Created("created",food);
-
+            catch (Exception ex) 
+            {
+            return BadRequest(ex.Message); 
+            }
         }
 
         [HttpDelete("delete")]
@@ -74,18 +92,31 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody]FoodRequestModel _food ,int id) 
         {
-        var food = await _foodService.GetFoodById(id);
-            if (food == null) 
+            try
             {
-            return NotFound("this food is not exits");
+                ValidationResult validationResult = _validation.Validate(_food);
+                var errors = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+                }).ToList();
+
+                if (validationResult.IsValid)
+                { 
+                Food food = await _foodService.GetFoodById(id);
+                    if (food != null) {
+                        food.Id = id;
+                        food.Name = _food.Name;
+                        food.Weight = _food.Weight;
+                        await _foodService.UpdateFood(food);
+                        return Ok(food);
+                    }
+                }
+                return BadRequest(errors);
             }
-            food.Id = id;
-            food.Name = _food.Name;
-            food.Weight = _food.Weight;
-
-
-            await _foodService.UpdateFood(food);
-            return Ok(food);
+            catch (Exception ex) {
+            return BadRequest(ex.Message);
+            }
         }
 
     }

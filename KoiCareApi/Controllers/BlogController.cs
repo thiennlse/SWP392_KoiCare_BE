@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Components.Web;
 using Service.Interface;
+using Validation.Blog;
+using FluentValidation.Results;
 
 namespace KoiCareApi.Controllers
 {
@@ -13,17 +15,19 @@ namespace KoiCareApi.Controllers
     {
         private readonly IBlogService _blogService;
         private readonly IMemberService _memberService;
+        private BlogValidation _validation;
 
-        public BlogController(IBlogService blogService, IMemberService memberService)
+        public BlogController(IBlogService blogService, IMemberService memberService, BlogValidation validation)
         {
             _blogService = blogService;
             _memberService = memberService;
+            _validation = validation;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBlog()
+        public async Task<IActionResult> GetAllBlogAsync(int page = 1, int pageSize = 10, String? searchTerm = null)
         {
-            var blog = await _blogService.GetAllBlog();
+            var blog = await _blogService.GetAllBlogAsync(page, pageSize, searchTerm);
             if (blog == null)
             {
                 return NotFound("No have any Blog");
@@ -49,22 +53,25 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewBlog([FromBody] BlogRequestModel _blog)
         {
-
-            if (_blog == null)
+            try
             {
-                return BadRequest("please input Blog information");
+                ValidationResult validationResult = _validation.Validate(_blog);
+                if (validationResult.IsValid)
+                {
+                    var data = await _blogService.AddNewBlog(_blog);
+                    return Ok(data);
+                }
+                var errors = validationResult.Errors.Select(e => (object)new
+                {
+                    e.PropertyName,
+                    e.ErrorMessage
+                }).ToList();
+                return BadRequest(errors);
             }
-
-            Blog blog = new Blog();
-            blog.MemberId = _blog.MemberId;
-            blog.Title = _blog.Title;
-            blog.Content = _blog.Content;
-            blog.DateOfPublish = _blog.DateOfPublish;
-            blog.Status = _blog.Status;
-            blog.Member = await _memberService.GetMemberById(blog.MemberId);
-
-            await _blogService.AddNewBlog(blog);
-            return Created("Created", blog);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("delete")]
@@ -82,22 +89,25 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateBlog([FromBody] BlogRequestModel _blog, int id)
         {
-            var blog = await _blogService.GetBLogById(id);
-            if (_blog == null)
+            try
             {
-                return NotFound("blog no exits");
+                ValidationResult validationResult = _validation.Validate(_blog);
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => (object)new
+                    {
+                        e.PropertyName,
+                        e.ErrorMessage
+                    }).ToList();
+                    return BadRequest(errors);
+                }
+                var data = await _blogService.UpdateBlog(id, _blog);
+                return Ok(data);
             }
-            blog.Id = id;
-            blog.MemberId = _blog.MemberId;
-            blog.Title = _blog.Title;
-            blog.Content = _blog.Content;
-            blog.DateOfPublish = _blog.DateOfPublish;
-            blog.Status = _blog.Status;
-            blog.Member = await _memberService.GetMemberById(blog.MemberId);
-
-            await _blogService.UpdateBlog(blog);
-
-            return Ok(blog);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

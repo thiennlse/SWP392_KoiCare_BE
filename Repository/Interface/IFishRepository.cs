@@ -10,7 +10,7 @@ namespace Repository.Interface
 {
     public interface IFishRepository : IBaseRepository<Fish>
     {
-        public  Task<List<FishResponseModel>> GetAllFish();
+        public  Task<List<Fish>> GetAllFishAsync(int page, int pageSize, string? searchTerm);
         public  Task AddNewFish(Fish fish);
         public  Task DeleteFish(int id);
         public  Task<Fish> UpdateById(Fish fish);

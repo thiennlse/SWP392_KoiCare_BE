@@ -11,6 +11,7 @@ namespace BusinessObject.ResponseModel
 {
     public  class BlogResponseModel
     {
+
         public int Id { get; set; }
 
         [Required]

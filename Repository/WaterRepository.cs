@@ -33,17 +33,14 @@ namespace Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<WaterResponseModel>> GetAll()
+        public async Task<List<Waters>> GetAllWaterAsync(int page, int pageSize)
         {
-            List<Waters> waters = await _context.Waters.AsNoTracking().ToListAsync();
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfile());
-            });
-            var mapper = config.CreateMapper();
-            List<WaterResponseModel> _waters = waters.Select(w => mapper.Map<Waters, WaterResponseModel>(w)).ToList();
-
-            return _waters;
+            var query = GetQueryable();
+            
+            var products = await query.Skip((page - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .ToListAsync();
+            return products.ToList();
         }
 
         public async Task<Waters> updateWater(Waters water)

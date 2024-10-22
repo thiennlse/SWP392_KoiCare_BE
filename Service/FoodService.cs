@@ -22,9 +22,9 @@ namespace Service
             _fishRepository = fishRepository;
         }
 
-        public async Task<List<FoodResponseModel>> GetAllFood() 
+        public async Task<List<Food>> GetAllFoodAsync(int page, int pageSize, string? searchTerm)
         {
-        return await _foodRepository.GetAllFood();
+        return await _foodRepository.GetAllFoodAsync(page, pageSize, searchTerm);
         }
 
         public async Task<Food> GetFoodById(int id) 
@@ -53,14 +53,14 @@ namespace Service
             double fishFoodResult = 0;
            
             Fish _fish = await _fishRepository.GetById(fishId);
-            
+            var age = DateTime.Now.Year - _fish.Dob.Year;
             if (_fish != null) {              
-                if (_fish.Age >= 25 && _fish.Age <= 50)
+                if (age >= 25 && age <= 50)
                 {
                     dailyFood = (_fish.Weight * 1.5) / 100;
                     fishFoodResult = dailyFood * 0.3;
                 }
-                if(_fish.Age < 25) 
+                if(age < 25) 
                 {
                     fishFoodResult = (_fish.Weight * 0.5) / 100;
                 }

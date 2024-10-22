@@ -1,9 +1,11 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using CloudinaryDotNet.Actions;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service;
 using Service.Interface;
+using Validation.Order;
 
 namespace KoiCareApi.Controllers
 {
@@ -14,17 +16,23 @@ namespace KoiCareApi.Controllers
         private readonly IOrderService _orderService;
         private readonly IMemberService _memberService;
         private readonly IProductService _productService;
-        public OrderController(IOrderService orderService, IProductService productService, IMemberService memberService)
+        private readonly IPaymentService _paymentService;
+        private readonly OrderValidation _orderValidate;
+
+        public OrderController(OrderValidation orderValidate, IOrderService orderService, IProductService productService, IMemberService memberService, IPaymentService paymentService)
         {
+
             _orderService = orderService;
             _productService = productService;
             _memberService = memberService;
+            _paymentService = paymentService;
+            _orderValidate = orderValidate;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrder()
+        public async Task<IActionResult> GetAllOrderAsync(int page = 1, int pageSize = 10, string? searchTerm = null)
         {
-            var order = await _orderService.GetAllOrder();
+            var order = await _orderService.GetAllOrderAsync(page, pageSize, searchTerm);
             if (order == null)
             {
                 return NotFound("empty Order");
@@ -50,25 +58,21 @@ namespace KoiCareApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddNewOrder([FromBody] OrderRequestModel _order)
         {
-            if (_order == null)
+            try
             {
-                return BadRequest("please input order information");
+                ValidationResult validationResult = _orderValidate.Validate(_order);
+                if (validationResult.IsValid)
+                {
+                    await _orderService.AddNewOrder(_order);
+                    return Ok("Created");
+                }
+                var error = validationResult.Errors;
+                return BadRequest(error);
             }
-            Order order = new Order();
-            
-            order.MemberId = _order.MemberId;
-            order.ProductId = _order.ProductId;
-            order.TotalCost = _order.TotalCost;
-            order.OrderDate = _order.OrderDate;
-            order.CloseDate = _order.CloseDate;
-            order.Code = _order.Code;
-            order.Description = _order.Description;
-            order.Status = _order.Status;
-            order.Member = await _memberService.GetMemberById(order.MemberId);
-            order.Product = await _productService.GetProductById(order.ProductId);
-
-            await _orderService.AddNewOrder(order);
-            return Created("Created", order);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("Delete")]
@@ -86,50 +90,20 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateById([FromBody] OrderRequestModel _order, int id)
         {
-            var order = await _orderService.GetOrderById(id);
-            if (_order == null)
-            {
-                return NotFound("order is not exits");
-            }
-            
-            order.MemberId = _order.MemberId;
-            order.ProductId = _order.ProductId;
-            order.TotalCost = _order.TotalCost;
-            order.CloseDate = _order.CloseDate;
-            order.Code = _order.Code;
-            order.Description = _order.Description;
-            order.Status = _order.Status;
-
-            await _orderService.UpdateOrder(order);
-            return Ok(order);
-        }
-
-        [HttpGet("CalculateOrder/{id}")]
-        public async Task<IActionResult> CalculateDateforOrder(int id)
-        {
             try
             {
-                double duration = await _orderService.CalculateOrderdate(id);
-                return Ok(duration);  // Return the calculated duration (in days)
+                ValidationResult validationResult = _orderValidate.Validate(_order);
+                if (validationResult.IsValid)
+                {
+                    await _orderService.UpdateOrder(id, _order);
+                    return Ok("Update Successful");
+                }
+                var error = validationResult.Errors;
+                return BadRequest(error);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [HttpGet("date-range")]
-        public async Task<IActionResult> GetOrdersByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime closeDate)
-        {
-            try
-            {
-                // Call the service to get orders within the date range
-                var orders = await _orderService.GetOrdersByDateRange(startDate, closeDate);
-                return Ok(orders); // Return the filtered orders
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ex.Message);
             }
         }
     }

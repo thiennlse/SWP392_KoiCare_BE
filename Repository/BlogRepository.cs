@@ -1,15 +1,10 @@
 ﻿using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject.ResponseModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Execution;
 using BusinessObject.IMapperConfig;
 using Repository.Interface;
+using System.Reflection.Metadata;
 
 namespace Repository
 {
@@ -24,44 +19,53 @@ namespace Repository
 
         List<Blog> blogList;
 
-        public async Task<List<BlogResponseModel>> GetAllBlog()
+        public async Task<List<Blog>> GetAllBlog()
         {
-            List<Blog> blogs = await _context.Blogs.Include(b => b.Member).ToListAsync();
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfile());
-            });
-            var mapper = config.CreateMapper();
-            List<BlogResponseModel> _blogs = blogs.Select(b => mapper.Map<Blog, BlogResponseModel>(b)).ToList();
-
-            return _blogs;
-
+            return await _context.Blogs
+                .Include(b => b.Member)
+                .ToListAsync();
         }
 
-        public async Task AddNewBlog(Blog blog)
+        public async Task<List<Blog>> GetAllBlogAsync(int page, int pageSize, String? searchTerm)
+        {
+            var query = GetQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm)) {
+                query = query.Where(p => p.Title.Contains(searchTerm) || p.Content.Contains(searchTerm));
+            }
+            var Blogs = await query.Skip((page - 1) * pageSize)
+               .Take(pageSize).ToListAsync();
+            return Blogs;
+        }
+
+        public async Task<BlogResponseModel> AddNewBlog(Blog blog)
         {
             _context.Blogs.Add(blog);
             await _context.SaveChangesAsync();
+            return MapToResponse(blog);
         }
 
-        public async Task DeleteBlog(int id)
-        {
-            var blog = await GetById(id);
-            if (blog != null)
-            {
-                _context.Blogs.Remove(blog);
-                await _context.SaveChangesAsync();
-            }
-
-        }
-
-        public async Task<Blog> UpdateBlog(Blog blog)
+        public async Task<BlogResponseModel> UpdateBlog(Blog blog)
         {
             _context.Entry(blog).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return blog;
+            return MapToResponse(blog);
         }
-
+        public async Task DeleteBlog(int id)
+        {
+            _dbSet.Remove(await GetById(id));
+            await _context.SaveChangesAsync();
+        }
+        private BlogResponseModel MapToResponse(Blog blog)
+        {
+            return new BlogResponseModel
+            {
+                Title = blog.Title,
+                Content = blog.Content,
+                DateOfPublish = blog.DateOfPublish,
+                Status = blog.Status,
+                Member = _context.Members.FirstOrDefault(b => b.Id == blog.MemberId)
+            };
+        }
     }
 }

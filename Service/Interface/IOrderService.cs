@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,14 @@ namespace Service.Interface
 {
     public interface IOrderService
     {
-        public Task<List<Order>> GetAllOrder();
+        public  Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm);
 
-        public Task<Order> GetOrderById(int id);
+        Task<Order> GetOrderById(int id);
 
-        public Task AddNewOrder(Order order);
+        Task AddNewOrder(OrderRequestModel order);
 
-        public Task DeleteOrder(int id);
+        Task DeleteOrder(int id);
 
-        public Task<Order> UpdateOrder(Order order);
-
-        public Task<double> CalculateOrderdate(int orderId);
-
-        public Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate);
+        Task<Order> UpdateOrder(int id,OrderRequestModel order);
     }
 }

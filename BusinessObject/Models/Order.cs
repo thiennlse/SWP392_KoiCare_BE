@@ -5,13 +5,10 @@ using System.Text.Json.Serialization;
 
 namespace BusinessObject.Models
 {
-    public partial class Order :BaseEntity
+    public partial class Order : BaseEntity
     {
         [Required]
         public int MemberId { get; set; }
-
-        [Required]
-        public int ProductId { get; set; }
 
         [Required]
         [Range(0, double.MaxValue)]
@@ -23,8 +20,6 @@ namespace BusinessObject.Models
         [Required]
         public DateTime CloseDate { get; set; }
 
-        [Required]
-        [StringLength(50)]
         public string Code { get; set; } = string.Empty;
 
         [Required]
@@ -39,6 +34,6 @@ namespace BusinessObject.Models
         public virtual Member? Member { get; set; }
 
         [JsonIgnore]
-        public virtual Product? Product { get; set; }
+        public ICollection<Product>? Product { get; set; }
     }
 }
