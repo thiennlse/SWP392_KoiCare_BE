@@ -50,9 +50,6 @@ namespace Repository
             return water;
         }
 
-        Task<List<Waters>> IWaterRepository.GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
