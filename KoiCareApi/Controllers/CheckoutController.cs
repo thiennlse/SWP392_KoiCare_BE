@@ -76,13 +76,6 @@ namespace KoiCareApi.Controllers
                 );
                 CreatePaymentResult paymentResult = await _paymentService.createPaymentLink(paymentData);
 
-                return Ok(new
-                {
-                    Url = paymentResult.checkoutUrl,
-                    orderCode = paymentResult.orderCode
-
-                });
-
                 OrderRequestModel order = new OrderRequestModel
                 {
                     ProductId = productids,
@@ -95,7 +88,12 @@ namespace KoiCareApi.Controllers
 
                 await _orderService.AddNewOrder(order);
 
-                return Ok(paymentResult.checkoutUrl);
+                return Ok(new
+                {
+                    Url = paymentResult.checkoutUrl,
+                    orderCode = paymentResult.orderCode
+
+                });
             }
             catch (Exception ex)
             {
@@ -143,7 +141,7 @@ namespace KoiCareApi.Controllers
             try
             {
                 await _emailService.SendEmailAsync(emailRequest.RecipientEmail, emailRequest.Subject, body);
-                return Ok();
+                return Ok("Email sent");
             }
             catch (Exception ex)
             {

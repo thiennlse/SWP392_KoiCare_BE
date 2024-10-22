@@ -38,7 +38,8 @@ namespace Service
             using (var mail = new MailMessage(_senderEmail, recipientEmail)
             {
                 Subject = subject,
-                Body = body
+                Body = body,
+                IsBodyHtml = true
             })
             {
                 try

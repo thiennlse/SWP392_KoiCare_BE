@@ -52,9 +52,18 @@ namespace Service
 
         public async Task UpdatePool(int id,PoolRequestModel request)
         {
+            var existPool = await _poolRepository.GetById(id);  
             Pool pool = MapToPool(request);
-            pool.Id = id;
-            await _poolRepository.UpdatePool(pool);
+            UpdatePoolProperty(existPool, pool);
+            await _poolRepository.UpdatePool(existPool);
+        }
+
+        private void UpdatePoolProperty(Pool pool, Pool newpool) 
+        { 
+            pool.Name = newpool.Name;
+            pool.Description = newpool.Description;
+            pool.Size = newpool.Size;
+            pool.Depth = newpool.Depth;
         }
 
         private Pool MapToPool(PoolRequestModel request)
