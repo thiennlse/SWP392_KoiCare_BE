@@ -56,6 +56,22 @@ namespace Service
             return await _orderRepository.UpdateOrder(order);
         }
 
+        public async Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate)
+        {
+            int defaultPage = 1; // Assuming default page is 1
+            int pageSize = 100;  // Assuming you're loading 100 records per page
+            string? searchTerm = null; // No specific search term, so you can pass null
+
+            // Fetch orders using pagination and the search term
+            var allOrders = await _orderRepository.GetAllOrderAsync(defaultPage, pageSize, searchTerm);
+
+            // Filter orders that match the given start and close dates
+            var filteredOrders = allOrders
+                .Where(order => order.OrderDate.Date >= startDate.Date && order.OrderDate.Date <= closeDate.Date)
+                .ToList();
+
+            return filteredOrders;
+        }
         private Order MapToOrder(OrderRequestModel request)
         {
 

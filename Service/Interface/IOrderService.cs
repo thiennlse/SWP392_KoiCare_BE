@@ -19,5 +19,7 @@ namespace Service.Interface
         Task DeleteOrder(int id);
 
         Task<Order> UpdateOrder(int id,OrderRequestModel order);
+
+        Task<List<Order>> GetOrdersByDateRange();
     }
 }
