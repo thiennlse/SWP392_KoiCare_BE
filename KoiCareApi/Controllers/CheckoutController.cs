@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
+using Service;
 using Service.Interface;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
+
 
 namespace KoiCareApi.Controllers
 {
@@ -19,15 +22,16 @@ namespace KoiCareApi.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
-        
+        private readonly IEmailService _emailService;
 
-        public CheckoutController(PayOS payOS, IPaymentService paymentService, IOrderService orderService, IProductService productService)
+
+        public CheckoutController(PayOS payOS, IPaymentService paymentService, IOrderService orderService, IProductService productService,IEmailService emailService)
         {
             _payOS = payOS;
             _paymentService = paymentService;
             _orderService = orderService;
             _productService = productService;
-         
+            _emailService = emailService;
         }
 
         [HttpPost("create-payment-link")]
@@ -94,6 +98,24 @@ namespace KoiCareApi.Controllers
             }
         }
 
+        [HttpPost("send")]
+        public async Task<IActionResult> SendEmail([FromBody] EmailRequestModel emailRequest) 
+        {
+            if (emailRequest == null || string.IsNullOrEmpty(emailRequest.RecipientEmail)) 
+            { 
+            return BadRequest("invalid email Request");
+            }
+
+            try
+            {
+                await _emailService.SendEmailAsync(emailRequest.RecipientEmail, emailRequest.Subject, emailRequest.Body);
+                return Ok();
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

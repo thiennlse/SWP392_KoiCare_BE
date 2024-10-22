@@ -116,12 +116,15 @@ builder.Services.AddScoped<IWaterService, WaterService>();
 builder.Services.AddScoped<IWaterRepository, WaterRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<BlogValidation>();
 builder.Services.AddScoped<FishValidation>();
 builder.Services.AddScoped<FoodValidation>();
 builder.Services.AddScoped<MemberValidation>();
 builder.Services.AddScoped<OrderValidation>();
 #endregion
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
