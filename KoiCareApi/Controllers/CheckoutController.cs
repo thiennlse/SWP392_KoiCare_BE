@@ -25,7 +25,7 @@ namespace KoiCareApi.Controllers
         private readonly IEmailService _emailService;
 
 
-        public CheckoutController(PayOS payOS, IPaymentService paymentService, IOrderService orderService, IProductService productService,IEmailService emailService)
+        public CheckoutController(PayOS payOS, IPaymentService paymentService, IOrderService orderService, IProductService productService, IEmailService emailService)
         {
             _payOS = payOS;
             _paymentService = paymentService;
@@ -47,13 +47,13 @@ namespace KoiCareApi.Controllers
                 foreach (var request in orderRequest)
                 {
                     Product product = await _productService.GetProductById(request.ProductId);
-                    
-                    
+
+
                     if (product == null)
                     {
                         return BadRequest($"Product or order not found for orderId {request.ProductId}");
                     }
-                    if(product.InStock < request.quantity)
+                    if (product.InStock < request.quantity)
                     {
                         return BadRequest("Not enough product");
                     }
@@ -75,7 +75,7 @@ namespace KoiCareApi.Controllers
                     returnUrl
                 );
                 CreatePaymentResult paymentResult = await _paymentService.createPaymentLink(paymentData);
-               
+
                 return Ok(new
                 {
                     Url = paymentResult.checkoutUrl,
@@ -89,7 +89,7 @@ namespace KoiCareApi.Controllers
                     TotalCost = totalAmount,
                     CloseDate = DateTime.Now,
                     Code = paymentResult.orderCode.ToString(),
-                    Description = string.Join(",",productName),
+                    Description = string.Join(",", productName),
                     Status = "Chưa thanh toán"
                 };
 
@@ -103,20 +103,49 @@ namespace KoiCareApi.Controllers
             }
         }
 
-        [HttpPost("send")]
-        public async Task<IActionResult> SendEmail([FromBody] EmailRequestModel emailRequest) 
+        [HttpPost("send/{orderCode}")]
+        public async Task<IActionResult> SendEmail([FromBody] EmailRequestModel emailRequest, int orderCode)
         {
-            if (emailRequest == null || string.IsNullOrEmpty(emailRequest.RecipientEmail)) 
-            { 
-            return BadRequest("invalid email Request");
+            PaymentLinkInformation paymentLinkInformation = await _paymentService.getPaymentLinkInformation(orderCode);
+
+            string body = $@"
+        <html>
+            <body style='font-family: Arial, sans-serif;'>
+                 <p>Hi,</p>
+                 <p>Here are the details of your payment:</p>
+            <table style='border-collapse: collapse;'>
+                     <tr>
+                     <td style='padding: 8px;'><strong>Order Code:</strong></td>
+                     <td style='padding: 8px;'>{paymentLinkInformation.orderCode}</td>
+                     </tr>
+                     <tr>
+                     <td style='padding: 8px;'><strong>Created At:</strong></td>
+                    <td style='padding: 8px;'>{paymentLinkInformation.createdAt:yyyy-MM-dd HH:mm:ss}</td>
+                     </tr>
+                     <tr>
+                   <td style='padding: 8px;'><strong>Amount Paid:</strong></td>
+                  <td style='padding: 8px;'>{paymentLinkInformation.amountPaid:C}</td>
+                 </tr>
+                <tr>
+                 <td style='padding: 8px;'><strong>Status:</strong></td>
+                  <td style='padding: 8px;'>{paymentLinkInformation.status}</td>
+             </tr>
+                 </table>
+                <p>Thank you for your payment!</p>
+                </body>
+                 </html>";
+
+            if (emailRequest == null || string.IsNullOrEmpty(emailRequest.RecipientEmail))
+            {
+                return BadRequest("invalid email Request");
             }
 
             try
             {
-                await _emailService.SendEmailAsync(emailRequest.RecipientEmail, emailRequest.Subject, emailRequest.Body);
+                await _emailService.SendEmailAsync(emailRequest.RecipientEmail, emailRequest.Subject, body);
                 return Ok();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

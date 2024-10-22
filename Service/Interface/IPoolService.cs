@@ -20,5 +20,6 @@ namespace Service.Interface
         Task DeletePool(int id);
 
         Task UpdatePool(int id,PoolRequestModel request);
+        Task<double> CalCulateSaltPoolNeed(int id);
     }
 }
