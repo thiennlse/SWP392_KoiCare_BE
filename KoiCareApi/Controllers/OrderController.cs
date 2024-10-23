@@ -128,7 +128,7 @@ namespace KoiCareApi.Controllers
             try
             {
                 // Call the service method
-                var orders = await _orderService.SearchOrdersByUserId(memberId, page, pageSize, searchTerm);
+                var orders = await _orderService.SearchOrdersByMemberId(memberId, page, pageSize, searchTerm);
 
                 // If no orders are found, return 404 Not Found
                 if (orders == null || !orders.Any())
