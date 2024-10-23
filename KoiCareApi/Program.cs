@@ -167,7 +167,5 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.UseAuthentication();
 app.UseHttpsRedirection();
-
 app.MapControllers();
-
 app.Run();

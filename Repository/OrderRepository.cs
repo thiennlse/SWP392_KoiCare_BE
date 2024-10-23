@@ -23,7 +23,9 @@ namespace Repository
 
         public async Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm)
         {
-            var query = GetQueryable();
+            var query = GetQueryable()
+                .Include(o => o.OrderProducts)
+                .AsQueryable();
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 query = query.Where(o => o.Code.Contains(searchTerm) 

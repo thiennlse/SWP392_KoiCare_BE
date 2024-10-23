@@ -17,17 +17,16 @@ namespace Service
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IMemberRepository _memberRepository;
         private readonly IProductRepository _productRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IHttpContextAccessor contextAccessor)
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _contextAccessor = contextAccessor;
+            _memberRepository = memberRepository;
         }
-
-
-
         public async Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm)
         {
             return await _orderRepository.GetAllOrderAsync(page, pageSize, searchTerm);
@@ -40,7 +39,7 @@ namespace Service
 
         public async Task AddNewOrder(OrderRequestModel newOrder)
         {
-            Order order = MapToOrder(newOrder);
+            Order order = await MapToOrder(newOrder);
             await _orderRepository.AddNewOrder(order);
         }
 
@@ -49,36 +48,38 @@ namespace Service
             _orderRepository.DeleteOrder(id);
         }
 
-        public async Task<Order> UpdateOrder(int id, OrderRequestModel newOrder)
+        public async Task UpdateOrder(int id, OrderRequestModel newOrder)
         {
-            var order = MapToOrder(newOrder);
+            var order = await MapToOrder(newOrder);
             order.Id = id;
-            return await _orderRepository.UpdateOrder(order);
+            await _orderRepository.UpdateOrder(order);
         }
 
-        private Order MapToOrder(OrderRequestModel request)
+        private async Task<Order> MapToOrder(OrderRequestModel request)
         {
-
-
-            List<Product> products = new List<Product>();
-            foreach (var item in request.ProductId)
-            {
-                var product = _productRepository.getById(item);
-                products.Add(product);
-            }
-
             var user = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userid = int.Parse(user);
-            return new Order
+            var order = new Order
             {
                 MemberId = userid,
+                Member = await _memberRepository.GetById(userid),
                 TotalCost = request.TotalCost,
+                OrderDate = DateTime.Now,
                 CloseDate = request.CloseDate,
                 Code = request.Code,
                 Description = request.Description,
                 Status = request.Status,
-                Product = products
+                OrderProducts = new List<OrderProduct>()
             };
+            foreach (var item in request.ProductId)
+            {
+                var product = await _productRepository.GetById(item);
+                if (product != null)
+                {
+                    order.OrderProducts.Add(new OrderProduct { ProductId = product.Id });
+                }
+            }
+            return order;
         }
     }
 }

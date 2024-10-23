@@ -134,19 +134,26 @@ namespace BusinessObject.Models
                     .IsRequired()
                     .HasColumnType("decimal(18, 2)");
 
-                // Define relationship with Member
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Orders_MemberId");
 
-                // Define relationship with Product
-                entity.HasMany(e => e.Product)
-                    .WithMany(p => p.Orders)
-                    .UsingEntity(j => j.ToTable("OrderProducts")); // Assuming you have a joining table for this many-to-many relationship
-            });
+               
+                entity.HasMany(e => e.OrderProducts) 
+                    .WithOne(op => op.Order)
+                    .HasForeignKey(op => op.OrderId) 
+                    .OnDelete(DeleteBehavior.Cascade) 
+                    .HasConstraintName("FK_OrderProducts_Orders");
 
+                modelBuilder.Entity<OrderProduct>()
+                    .HasOne(op => op.Product) 
+                    .WithMany(p => p.OrderProducts) 
+                    .HasForeignKey(op => op.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_OrderProducts_Products"); 
+            });
 
             modelBuilder.Entity<Pool>(entity =>
             {
@@ -169,20 +176,38 @@ namespace BusinessObject.Models
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.Property(e => e.Id).IsUnicode(false);
+                entity.Property(e => e.Id)
+                    .IsUnicode(false); // Đảm bảo rằng ID là không phải Unicode nếu cần thiết
 
-                entity.Property(e => e.Code).HasMaxLength(50);
+                entity.Property(e => e.Code)
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255);
 
-                entity.Property(e => e.Name).HasMaxLength(100);
+                entity.Property(e => e.Name)
+                    .HasMaxLength(100);
 
-                entity.Property(e => e.Origin).HasMaxLength(100);
+                entity.Property(e => e.Origin)
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Cost)
+                    .IsRequired()
+                    .HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.InStock)
+                    .IsRequired();
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_Products_UserId");
+
+                entity.HasMany(e => e.OrderProducts)
+                    .WithOne(op => op.Product)
+                    .HasForeignKey(op => op.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_OrderProducts_Products");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -210,6 +235,19 @@ namespace BusinessObject.Models
 
                 entity.Property(e => e.O2).HasColumnName("O2");
             });
+
+            modelBuilder.Entity<OrderProduct>()
+            .HasKey(op => new { op.OrderId, op.ProductId });
+
+            modelBuilder.Entity<OrderProduct>()
+                .HasOne(op => op.Order)
+                .WithMany(o => o.OrderProducts)
+                .HasForeignKey(op => op.OrderId);
+
+            modelBuilder.Entity<OrderProduct>()
+                .HasOne(op => op.Product)
+                .WithMany(p => p.OrderProducts)
+                .HasForeignKey(op => op.ProductId);
 
             OnModelCreatingPartial(modelBuilder);
         }
