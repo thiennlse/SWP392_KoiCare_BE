@@ -25,10 +25,12 @@ namespace Repository
         {
             var query = GetQueryable()
                 .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
                 .AsQueryable();
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(o => o.Code.Contains(searchTerm) 
+                query = query.Where(o => o.Code.Contains(searchTerm)
                 || o.Description.Contains(searchTerm));
             }
 

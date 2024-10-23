@@ -15,6 +15,6 @@ namespace BusinessObject.Models
         public string Status { get; set; } = string.Empty;
 
         public virtual Member? Member { get; set; }
-        public virtual ICollection<OrderProduct>? OrderProducts { get; set; } = new List<OrderProduct>();
+        public virtual ICollection<OrderProduct>? OrderProducts { get; set; }
     }
 }
