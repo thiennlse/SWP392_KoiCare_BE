@@ -22,6 +22,6 @@ namespace Service.Interface
 
         Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate);
 
-        Task<List<Order>> SearchOrdersByUserId(int userId, int page = 1, int pageSize = 100, string? searchTerm = null);
+        Task<List<Order>> SearchOrdersByUserId(int memberId, int page = 1, int pageSize = 100, string? searchTerm = null);
     }
 }
