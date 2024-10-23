@@ -10,8 +10,8 @@ namespace BusinessObject.ResponseModel
     public class OrderResponseModel
     {
         public int Id { get; set; }
-        public int MemberId { get; set; }
         public List<int> ProductId { get; set; }
+        public int MemberId { get; set; }
         public double TotalCost { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime CloseDate { get; set; }

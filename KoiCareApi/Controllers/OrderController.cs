@@ -122,13 +122,13 @@ namespace KoiCareApi.Controllers
             }
         }
 
-        [HttpGet("search-by-user/{id}")]
-        public async Task<IActionResult> SearchOrdersByMmmberId(int memberId, int page = 1, int pageSize = 100, string? searchTerm = null)
+        [HttpGet("search-by-member/{id}")]
+        public async Task<IActionResult> SearchOrdersByMmmberId(int id, int page = 1, int pageSize = 100, string? searchTerm = null)
         {
             try
             {
                 // Call the service method
-                var orders = await _orderService.SearchOrdersByMemberId(memberId, page, pageSize, searchTerm);
+                var orders = await _orderService.SearchOrdersByMemberId(id, page, pageSize, searchTerm);
 
                 // If no orders are found, return 404 Not Found
                 if (orders == null || !orders.Any())
