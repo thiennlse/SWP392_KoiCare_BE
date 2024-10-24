@@ -59,6 +59,7 @@ namespace Service
         {
             var user = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userid = int.Parse(user);
+
             var order = new Order
             {
                 MemberId = userid,
@@ -66,20 +67,39 @@ namespace Service
                 TotalCost = request.TotalCost,
                 OrderDate = DateTime.Now,
                 CloseDate = request.CloseDate,
-                Code = request.Code,
+                Code = GenerateUniqueCode(),
                 Description = request.Description,
-                Status = request.Status,
+                Status = "PAID",
                 OrderProducts = new List<OrderProduct>()
             };
-            foreach (var item in request.ProductId)
+
+            for (int i = 0; i < request.ProductId.Count; i++)
             {
-                var product = await _productRepository.GetById(item);
-                if (product != null)
+                var product = await _productRepository.GetById(request.ProductId[i]);
+                if (product != null && request.Quantity[i] > 0)
                 {
-                    order.OrderProducts.Add(new OrderProduct { ProductId = product.Id });
+                    // Trừ số lượng sản phẩm tồn kho
+                    if (product.InStock >= request.Quantity[i])
+                    {
+                        product.InStock -= request.Quantity[i];
+                        // Thêm sản phẩm vào đơn hàng
+                        order.OrderProducts.Add(new OrderProduct
+                        {
+                            ProductId = product.Id,
+                            Quantity = request.Quantity[i]
+                        });
+
+                        // Cập nhật sản phẩm
+                        await _productRepository.UpdateProduct(product);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Số lượng tồn kho của sản phẩm {product.Id} không đủ.");
+                    }
                 }
             }
             return order;
         }
+        private string GenerateUniqueCode() => Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
     }
 }
