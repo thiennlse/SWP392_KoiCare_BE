@@ -141,6 +141,30 @@ namespace KoiCareApi.Controllers
             }
         }
 
+        [HttpGet("search-by-dates")]
+        public async Task<IActionResult> GetOrdersByOrderDateAndCloseDate([FromQuery] DateTime startOrderDate, [FromQuery] DateTime endOrderDate, [FromQuery] DateTime startCloseDate, [FromQuery] DateTime endCloseDate)
+        {
+            try
+            {
+                // Call the service method
+                var orders = await _orderService.GetOrdersByOrderDateAndCloseDate(startOrderDate, endOrderDate, startCloseDate, endCloseDate);
+
+                // If no orders are found, return 404 Not Found
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new { message = "No orders found within the specified date ranges." });
+                }
+
+                // Return the list of filtered orders with 200 OK
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions and return a 500 Internal Server Error
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message });
+            }
+        }
+
         [HttpGet("search-by-member/{id}")]
         public async Task<IActionResult> SearchOrdersByUserId(int id, int page = 1, int pageSize = 100, string? searchTerm = null)
         {

@@ -89,6 +89,26 @@ namespace Service
             return filteredOrders;
         }
 
+        public async Task<List<Order>> GetOrdersByOrderDateAndCloseDate(DateTime startOrderDate, DateTime endOrderDate, DateTime startCloseDate, DateTime endCloseDate)
+        {
+            // Assuming default pagination parameters for fetching orders
+            int defaultPage = 1;
+            int pageSize = 100;
+            string? searchTerm = null;
+
+            // Fetch orders using pagination and the search term
+            var allOrders = await _orderRepository.GetAllOrderAsync(defaultPage, pageSize, searchTerm);
+
+            // Filter orders that match both date ranges
+            var filteredOrders = allOrders
+                .Where(order =>
+                    order.OrderDate.Date >= startOrderDate.Date && order.OrderDate.Date <= endOrderDate.Date &&
+                    order.CloseDate.Date >= startCloseDate.Date && order.CloseDate.Date <= endCloseDate.Date)
+                .ToList();
+
+            return filteredOrders;
+        }
+
         public async Task<List<Order>> SearchOrdersByUserId(int id, int page = 1, int pageSize = 100, string? searchTerm = null)
         {
             // Fetch orders using pagination and an optional search term
