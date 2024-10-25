@@ -102,7 +102,7 @@ namespace Service
             // Filter orders that match both date ranges
             var filteredOrders = allOrders
                 .Where(order =>
-                    order.OrderDate.Date >= OrderDate.Date && order.OrderDate.Date <= CloseDate.Date)
+                    order.OrderDate.Date >= OrderDate.Date && order.CloseDate.Date <= CloseDate.Date)
                 .ToList();
 
             return filteredOrders;
