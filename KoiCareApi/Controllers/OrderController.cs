@@ -123,7 +123,7 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet("search-by-member/{id}")]
-        public async Task<IActionResult> SearchOrdersByMmmberId(int id, int page = 1, int pageSize = 100, string? searchTerm = null)
+        public async Task<IActionResult> SearchOrdersByMemberId(int id, int page = 1, int pageSize = 100, string? searchTerm = null)
         {
             try
             {
