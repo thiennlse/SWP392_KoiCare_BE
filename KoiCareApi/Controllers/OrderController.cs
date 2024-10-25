@@ -35,7 +35,7 @@ namespace KoiCareApi.Controllers
             var order = await _orderService.GetAllOrderAsync(page, pageSize, searchTerm);
             if (order == null)
             {
-                return NotFound("empty Order");
+                return NotFound("The Order is empty");
             }
             return Ok(order);
         }
@@ -45,12 +45,12 @@ namespace KoiCareApi.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest("phease input id >0");
+                return BadRequest("PLease input Id with the number >0");
             }
             var _order = await _orderService.GetOrderById(id);
             if (_order == null)
             {
-                return NotFound("order is not exit");
+                return NotFound("The order does not exist");
             }
             return Ok(_order);
         }
@@ -85,7 +85,7 @@ namespace KoiCareApi.Controllers
             var _order = await _orderService.GetOrderById(id);
             if (_order == null)
             {
-                return NotFound("order is not exits");
+                return NotFound("The order does not exist");
             }
             await _orderService.DeleteOrder(id);
             return NoContent();
