@@ -111,13 +111,28 @@ namespace KoiCareApi.Controllers
             }
         }
 
-        [HttpGet("date-range")]
-        public async Task<IActionResult> GetOrdersByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime closeDate)
+        [HttpGet("order-date-range")]
+        public async Task<IActionResult> GetOrdersByOrderDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime closeDate)
         {
             try
             {
                 // Call the service to get orders within the date range
-                var orders = await _orderService.GetOrdersByDateRange(startDate, closeDate);
+                var orders = await _orderService.GetOrdersByOrderDateRange(startDate, closeDate);
+                return Ok(orders); // Return the filtered orders
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("close-date-range")]
+        public async Task<IActionResult> GetOrdersByCloseDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime closeDate)
+        {
+            try
+            {
+                // Call the service to get orders within the date range
+                var orders = await _orderService.GetOrdersByCloseDateRange(startDate, closeDate);
                 return Ok(orders); // Return the filtered orders
             }
             catch (Exception ex)

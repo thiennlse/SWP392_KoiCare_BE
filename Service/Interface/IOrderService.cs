@@ -20,7 +20,9 @@ namespace Service.Interface
 
         Task UpdateOrder(int id,OrderRequestModel order);
 
-        Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate);
+        Task<List<Order>> GetOrdersByOrderDateRange(DateTime startDate, DateTime closeDate);
+
+        Task<List<Order>> GetOrdersByCloseDateRange(DateTime startDate, DateTime closeDate);
 
         Task<List<Order>> SearchOrdersByUserId(int id, int page = 1, int pageSize = 100, string? searchTerm = null);
     }
