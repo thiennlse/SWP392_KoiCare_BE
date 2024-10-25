@@ -10,7 +10,7 @@ namespace Repository.Interface
     public interface IOrderRepository : IBaseRepository<Order>
     {
         public  Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm);
-
+        public Task<Order> GetOrderByCode(string orderCode);
         Task AddNewOrder(Order order);
         Task DeleteOrder(int id);
         Task<Order> UpdateOrder(Order order);

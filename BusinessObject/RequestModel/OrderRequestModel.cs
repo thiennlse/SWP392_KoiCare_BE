@@ -17,6 +17,7 @@ namespace BusinessObject.RequestModel
         public double TotalCost { get; set; }
         public DateTime CloseDate { get; set; }
         public string Description { get; set; } = string.Empty;
+        public string Status { get; set; }
     }
 
 }

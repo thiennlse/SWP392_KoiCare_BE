@@ -55,6 +55,7 @@ namespace Service
             await _orderRepository.UpdateOrder(order);
         }
 
+
         private async Task<Order> MapToOrder(OrderRequestModel request)
         {
             var user = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -69,7 +70,7 @@ namespace Service
                 CloseDate = request.CloseDate,
                 Code = GenerateUniqueCode(),
                 Description = request.Description,
-                Status = "PAID",
+                Status = request.Status,
                 OrderProducts = new List<OrderProduct>()
             };
 
