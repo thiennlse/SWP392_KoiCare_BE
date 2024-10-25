@@ -89,7 +89,7 @@ namespace Service
             return filteredOrders;
         }
 
-        public async Task<List<Order>> GetOrdersByOrderDateAndCloseDate(DateTime startOrderDate, DateTime endOrderDate, DateTime startCloseDate, DateTime endCloseDate)
+        public async Task<List<Order>> GetOrdersByOrderDateAndCloseDate(DateTime OrderDate,  DateTime CloseDate)
         {
             // Assuming default pagination parameters for fetching orders
             int defaultPage = 1;
@@ -102,8 +102,7 @@ namespace Service
             // Filter orders that match both date ranges
             var filteredOrders = allOrders
                 .Where(order =>
-                    order.OrderDate.Date >= startOrderDate.Date && order.OrderDate.Date <= endOrderDate.Date &&
-                    order.CloseDate.Date >= startCloseDate.Date && order.CloseDate.Date <= endCloseDate.Date)
+                    order.OrderDate.Date >= OrderDate.Date && order.OrderDate.Date <= CloseDate.Date)
                 .ToList();
 
             return filteredOrders;

@@ -142,12 +142,12 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet("search-by-dates")]
-        public async Task<IActionResult> GetOrdersByOrderDateAndCloseDate([FromQuery] DateTime startOrderDate, [FromQuery] DateTime endOrderDate, [FromQuery] DateTime startCloseDate, [FromQuery] DateTime endCloseDate)
+        public async Task<IActionResult> GetOrdersByOrderDateAndCloseDate([FromQuery] DateTime OrderDate, [FromQuery] DateTime CloseDate)
         {
             try
             {
                 // Call the service method
-                var orders = await _orderService.GetOrdersByOrderDateAndCloseDate(startOrderDate, endOrderDate, startCloseDate, endCloseDate);
+                var orders = await _orderService.GetOrdersByOrderDateAndCloseDate(OrderDate, CloseDate);
 
                 // If no orders are found, return 404 Not Found
                 if (orders == null || !orders.Any())

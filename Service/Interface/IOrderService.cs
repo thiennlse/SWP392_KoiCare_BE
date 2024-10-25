@@ -24,7 +24,7 @@ namespace Service.Interface
 
         Task<List<Order>> GetOrdersByCloseDateRange(DateTime startDate, DateTime closeDate);
 
-        Task<List<Order>> GetOrdersByOrderDateAndCloseDate(DateTime startOrderDate, DateTime endOrderDate, DateTime startCloseDate, DateTime endCloseDate)
+        Task<List<Order>> GetOrdersByOrderDateAndCloseDate(DateTime OrderDate, DateTime CloseDate);
 
         Task<List<Order>> SearchOrdersByUserId(int id, int page = 1, int pageSize = 100, string? searchTerm = null);
     }
