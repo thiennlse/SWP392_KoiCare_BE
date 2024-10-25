@@ -1,4 +1,5 @@
-﻿using BusinessObject.RequestModel;
+﻿using BusinessObject.Models;
+using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Repository.Interface;
 using Service.Interface;

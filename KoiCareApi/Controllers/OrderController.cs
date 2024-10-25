@@ -69,6 +69,10 @@ namespace KoiCareApi.Controllers
                 var error = validationResult.Errors;
                 return BadRequest(error);
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

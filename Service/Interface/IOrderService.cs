@@ -18,10 +18,6 @@ namespace Service.Interface
 
         Task DeleteOrder(int id);
 
-        Task<Order> UpdateOrder(int id,OrderRequestModel order);
-
-        Task<List<Order>> GetOrdersByDateRange(DateTime startDate, DateTime closeDate);
-
-        Task<List<Order>> SearchOrdersByMemberId(int memberId, int page = 1, int pageSize = 100, string? searchTerm = null);
+        Task UpdateOrder(int id,OrderRequestModel order);
     }
 }
