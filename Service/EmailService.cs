@@ -28,8 +28,6 @@ namespace Service
 
         public async Task SendEmailAsync(string recipientEmail, string subject, string body)
         {
-
-
             using (var client = new SmtpClient(_smtpServer, _port)
             {
                 Credentials = new NetworkCredential(_senderEmail, _password),
@@ -44,14 +42,16 @@ namespace Service
             {
                 try
                 {
-                    await client.SendMailAsync(mail); 
+                    await client.SendMailAsync(mail);
                     Console.WriteLine("Email sent successfully.");
                 }
                 catch (SmtpException ex)
                 {
                     Console.WriteLine($"Error sending email: {ex.Message}");
+                    // Log more detailed information if necessary
                 }
             }
         }
     }
 }
+

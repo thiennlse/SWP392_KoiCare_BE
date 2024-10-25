@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(KoiCareDBContext))]
-    [Migration("20241020124229_InitCreate")]
+    [Migration("20241023165756_InitCreate")]
     partial class InitCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,6 +238,27 @@ namespace BusinessObject.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("BusinessObject.Models.OrderProduct", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderProduct");
+                });
+
             modelBuilder.Entity("BusinessObject.Models.Pool", b =>
                 {
                     b.Property<int>("Id")
@@ -276,6 +297,58 @@ namespace BusinessObject.Migrations
                     b.HasIndex("WaterId");
 
                     b.ToTable("Pools");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .IsUnicode(false)
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InStock")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<double>("Productivity")
+                        .HasColumnType("float");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Role", b =>
@@ -339,73 +412,6 @@ namespace BusinessObject.Migrations
                     b.ToTable("Waters");
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrdersId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderProducts", (string)null);
-                });
-
-            modelBuilder.Entity("Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .IsUnicode(false)
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<double>("Cost")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InStock")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Origin")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<double>("Productivity")
-                        .HasColumnType("float");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Products");
-                });
-
             modelBuilder.Entity("BusinessObject.Models.Blog", b =>
                 {
                     b.HasOne("BusinessObject.Models.Member", "Member")
@@ -462,6 +468,27 @@ namespace BusinessObject.Migrations
                     b.Navigation("Member");
                 });
 
+            modelBuilder.Entity("BusinessObject.Models.OrderProduct", b =>
+                {
+                    b.HasOne("BusinessObject.Models.Order", "Order")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_OrderProducts_Orders");
+
+                    b.HasOne("BusinessObject.Models.Product", "Product")
+                        .WithMany("OrderProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_OrderProducts_Products");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("BusinessObject.Models.Pool", b =>
                 {
                     b.HasOne("BusinessObject.Models.Member", "Member")
@@ -483,22 +510,7 @@ namespace BusinessObject.Migrations
                     b.Navigation("Water");
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.HasOne("BusinessObject.Models.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Product", b =>
+            modelBuilder.Entity("BusinessObject.Models.Product", b =>
                 {
                     b.HasOne("BusinessObject.Models.Member", "User")
                         .WithMany("Products")
@@ -526,9 +538,19 @@ namespace BusinessObject.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("BusinessObject.Models.Order", b =>
+                {
+                    b.Navigation("OrderProducts");
+                });
+
             modelBuilder.Entity("BusinessObject.Models.Pool", b =>
                 {
                     b.Navigation("Fish");
+                });
+
+            modelBuilder.Entity("BusinessObject.Models.Product", b =>
+                {
+                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("BusinessObject.Models.Role", b =>

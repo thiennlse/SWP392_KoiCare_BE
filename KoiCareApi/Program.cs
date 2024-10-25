@@ -127,7 +127,6 @@ builder.Services.AddScoped<ProductValidation>();
 #endregion
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
@@ -167,7 +166,5 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.UseAuthentication();
 app.UseHttpsRedirection();
-
 app.MapControllers();
-
 app.Run();

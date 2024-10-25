@@ -42,12 +42,9 @@ namespace KoiCareApi.Controllers
                 List<ItemData> items = new List<ItemData>();
                 int ordercode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
                 int totalAmount = 0;
-                List<int> productids = new List<int>();
-                List<string> productName = new List<string>();
                 foreach (var request in orderRequest)
                 {
                     Product product = await _productService.GetProductById(request.ProductId);
-
 
                     if (product == null)
                     {
@@ -57,9 +54,6 @@ namespace KoiCareApi.Controllers
                     {
                         return BadRequest("Not enough product");
                     }
-                    product.InStock -= request.quantity;
-                    productids.Add(product.Id);
-                    productName.Add(product.Name);
                     int price = (int)(request.Cost * request.quantity);
                     totalAmount += price;
                     ItemData item = new ItemData(product.Name, request.quantity, price);
@@ -75,19 +69,6 @@ namespace KoiCareApi.Controllers
                     returnUrl
                 );
                 CreatePaymentResult paymentResult = await _paymentService.createPaymentLink(paymentData);
-
-                OrderRequestModel order = new OrderRequestModel
-                {
-                    ProductId = productids,
-                    TotalCost = totalAmount,
-                    CloseDate = DateTime.Now,
-                    Code = paymentResult.orderCode.ToString(),
-                    Description = string.Join(",", productName),
-                    Status = "Chưa thanh toán"
-                };
-
-                await _orderService.AddNewOrder(order);
-
                 return Ok(new
                 {
                     Url = paymentResult.checkoutUrl,
@@ -137,12 +118,10 @@ namespace KoiCareApi.Controllers
   </body>
 </html>";
 
-
                 if (emailRequest == null || string.IsNullOrEmpty(emailRequest.RecipientEmail))
                 {
                     return BadRequest("invalid email Request");
                 }
-
 
                 await _emailService.SendEmailAsync(emailRequest.RecipientEmail, emailRequest.Subject, body);
                 return Ok("Email sent");
