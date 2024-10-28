@@ -68,7 +68,7 @@ namespace Service
                 TotalCost = request.TotalCost,
                 OrderDate = DateTime.Now,
                 CloseDate = request.CloseDate,
-                Code = GenerateUniqueCode(),
+                Code = request.Code,
                 Description = request.Description,
                 Status = request.Status,
                 OrderProducts = new List<OrderProduct>()
@@ -101,6 +101,5 @@ namespace Service
             }
             return order;
         }
-        private string GenerateUniqueCode() => Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
     }
 }
