@@ -7,6 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Authentication.Cookies;
 namespace KoiCareApi.Controllers
 {
     [Route("api/Member")]
@@ -30,7 +34,7 @@ namespace KoiCareApi.Controllers
             var members = await _memberService.GetAllMember();
             if (members == null)
             {
-                return NotFound("Không có member nào hiện tại");    
+                return NotFound("Không có member nào hiện tại");
             }
             return Ok(members);
         }
@@ -123,7 +127,7 @@ namespace KoiCareApi.Controllers
         [HttpPatch("update/{id}")]
         public async Task<IActionResult> Update([FromBody] MemberRequestModel model, int id)
         {
-            if ( await _memberService.GetMemberById(id) != null)
+            if (await _memberService.GetMemberById(id) != null)
             {
                 if (model != null)
                 {
@@ -144,3 +148,4 @@ namespace KoiCareApi.Controllers
         }
     }
 }
+

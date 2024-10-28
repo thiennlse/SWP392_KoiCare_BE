@@ -3,6 +3,7 @@ using BusinessObject.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interface;
+using System.Transactions;
 
 namespace KoiCareApi.Controllers
 {
@@ -94,18 +95,24 @@ namespace KoiCareApi.Controllers
                 return NotFound("pool is not exits");
             }
             Waters watersOfPool = await _waterService.GetById(_pool.WaterId);
-            double result = await _poolService.CalCulateSaltPoolNeed(id);
-            if (watersOfPool.Salt > result)
-            {
-                return Ok("need to descrease salt of pool");
+            double saltStandardForPool = await _poolService.CalCulateSaltPoolNeed(id);
+            double result = 0;
+            if (watersOfPool.Salt > saltStandardForPool)
+            {   // descrease salt in pool
+                result = watersOfPool.Salt - saltStandardForPool;
+                return Ok("descrease " + Math.Round(result,2));
             }
-            if (watersOfPool.Salt <result)
+            if (watersOfPool.Salt < saltStandardForPool)
             {
-                return Ok("need to increase salt of pool");
+                // increase salt in pool
+                result = saltStandardForPool - watersOfPool.Salt;
+                return Ok("increase "+ Math.Round(result, 2));
             }
-            if(watersOfPool.Salt == result)
+            if(watersOfPool.Salt == saltStandardForPool)
             {
-                return Ok("salt of pool is good for fish");
+                // keep salt unit in pool
+                result = saltStandardForPool;
+                return Ok("keep"+ Math.Round(result,2));
             }
             return Ok();
         }

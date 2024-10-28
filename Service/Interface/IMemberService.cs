@@ -16,5 +16,6 @@ namespace Service.Interface
         Task Register(Member member);
         Task<Member> UpdateMember(Member member);
         Task<bool> ExistedEmail(string email);
+        Task CreateMemberByGoogleAccount(string accountEmail, string accountName);
     }
 }

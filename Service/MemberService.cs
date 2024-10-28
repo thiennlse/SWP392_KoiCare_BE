@@ -22,7 +22,7 @@ namespace Service
 
         public async Task<bool> ExistedEmail(string email)
         {
-           return await _memberRepository.ExistedEmail(email);
+            return await _memberRepository.ExistedEmail(email);
         }
 
         public async Task<List<MemberResponseModel>> GetAllMember()
@@ -32,7 +32,7 @@ namespace Service
 
         public async Task<Member> GetMemberById(int id)
         {
-           return await _memberRepository.GetById(id);
+            return await _memberRepository.GetById(id);
         }
 
         public async Task<Member> Login(string email, string password)
@@ -48,6 +48,10 @@ namespace Service
         public async Task<Member> UpdateMember(Member member)
         {
             return await _memberRepository.UpdateMember(member);
+        }
+
+       public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName) {
+        await _memberRepository.CreateMemberByGoogleAccount(accountEmail, accountName);
         }
     }
 }
