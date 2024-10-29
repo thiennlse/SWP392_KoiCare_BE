@@ -78,7 +78,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:3000", "http://localhost:5000", "https://localhost:5001");
+                          policy.WithOrigins("http://localhost:3000", "https://koicare.vercel.app", "https://localhost:5001");
                           policy.AllowAnyMethod();
                           policy.AllowAnyHeader();
                       });
