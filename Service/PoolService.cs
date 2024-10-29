@@ -102,7 +102,7 @@ namespace Service
                 volume = volumeCubicMeters * 1;
                 saltForPool = 0.001 * volume;
             }
-            return saltForPool;
+            return Math.Round(saltForPool, 2);
         }
     }
 }

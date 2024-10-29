@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace Repository
 {
-    public class MemberRepository : BaseRepository<Member> ,IMemberRepository
+    public class MemberRepository : BaseRepository<Member>, IMemberRepository
     {
         private readonly KoiCareDBContext _context;
 
@@ -36,7 +36,7 @@ namespace Repository
             return _member;
         }
 
-        public async Task<Member> Login(string email , string password)
+        public async Task<Member> Login(string email, string password)
         {
             password = HashPasswordToSha256(password);
             return await _context.Members.Include(m => m.Role)
@@ -44,7 +44,7 @@ namespace Repository
         }
         public async Task Register(Member member)
         {
-            member.Password =  HashPasswordToSha256(member.Password);
+            member.Password = HashPasswordToSha256(member.Password);
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
 
@@ -77,5 +77,21 @@ namespace Repository
             return sb.ToString();
         }
 
+        public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName)
+        {
+                bool checkExits = await ExistedEmail(accountEmail);
+                if (checkExits == false)
+                {
+                    Member member = new Member();
+                    member.Email = accountEmail; 
+                    member.FullName = accountName;
+                    member.RoleId = 4;
+                    member.Password = "1";
+                _context.Members.Add(member);
+                await _context.SaveChangesAsync();
+            }
+                
+            
+        }
     }
 }
