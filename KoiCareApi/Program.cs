@@ -174,39 +174,6 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
-    options.AddSecurityDefinition("OAuth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.OAuth2,
-        Flows = new Microsoft.OpenApi.Models.OpenApiOAuthFlows
-        {
-            AuthorizationCode = new Microsoft.OpenApi.Models.OpenApiOAuthFlow
-            {
-                AuthorizationUrl = new Uri("https://accounts.google.com/o/oauth2/auth"),
-                TokenUrl = new Uri("https://oauth2.googleapis.com/token"),
-                Scopes = new Dictionary<string, string>
-            {
-                { "openid", "OpenID Connect scope" },
-                { "profile", "Google profile information" },
-                { "email", "Google email address" }
-            }
-            }
-        }
-    });
-
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-{
-    {
-        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-        {
-            Reference = new Microsoft.OpenApi.Models.OpenApiReference
-            {
-                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                Id = "OAuth2"
-            }
-        },
-        new[] { "openid", "profile", "email" }
-    }
-    });
 });
 var app = builder.Build();
 
