@@ -55,14 +55,9 @@ namespace Repository
             await _context.SaveChangesAsync();
             return member;
         }
-        public async Task<bool> ExistedEmail(string email)
+        public async Task<Member> ExistedEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return false;
-            }
-
-            return await _context.Members.AnyAsync(m => m.Email.Equals(email));
+            return await _context.Members.FirstOrDefaultAsync(m => m.Email.Equals(email));
         }
 
         public string HashPasswordToSha256(string password)
@@ -79,19 +74,19 @@ namespace Repository
 
         public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName)
         {
-                bool checkExits = await ExistedEmail(accountEmail);
-                if (checkExits == false)
-                {
-                    Member member = new Member();
-                    member.Email = accountEmail; 
-                    member.FullName = accountName;
-                    member.RoleId = 4;
-                    member.Password = "1";
+            var checkExits = await ExistedEmail(accountEmail);
+            if (checkExits != null)
+            {
+                Member member = new Member();
+                member.Email = accountEmail;
+                member.FullName = accountName;
+                member.RoleId = 4;
+                member.Password = "1";
                 _context.Members.Add(member);
                 await _context.SaveChangesAsync();
             }
-                
-            
+
+
         }
     }
 }

@@ -111,8 +111,8 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest(new { message = "Email và mật khẩu không được để trống" });
             }
-
-            if (await _memberService.ExistedEmail(_registerMember.Email))
+            var emailExisted = await _memberService.ExistedEmail(_registerMember.Email);
+            if (emailExisted != null)
             {
                 return BadRequest(new { message = "Email đã được sử dụng" });
             }

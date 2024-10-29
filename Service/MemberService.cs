@@ -20,7 +20,7 @@ namespace Service
             _memberRepository = memberRepository;
         }
 
-        public async Task<bool> ExistedEmail(string email)
+        public async Task<Member> ExistedEmail(string email)
         {
             return await _memberRepository.ExistedEmail(email);
         }
@@ -50,8 +50,9 @@ namespace Service
             return await _memberRepository.UpdateMember(member);
         }
 
-       public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName) {
-        await _memberRepository.CreateMemberByGoogleAccount(accountEmail, accountName);
+        public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName)
+        {
+            await _memberRepository.CreateMemberByGoogleAccount(accountEmail, accountName);
         }
     }
 }

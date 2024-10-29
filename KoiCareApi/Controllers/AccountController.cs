@@ -74,17 +74,22 @@ namespace KoiCareApi.Controllers
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+                var emailExisted = await _memberService.ExistedEmail(emailValue);
+                if (emailExisted != null && emailExisted.Password != "1")
+                {
+                    return BadRequest("Email has existed");
+                }
                 var jwtClaims = new[]
                 {
-                 email,
-                 name
-            };
+                    email,
+                    name
+                };
                 var Sectoken = new JwtSecurityToken(_configuration["Jwt:Issuer"],
              _configuration["Jwt:Issuer"],
              claims: jwtClaims,
              expires: DateTime.Now.AddMinutes(60),
              signingCredentials: credentials);
-                   
+
                 var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
                 await _memberService.CreateMemberByGoogleAccount(emailValue, nameValue);
                 return Ok(new { emailValue, nameValue, token });
@@ -101,22 +106,17 @@ namespace KoiCareApi.Controllers
         {
             try
             {
-                // Sign out locally
                 await HttpContext.SignOutAsync();
-
                 _logger.LogInformation("User logged out successfully");
-
-                // Redirect to Google's logout endpoint to clear the Google session
-                var googleLogoutUrl = "https://accounts.google.com/Logout";
-                return Redirect(googleLogoutUrl);
+                return Ok("User logged out successfully");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during logout");
-                return StatusCode(500, "An error occurred while logging out");
+                return BadRequest("An error occurred while logging out");
             }
         }
 
-        
+
     }
 }
