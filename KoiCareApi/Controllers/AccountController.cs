@@ -58,7 +58,6 @@ namespace KoiCareApi.Controllers
         {
             try
             {
-
                 var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
                 if (!result.Succeeded)
@@ -67,32 +66,64 @@ namespace KoiCareApi.Controllers
                 }
 
                 var claims = result.Principal.Claims;
-                var email = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email);
-                var name = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name);
-                var emailValue = email.Value;
-                var nameValue = name.Value;
+                var emailClaim = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email);
+                var nameClaim = claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name);
+
+                if (emailClaim == null || nameClaim == null)
+                {
+                    return BadRequest("Email or Name claim is missing");
+                }
+
+                var emailValue = emailClaim.Value;
+                var nameValue = nameClaim.Value;
+
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
                 var emailExisted = await _memberService.ExistedEmail(emailValue);
-                if (emailExisted != null && emailExisted.Password != "1")
+
+                if (emailExisted != null)
                 {
+                    if (emailExisted.Password == "1")
+                    {
+                        var jwtClaims = new[]
+                        {
+                    new Claim(ClaimTypes.NameIdentifier, emailExisted.Id.ToString()),
+                };
+
+                        var tokenDescriptor = new JwtSecurityToken(
+                            _configuration["Jwt:Issuer"],
+                            _configuration["Jwt:Issuer"],
+                            claims: jwtClaims,
+                            expires: DateTime.Now.AddMinutes(60),
+                            signingCredentials: credentials
+                        );
+
+                        var token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+
+                        return Ok(new { emailValue, nameValue, token });
+                    }
+
                     return BadRequest("Email has existed");
                 }
-                var jwtClaims = new[]
-                {
-                    email,
-                    name
-                };
-                var Sectoken = new JwtSecurityToken(_configuration["Jwt:Issuer"],
-             _configuration["Jwt:Issuer"],
-             claims: jwtClaims,
-             expires: DateTime.Now.AddMinutes(60),
-             signingCredentials: credentials);
 
-                var token = new JwtSecurityTokenHandler().WriteToken(Sectoken);
-                await _memberService.CreateMemberByGoogleAccount(emailValue, nameValue);
-                return Ok(new { emailValue, nameValue, token });
+                var data = await _memberService.CreateMemberByGoogleAccount(emailValue, nameValue);
+                var newJwtClaims = new[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, data.Id.ToString()),
+        };
+
+                var newTokenDescriptor = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Issuer"],
+                    claims: newJwtClaims,
+                    expires: DateTime.Now.AddMinutes(60),
+                    signingCredentials: credentials
+                );
+
+                var newToken = new JwtSecurityTokenHandler().WriteToken(newTokenDescriptor);
+
+                return Ok(new { emailValue, nameValue, token = newToken });
             }
             catch (Exception ex)
             {
@@ -100,6 +131,7 @@ namespace KoiCareApi.Controllers
                 return StatusCode(500, "An error occurred while processing Google authentication");
             }
         }
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

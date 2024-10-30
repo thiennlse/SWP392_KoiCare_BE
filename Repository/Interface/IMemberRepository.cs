@@ -16,6 +16,6 @@ namespace Repository.Interface
         Task<Member> UpdateMember(Member member);
 
         Task<Member> ExistedEmail(string email);
-        Task CreateMemberByGoogleAccount(string accountEmail, string accountName);
+        Task<Member> CreateMemberByGoogleAccount(string accountEmail, string accountName);
     }
 }

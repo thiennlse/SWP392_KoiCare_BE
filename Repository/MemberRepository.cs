@@ -5,7 +5,6 @@ using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System.Text;
-
 using System.Security.Cryptography;
 
 namespace Repository
@@ -72,21 +71,16 @@ namespace Repository
             return sb.ToString();
         }
 
-        public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName)
+        public async Task<Member> CreateMemberByGoogleAccount(string accountEmail, string accountName)
         {
-            var checkExits = await ExistedEmail(accountEmail);
-            if (checkExits != null)
-            {
-                Member member = new Member();
-                member.Email = accountEmail;
-                member.FullName = accountName;
-                member.RoleId = 4;
-                member.Password = "1";
-                _context.Members.Add(member);
-                await _context.SaveChangesAsync();
-            }
-
-
+            Member member = new Member();
+            member.Email = accountEmail;
+            member.FullName = accountName;
+            member.RoleId = 4;
+            member.Password = "1";
+            _context.Members.Add(member);
+            await _context.SaveChangesAsync();
+            return member;
         }
     }
 }

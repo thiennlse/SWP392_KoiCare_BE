@@ -2,12 +2,6 @@
 using BusinessObject.ResponseModel;
 using Repository.Interface;
 using Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -50,9 +44,9 @@ namespace Service
             return await _memberRepository.UpdateMember(member);
         }
 
-        public async Task CreateMemberByGoogleAccount(string accountEmail, string accountName)
+        public async Task<Member> CreateMemberByGoogleAccount(string accountEmail, string accountName)
         {
-            await _memberRepository.CreateMemberByGoogleAccount(accountEmail, accountName);
+           return await _memberRepository.CreateMemberByGoogleAccount(accountEmail, accountName);
         }
     }
 }
