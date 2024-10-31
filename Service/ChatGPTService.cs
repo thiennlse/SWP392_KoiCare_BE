@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class ChatGPTClient
+    public class ChatGPTService
     {
         private readonly HttpClient _httpClient;
 
-        public ChatGPTClient(HttpClient httpClient)
+        public ChatGPTService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

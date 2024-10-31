@@ -10,9 +10,9 @@ namespace KoiCareApi.Controllers
     [Route("api/[controller]")]
     public class ChatGPTController : ControllerBase
     {
-        private readonly ChatGPTClient _chatGptClient;
+        private readonly ChatGPTService _chatGptClient;
 
-        public ChatGPTController(ChatGPTClient chatGptClient)
+        public ChatGPTController(ChatGPTService chatGptClient)
         {
             _chatGptClient = chatGptClient;
         }
