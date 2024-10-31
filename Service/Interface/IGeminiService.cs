@@ -15,5 +15,7 @@ namespace Repository.Interface
         public Task<string> PDFToString(IFormFile file);
 
         public Task<string> AskQuestionFishFood(Fish fish);
+
+        public  Task<string> AskQuestionCaculatSalt(Pool pool);
     }
 }

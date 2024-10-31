@@ -40,7 +40,7 @@ namespace KoiCareApi.Controllers
         }
 
        
-        [HttpPost("supportcalculate/{fishId}")]
+        [HttpPost("supportcalculatefood/{fishId}")]
         public async Task<IActionResult> AskQuestionFishFood(int fishId) 
         {
             try
@@ -56,6 +56,25 @@ namespace KoiCareApi.Controllers
             catch (Exception ex) {
                 return BadRequest($"{ex.Message}");
             }
+        }
+        [HttpPost("supportcalculatesalt/{poolId}")]
+        public async Task<IActionResult> AskQuestionCaculatSalt(int poolId)
+        {
+            try
+            {
+                Pool pool = await _poolService.GetPoolById(poolId);
+                if (pool == null)
+                {
+                    return BadRequest("pool is not exits");
+                }
+                var result = await _opentAiService.AskQuestionCaculatSalt(pool);
+                return Ok(result);
+
+            }
+            catch (Exception ex) {
+                return BadRequest($"{ex.Message}");
+            }
+
         }
 
     }
