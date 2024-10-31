@@ -10,8 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.0.0" />
     <PackageReference Include="dotenv.net" Version="3.0.0" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="Google.Cloud.AIPlatform.V1" Version="3.9.0" />
+    <PackageReference Include="itext7" Version="8.0.5" />
     <PackageReference Include="MailKit" Version="4.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
@@ -25,6 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Mscc.GenerativeAI" Version="1.8.1" />
     <PackageReference Include="payOS" Version="1.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>

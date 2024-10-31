@@ -68,7 +68,7 @@ namespace Service
 
         private Pool MapToPool(PoolRequestModel request)
         {
-            var currUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser =  _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             int currUserId = int.Parse(currUser);
             return new Pool
             {
