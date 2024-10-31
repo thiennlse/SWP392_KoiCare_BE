@@ -11,6 +11,7 @@ using System.Text;
 using AutoMapper.Execution;
 using Service.Interface;
 using Org.BouncyCastle.Security;
+using BusinessObject.Models;
 
 namespace KoiCareApi.Controllers
 {
@@ -110,8 +111,9 @@ namespace KoiCareApi.Controllers
                 var data = await _memberService.CreateMemberByGoogleAccount(emailValue, nameValue);
                 var newJwtClaims = new[]
                 {
-            new Claim(ClaimTypes.NameIdentifier, data.Id.ToString()),
-        };
+                    new Claim(ClaimTypes.NameIdentifier, data.Id.ToString()),
+                    new Claim(ClaimTypes.Role, data.Role.Name)
+                };
 
                 var newTokenDescriptor = new JwtSecurityToken(
                     _configuration["Jwt:Issuer"],
