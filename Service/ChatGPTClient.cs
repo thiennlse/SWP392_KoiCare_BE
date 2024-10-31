@@ -1,5 +1,6 @@
 ﻿using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,34 +14,41 @@ namespace Service
     public class ChatGPTClient
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey;
 
-        public ChatGPTClient(string apiKey)
+        public ChatGPTClient(HttpClient httpClient)
         {
-            _apiKey = apiKey;
-            _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+            _httpClient = httpClient;
         }
 
-        public async Task<string> SendMessageAsync(string userInput)
+        public async Task<string> SendMessageAsync(ChatGPTRequestModel request)
         {
-            // Create a request model with user input
-            var request = new ChatGPTRequestModel(userInput);
-
-            // Send the request to OpenAI API
-            var response = await _httpClient.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", request);
-
-            if (response.IsSuccessStatusCode)
+            var openAIRequest = new
             {
-                // Deserialize the response into ChatGPTResponse model
-                var result = await response.Content.ReadFromJsonAsync<ChatGPTResponseModel>();
-                return result?.Choices[0].Message.Content ?? "No response from ChatGPT.";
-            }
-            else
+                model = request.Model,
+                messages = new[] { new { role = "user", content = request.userInput } },
+                max_tokens = request.MaxTokens,
+                temperature = request.Temperature
+            };
+
+            var jsonContent = JsonConvert.SerializeObject(openAIRequest);
+
+            // Create StringContent with JSON format
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            // Set up the API call with authorization header
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YOUR_API_KEY");
+
+            // Send the request and await the response
+            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+
+            if (!response.IsSuccessStatusCode)
             {
-                // Handle error response (for example, show the error code)
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"OpenAI API call failed with status: {response.StatusCode}, Details: {errorContent}");
+                throw new HttpRequestException($"Error: {response.ReasonPhrase}");
             }
+
+            // Read and return the response content as a string
+            var responseString = await response.Content.ReadAsStringAsync();
+            return responseString; // Ensure a value is returned
         }
     }
+}

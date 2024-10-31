@@ -10,7 +10,9 @@ namespace BusinessObject.ResponseModel
 {
     public class ChatGPTResponseModel
     {
-        public List<Choice> Choices { get; set; }
+        public string Message { get; set; } // The ChatGPT response text
+        public bool Success { get; set; } // Status of the API call
+        public string ErrorMessage { get; set; } // Error message, if any
     }
 
     public class Choice

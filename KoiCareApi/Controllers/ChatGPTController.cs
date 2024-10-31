@@ -1,4 +1,5 @@
 ﻿using BusinessObject.RequestModel;
+using BusinessObject.ResponseModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -21,12 +22,21 @@ namespace KoiCareApi.Controllers
         {
             try
             {
-                var response = await _chatGptClient.SendMessageAsync(request.);
-                return Ok(new { Response = response });
+                var responseMessage = await _chatGptClient.SendMessageAsync(request);
+                var response = new ChatGPTResponseModel
+                {
+                    Message = responseMessage,
+                    Success = true
+                };
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(new ChatGPTResponseModel
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                });
             }
         }
     }
