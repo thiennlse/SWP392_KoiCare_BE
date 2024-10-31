@@ -11,7 +11,7 @@ namespace BusinessObject.RequestModel
         public string Model { get; set; } = "gpt-3.5-turbo"; // You can change this to "gpt-4" or other models
         public List<Message> Messages { get; set; } = new List<Message>();
 
-        public ChatGPTRequest(string userInput)
+        public ChatGPTRequestModel(string userInput)
         {
             Messages.Add(new Message { Role = "system", Content = "You are a helpful assistant." }); // Optional system message
             Messages.Add(new Message { Role = "user", Content = userInput });
