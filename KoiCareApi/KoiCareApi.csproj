@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ChatGPT.Net" Version="2.0.0" />
     <PackageReference Include="dotenv.net" Version="3.0.0" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="MailKit" Version="4.8.0" />
@@ -24,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="OpenAI" Version="2.0.0" />
     <PackageReference Include="payOS" Version="1.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
