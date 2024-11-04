@@ -10,8 +10,7 @@ namespace BusinessObject.RequestModel
     {
         public string userInput { get; set; } // The user’s message
         public string Model { get; set; } = "gpt-3.5-turbo"; // Specify the model, defaulting to GPT-3.5-turbo
-        public double Temperature { get; set; } = 0.7; // Controls randomness of the output
-        public int MaxTokens { get; set; } = 100; // Maximum length of response
+        
     }
 
     public class Message
