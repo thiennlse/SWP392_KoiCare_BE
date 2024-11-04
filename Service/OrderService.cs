@@ -55,37 +55,6 @@ namespace Service
             await _orderRepository.UpdateOrder(order);
         }
 
-        public async Task<List<Order>> GetOrdersByOrderDateAndCloseDate(DateTime OrderDate,  DateTime CloseDate)
-        {
-            // Assuming default pagination parameters for fetching orders
-            int defaultPage = 1;
-            int pageSize = 100;
-            string? searchTerm = null;
-
-            // Fetch orders using pagination and the search term
-            var allOrders = await _orderRepository.GetAllOrderAsync(defaultPage, pageSize, searchTerm);
-
-            // Filter orders that match both date ranges
-            var filteredOrders = allOrders
-                .Where(order =>
-                    order.OrderDate.Date >= OrderDate.Date && order.CloseDate.Date <= CloseDate.Date)
-                .ToList();
-
-            return filteredOrders;
-        }
-
-        public async Task<List<Order>> SearchOrdersByUserId(int id, int page = 1, int pageSize = 100, string? searchTerm = null)
-        {
-            // Fetch orders using pagination and an optional search term
-            var allOrders = await _orderRepository.GetAllOrderAsync(page, pageSize, searchTerm);
-
-            // Filter orders by userId
-            var filteredOrders = allOrders
-                .Where(order => order.MemberId == id) // Use MemberId as the UserId field
-                .ToList();
-
-            return filteredOrders;
-        }
 
         private async Task<Order> MapToOrder(OrderRequestModel request)
         {
@@ -99,9 +68,9 @@ namespace Service
                 TotalCost = request.TotalCost,
                 OrderDate = DateTime.Now,
                 CloseDate = request.CloseDate,
-                Code = GenerateUniqueCode(),
+                Code = request.Code,
                 Description = request.Description,
-                Status = "PAID",
+                Status = request.Status,
                 OrderProducts = new List<OrderProduct>()
             };
 
@@ -132,6 +101,5 @@ namespace Service
             }
             return order;
         }
-        private string GenerateUniqueCode() => Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
     }
 }

@@ -9,7 +9,5 @@ namespace BusinessObject.RequestModel
    public  class EmailRequestModel
     {
         public string RecipientEmail { get; set; }
-        public string Subject { get; set; }
-        
     }
 }

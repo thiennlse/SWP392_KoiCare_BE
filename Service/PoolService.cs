@@ -46,20 +46,20 @@ namespace Service
         }
 
         public async Task DeletePool(int id)
-        { 
-           await _poolRepository.DeletePool(id);
+        {
+            await _poolRepository.DeletePool(id);
         }
 
-        public async Task UpdatePool(int id,PoolRequestModel request)
+        public async Task UpdatePool(int id, PoolRequestModel request)
         {
-            var existPool = await _poolRepository.GetById(id);  
+            var existPool = await _poolRepository.GetById(id);
             Pool pool = MapToPool(request);
             UpdatePoolProperty(existPool, pool);
             await _poolRepository.UpdatePool(existPool);
         }
 
-        private void UpdatePoolProperty(Pool pool, Pool newpool) 
-        { 
+        private void UpdatePoolProperty(Pool pool, Pool newpool)
+        {
             pool.Name = newpool.Name;
             pool.Description = newpool.Description;
             pool.Size = newpool.Size;
@@ -68,7 +68,7 @@ namespace Service
 
         private Pool MapToPool(PoolRequestModel request)
         {
-            var currUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser =  _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             int currUserId = int.Parse(currUser);
             return new Pool
             {
@@ -90,19 +90,19 @@ namespace Service
             };
         }
 
-        public async Task<Double> CalCulateSaltPoolNeed(int poolId) 
+        public async Task<Double> CalCulateSaltPoolNeed(int poolId)
         {
-        Pool _pool = await _poolRepository.GetById(poolId);
+            Pool _pool = await _poolRepository.GetById(poolId);
             double volumeCubicMeters = 0;
-            double volume= 0;
+            double volume = 0;
             double saltForPool = 0;
-            if (_pool != null) 
+            if (_pool != null)
             {
                 volumeCubicMeters = _pool.Size * _pool.Depth;
                 volume = volumeCubicMeters * 1;
                 saltForPool = 0.001 * volume;
             }
-            return saltForPool;
+            return Math.Round(saltForPool, 2);
         }
     }
 }
