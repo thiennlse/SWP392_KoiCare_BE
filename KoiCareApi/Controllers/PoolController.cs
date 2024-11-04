@@ -54,7 +54,7 @@ namespace KoiCareApi.Controllers
                 await _poolService.AddNewPool(_pool);
                 return Ok("Create Successful");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -86,11 +86,11 @@ namespace KoiCareApi.Controllers
             }
         }
 
-        [HttpGet("CalculateSaltInPool/{id}")]
+        [HttpGet("calculatesaltinpool/{id}")]
         public async Task<IActionResult> CalculateSalt(int id)
         {
             Pool _pool = await _poolService.GetPoolById(id);
-            if (_pool == null) 
+            if (_pool == null)
             {
                 return NotFound("pool is not exits");
             }
@@ -100,21 +100,50 @@ namespace KoiCareApi.Controllers
             if (watersOfPool.Salt > saltStandardForPool)
             {   // descrease salt in pool
                 result = watersOfPool.Salt - saltStandardForPool;
-                return Ok("descrease " + Math.Round(result,2));
+                return Ok("descrease " + Math.Round(result, 2));
             }
             if (watersOfPool.Salt < saltStandardForPool)
             {
                 // increase salt in pool
                 result = saltStandardForPool - watersOfPool.Salt;
-                return Ok("increase "+ Math.Round(result, 2));
+                return Ok("increase " + Math.Round(result, 2));
             }
-            if(watersOfPool.Salt == saltStandardForPool)
+            if (watersOfPool.Salt == saltStandardForPool)
             {
                 // keep salt unit in pool
                 result = saltStandardForPool;
-                return Ok("keep"+ Math.Round(result,2));
+                return Ok("keep" + Math.Round(result, 2));
             }
             return Ok();
+        }
+
+        [HttpGet("productrecommendationbypoolid/{id}")]
+        public async Task<IActionResult> ProductPecommendationByPoolId(int id)
+        {
+            try
+            {
+                List<Product> productPecommentdation = await _poolService.CheckWaterElementInPool(id);
+
+                return Ok(productPecommentdation);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+       
+        [HttpGet("check-number-of-fish-in-pool/{id}")]
+        public async Task<IActionResult> CheckNumberOfFishCanHave(int id)
+        {
+            try
+            {
+                double result = await _poolService.TotalFishInPool(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

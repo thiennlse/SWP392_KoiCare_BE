@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using iText.Layout.Element;
 using Microsoft.AspNetCore.Http;
 using Repository;
 using Repository.Interface;
@@ -20,11 +21,15 @@ namespace Service
         private readonly IPoolRepository _poolRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        public PoolService(IPoolRepository poolRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository)
+        private readonly IWaterRepository _waterRepository;
+        private readonly IProductRepository _productRepository;
+        public PoolService(IPoolRepository poolRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository, IWaterRepository waterRepository, IProductRepository productRepository)
         {
             _poolRepository = poolRepository;
             _contextAccessor = contextAccessor;
             _memberRepository = memberRepository;
+            _waterRepository = waterRepository;
+            _productRepository = productRepository;
         }
 
 
@@ -68,7 +73,7 @@ namespace Service
 
         private Pool MapToPool(PoolRequestModel request)
         {
-            var currUser =  _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             int currUserId = int.Parse(currUser);
             return new Pool
             {
@@ -103,6 +108,68 @@ namespace Service
                 saltForPool = 0.001 * volume;
             }
             return Math.Round(saltForPool, 2);
+        }
+
+        public async Task<List<Product>> CheckWaterElementInPool(int PoolId)
+        {
+            Pool pool = await _poolRepository.GetById(PoolId);
+            double saltResult = await CalCulateSaltPoolNeed(PoolId);
+            List<Product> products = new List<Product>();
+            if (pool != null)
+            {
+                Waters waters = await _waterRepository.GetById(pool.WaterId);
+                if (waters.Temperature < 6 || waters.Temperature > 32)
+                {
+                    Product temperatureProduct = await _productRepository.GetById(3);
+                    products.Add(temperatureProduct);
+                }
+                if (waters.Salt > saltResult || waters.Salt < saltResult)
+                {
+                    Product saltProduct = await _productRepository.GetById(4);
+                    products.Add(saltProduct);
+                }
+                if (waters.Ph < 6.5 || waters.Ph > 8.5)
+                {
+                    Product phProduct = await _productRepository.GetById(5);
+                    products.Add(phProduct);
+                }
+                if (waters.O2 <= 6)
+                {
+                    Product o2Product = await _productRepository.GetById(6);
+                    products.Add(o2Product);
+                }
+                if (waters.No2 < 0 || waters.No2 > 0.1)
+                {
+                    Product no2Product = await _productRepository.GetById(7);
+                    products.Add(no2Product);
+                }
+                if (waters.No3 > 40)
+                {
+                    Product no3Product = await _productRepository.GetById(8);
+                    products.Add(no3Product);
+                }
+                if (waters.Po4 > 0.5)
+                {
+                    Product po4Product = await _productRepository.GetById(9);
+                    products.Add(po4Product);
+                }
+            }
+            return products;
+        }
+
+        public async Task<double> TotalFishInPool(int poolId)
+        {
+            Pool pool = await _poolRepository.GetById(poolId);
+            double volume = 0;
+            double numberOfKoi = 0;
+            if (pool != null)
+            {
+                volume = pool.Depth * pool.Size; //meters
+                //volume = volume * 1000;//metter =>  lit
+                numberOfKoi = volume / 300;
+
+            }
+            return Math.Round(numberOfKoi,0);
         }
     }
 }
