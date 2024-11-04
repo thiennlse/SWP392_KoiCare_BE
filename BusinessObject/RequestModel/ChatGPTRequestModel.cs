@@ -10,7 +10,7 @@ namespace BusinessObject.RequestModel
     {
         public string userInput { get; set; } // The user’s message
         public string Model { get; set; } = "gpt-3.5-turbo"; // Specify the model, defaulting to GPT-3.5-turbo
-        
+
     }
 
     public class Message
