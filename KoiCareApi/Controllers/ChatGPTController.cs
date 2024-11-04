@@ -10,34 +10,20 @@ namespace KoiCareApi.Controllers
     [Route("api/[controller]")]
     public class ChatGPTController : ControllerBase
     {
-        private readonly ChatGPTService _chatGptClient;
+        
+        private readonly ILogger<ChatGPTController> _logger;
+        private IConfiguration _configuration;
 
-        public ChatGPTController(ChatGPTService chatGptClient)
+        public ChatGPTController(ILogger<ChatGPTController> logger, IConfiguration configuration)
         {
-            _chatGptClient = chatGptClient;
+            _logger = logger;
+            _configuration = configuration;
         }
 
-        [HttpPost("send")]
-        public async Task<IActionResult> SendMessage([FromBody] ChatGPTRequestModel request)
+        [HttpGet("version")]
+        public string Version()
         {
-            try
-            {
-                var responseMessage = await _chatGptClient.SendMessageAsync(request);
-                var response = new ChatGPTResponseModel
-                {
-                    Message = responseMessage,
-                    Success = true
-                };
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ChatGPTResponseModel
-                {
-                    Success = false,
-                    ErrorMessage = ex.Message
-                });
-            }
+            return _configuration["VERSION"];
         }
     }
 }
