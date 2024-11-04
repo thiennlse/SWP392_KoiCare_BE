@@ -36,7 +36,7 @@ namespace Service
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             // Set up the API call with authorization header
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YOUR_API_KEY");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "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");
 
             // Send the request and await the response
             var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
