@@ -4,6 +4,7 @@ using ChatGPT.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Service.Interface;
 
 namespace KoiCareApi.Controllers
 {
@@ -27,26 +28,6 @@ namespace KoiCareApi.Controllers
             return _configuration["VERSION"];
         }
 
-        [HttpPost("fixGrammar")]
-        public async Task<IActionResult> FixGrammar([FromBody] ChatGPTRequestModel request)
-        {
-            // retrieve ai key from configuration
-            var openAiKey = _configuration["OPENAI_API_KEY"];
-
-            if (openAiKey == null)
-            {
-                return NotFound("key not found");
-            }
-
-            var openai = new ChatGpt(openAiKey);
-
-            var fixedSentence = await openai.Ask($"Fix the following sentence for spelling and grammar: {request.userInput}");
-            if (fixedSentence == null)
-            {
-                return NotFound("unable to call chat gpt");
-            }
-
-            return Ok(new ChatGPTResponseModel() { Message = fixedSentence });
-        }
+        
     }
 }

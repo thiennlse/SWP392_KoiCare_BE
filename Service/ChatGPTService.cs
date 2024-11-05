@@ -69,5 +69,46 @@ namespace Service
             var responseString = await response.Content.ReadAsStringAsync();
             return responseString; // Ensure a value is returned
         }
+
+        public async Task FixGrammarAsync(string textToFix)
+        {
+            using var client = new HttpClient();
+
+            // Set the authorization header (replace "x-api-key" or "Authorization" with correct header based on API requirement)
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "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");
+
+            // Define the request endpoint and payload (if your API accepts a JSON payload)
+            var requestUri = "https://localhost:7017/api/ChatGPT/fixGrammar";
+            var requestBody = new
+            {
+                prompt = textToFix
+            };
+
+            // Convert request body to JSON
+            var content = new StringContent(JsonConvert.SerializeObject(requestBody), System.Text.Encoding.UTF8, "application/json");
+
+            // Send the POST request
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(requestUri, content);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while sending the request: {ex.Message}");
+                return;
+            }
+
+            // Handle the response
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Response received: " + responseData);
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}, {await response.Content.ReadAsStringAsync()}");
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.AI.OpenAI" Version="2.0.0" />
+    <PackageReference Include="ChatGPT.Net" Version="2.0.0" />
     <PackageReference Include="dotenv.net" Version="3.0.0" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="Google.Cloud.AIPlatform.V1" Version="3.9.0" />
