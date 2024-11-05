@@ -54,16 +54,37 @@ namespace Service
            
             Fish _fish = await _fishRepository.GetById(fishId);
             var age = DateTime.Now.Year - _fish.Dob.Year;
-            if (_fish != null) {              
-                if (age >= 25 && age <= 50)
-                {
-                    dailyFood = (_fish.Weight * 1.5) / 100;
-                    fishFoodResult = dailyFood * 0.3;
+            if (_fish != null) {
+                if (age > 0) {
+                    if (age >= 25 && age <= 50)
+                    {
+                        dailyFood = (_fish.Weight * 1.5 ) / 100;
+                        fishFoodResult = dailyFood * 0.3;
+                    }
+                    if ( age > 0 && age < 25)
+                    {
+                        fishFoodResult = (_fish.Weight * 0.5 ) / 100;
+                    }
                 }
-                if(age < 25) 
-                {
-                    fishFoodResult = (_fish.Weight * 0.5) / 100;
+                if (age <= 0) {
+                    int MonthAge = DateTime.Now.Month - _fish.Dob.Month;
+                    if (MonthAge >= 1 && MonthAge <= 4) {
+                        dailyFood = (_fish.Weight * 5 ) / 100;
+                        fishFoodResult = dailyFood;
+                    }
+                    if (MonthAge >= 5 && MonthAge <= 9) { 
+                         dailyFood = (_fish.Weight * 4 ) / 100;
+                         fishFoodResult = dailyFood;
+                    }
+                    if (MonthAge >= 10 && MonthAge <= 12) {
+                        dailyFood = (_fish.Weight * 3 ) / 100;
+                        fishFoodResult = dailyFood;
+                    }if(MonthAge == 0)
+                    {
+                        fishFoodResult = 0;
+                    }
                 }
+
             }
 
             return Math.Round(fishFoodResult, 2);

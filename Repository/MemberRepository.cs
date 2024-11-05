@@ -5,12 +5,11 @@ using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 using System.Text;
-
 using System.Security.Cryptography;
 
 namespace Repository
 {
-    public class MemberRepository : BaseRepository<Member> ,IMemberRepository
+    public class MemberRepository : BaseRepository<Member>, IMemberRepository
     {
         private readonly KoiCareDBContext _context;
 
@@ -36,7 +35,7 @@ namespace Repository
             return _member;
         }
 
-        public async Task<Member> Login(string email , string password)
+        public async Task<Member> Login(string email, string password)
         {
             password = HashPasswordToSha256(password);
             return await _context.Members.Include(m => m.Role)
@@ -44,7 +43,7 @@ namespace Repository
         }
         public async Task Register(Member member)
         {
-            member.Password =  HashPasswordToSha256(member.Password);
+            member.Password = HashPasswordToSha256(member.Password);
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
 
@@ -55,14 +54,9 @@ namespace Repository
             await _context.SaveChangesAsync();
             return member;
         }
-        public async Task<bool> ExistedEmail(string email)
+        public async Task<Member> ExistedEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return false;
-            }
-
-            return await _context.Members.AnyAsync(m => m.Email.Equals(email));
+            return await _context.Members.FirstOrDefaultAsync(m => m.Email.Equals(email));
         }
 
         public string HashPasswordToSha256(string password)
@@ -77,5 +71,16 @@ namespace Repository
             return sb.ToString();
         }
 
+        public async Task<Member> CreateMemberByGoogleAccount(string accountEmail, string accountName)
+        {
+            Member member = new Member();
+            member.Email = accountEmail;
+            member.FullName = accountName;
+            member.RoleId = 4;
+            member.Password = "1";
+            _context.Members.Add(member);
+            await _context.SaveChangesAsync();
+            return member;
+        }
     }
 }

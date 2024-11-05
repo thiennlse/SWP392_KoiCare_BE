@@ -67,5 +67,10 @@ namespace Repository
         {
             return _context.Orders.FirstOrDefault(o => o.Id.Equals(id));
         }
+
+        public async Task<Order> GetOrderByCode(string orderCode)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(o => o.Code == orderCode);
+        }
     }
 }
