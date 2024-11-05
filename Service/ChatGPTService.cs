@@ -20,6 +20,25 @@ namespace Service
             _httpClient = httpClient;
         }
 
+        public async Task MakeRequestAsync()
+        {
+            using var client = new HttpClient();
+
+            // Add the Bearer token to the Authorization header
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "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");
+
+            var response = await client.GetAsync("https://localhost:7017/api/ChatGPT/fixGrammar");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+
         public async Task<string> SendMessageAsync(ChatGPTRequestModel request)
         {
             var openAIRequest = new

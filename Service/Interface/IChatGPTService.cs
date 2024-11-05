@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Service.Interface
 {
-    public interface IChatGPTService { 
+    public interface IChatGPTService {
+
+        public Task MakeRequestAsync();
         public Task<string> SendMessageAsync(string userInput);
     }
 }
