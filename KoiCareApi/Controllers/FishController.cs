@@ -162,21 +162,27 @@ namespace KoiCareApi.Controllers
             {
             return NotFound("fish is not exits");
             }
-            double result = await _foodService.CalculateFishFood(id);
+            double foodStandardForFish = await _foodService.CalculateFishFood(id);
             
             Food foodOfFish = await _foodService.GetFoodById(fish.FoodId);
+
+            double result = 0;
                 
-            if(foodOfFish.Weight > result)
-            {
-                return Ok("Fish food need to descrease");
+            if(foodOfFish.Weight > foodStandardForFish)
+            {   // descrease food with result unit
+                result = foodOfFish.Weight - foodStandardForFish;
+                return Ok("descrease "+result);
             }
-            if(foodOfFish.Weight < result)
+            if(foodOfFish.Weight < foodStandardForFish)
             {
-                return Ok("fish food need to increase");
+                // increase food with result unit
+                result = foodStandardForFish - foodOfFish.Weight;
+                return Ok("increase " + result);
             }
             if (foodOfFish.Weight == result) 
             {
-                return Ok("number of Food is Ok for fish");
+                result = foodStandardForFish;
+                return Ok("keep " + result);
             }
             return Ok();
         

@@ -1,6 +1,7 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using iText.Layout.Element;
 using Microsoft.AspNetCore.Http;
 using Repository;
 using Repository.Interface;
@@ -20,11 +21,15 @@ namespace Service
         private readonly IPoolRepository _poolRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        public PoolService(IPoolRepository poolRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository)
+        private readonly IWaterRepository _waterRepository;
+        private readonly IProductRepository _productRepository;
+        public PoolService(IPoolRepository poolRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository, IWaterRepository waterRepository, IProductRepository productRepository)
         {
             _poolRepository = poolRepository;
             _contextAccessor = contextAccessor;
             _memberRepository = memberRepository;
+            _waterRepository = waterRepository;
+            _productRepository = productRepository;
         }
 
 
@@ -46,20 +51,20 @@ namespace Service
         }
 
         public async Task DeletePool(int id)
-        { 
-           await _poolRepository.DeletePool(id);
+        {
+            await _poolRepository.DeletePool(id);
         }
 
-        public async Task UpdatePool(int id,PoolRequestModel request)
+        public async Task UpdatePool(int id, PoolRequestModel request)
         {
-            var existPool = await _poolRepository.GetById(id);  
+            var existPool = await _poolRepository.GetById(id);
             Pool pool = MapToPool(request);
             UpdatePoolProperty(existPool, pool);
             await _poolRepository.UpdatePool(existPool);
         }
 
-        private void UpdatePoolProperty(Pool pool, Pool newpool) 
-        { 
+        private void UpdatePoolProperty(Pool pool, Pool newpool)
+        {
             pool.Name = newpool.Name;
             pool.Description = newpool.Description;
             pool.Size = newpool.Size;
@@ -90,19 +95,81 @@ namespace Service
             };
         }
 
-        public async Task<Double> CalCulateSaltPoolNeed(int poolId) 
+        public async Task<Double> CalCulateSaltPoolNeed(int poolId)
         {
-        Pool _pool = await _poolRepository.GetById(poolId);
+            Pool _pool = await _poolRepository.GetById(poolId);
             double volumeCubicMeters = 0;
-            double volume= 0;
+            double volume = 0;
             double saltForPool = 0;
-            if (_pool != null) 
+            if (_pool != null)
             {
                 volumeCubicMeters = _pool.Size * _pool.Depth;
                 volume = volumeCubicMeters * 1;
                 saltForPool = 0.001 * volume;
             }
-            return saltForPool;
+            return Math.Round(saltForPool, 2);
+        }
+
+        public async Task<List<Product>> CheckWaterElementInPool(int PoolId)
+        {
+            Pool pool = await _poolRepository.GetById(PoolId);
+            double saltResult = await CalCulateSaltPoolNeed(PoolId);
+            List<Product> products = new List<Product>();
+            if (pool != null)
+            {
+                Waters waters = await _waterRepository.GetById(pool.WaterId);
+                if (waters.Temperature < 6 || waters.Temperature > 32)
+                {
+                    Product temperatureProduct = await _productRepository.GetById(3);
+                    products.Add(temperatureProduct);
+                }
+                if (waters.Salt > saltResult || waters.Salt < saltResult)
+                {
+                    Product saltProduct = await _productRepository.GetById(4);
+                    products.Add(saltProduct);
+                }
+                if (waters.Ph < 6.5 || waters.Ph > 8.5)
+                {
+                    Product phProduct = await _productRepository.GetById(5);
+                    products.Add(phProduct);
+                }
+                if (waters.O2 <= 6)
+                {
+                    Product o2Product = await _productRepository.GetById(6);
+                    products.Add(o2Product);
+                }
+                if (waters.No2 < 0 || waters.No2 > 0.1)
+                {
+                    Product no2Product = await _productRepository.GetById(7);
+                    products.Add(no2Product);
+                }
+                if (waters.No3 > 40)
+                {
+                    Product no3Product = await _productRepository.GetById(8);
+                    products.Add(no3Product);
+                }
+                if (waters.Po4 > 0.5)
+                {
+                    Product po4Product = await _productRepository.GetById(9);
+                    products.Add(po4Product);
+                }
+            }
+            return products;
+        }
+
+        public async Task<double> TotalFishInPool(int poolId)
+        {
+            Pool pool = await _poolRepository.GetById(poolId);
+            double volume = 0;
+            double numberOfKoi = 0;
+            if (pool != null)
+            {
+                volume = pool.Depth * pool.Size; //meters
+                //volume = volume * 1000;//metter =>  lit
+                numberOfKoi = volume / 300;
+
+            }
+            return Math.Round(numberOfKoi,0);
         }
     }
 }
