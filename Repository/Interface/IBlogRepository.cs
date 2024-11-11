@@ -18,6 +18,6 @@ namespace Repository.Interface
 
         Task<BlogResponseModel> UpdateBlog(Blog blog);
 
-        public  Task<List<Blog>> GetAllPrivateBlog();
+        public  Task<List<Blog>> GetAllPublishBlog();
     }
 }

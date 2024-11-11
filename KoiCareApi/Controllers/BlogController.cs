@@ -110,14 +110,14 @@ namespace KoiCareApi.Controllers
             }
         }
         
-        [HttpGet("get-all-private-blog")]
-        public async Task<IActionResult> GetAllBlogPrivate()
+        [HttpGet("get-all-Publish-blog")]
+        public async Task<IActionResult> GetAllPublishBlog()
         {
-            var blog = await _blogService.GetAllPrivateBlog();
+            var blog = await _blogService.GetAllPublishBlog();
 
             if (blog == null)
             {
-                return BadRequest("no have Private Blog");
+                return BadRequest("no have Public Blog");
             }
             return Ok(blog);
         }

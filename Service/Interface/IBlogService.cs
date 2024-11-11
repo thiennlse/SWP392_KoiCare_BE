@@ -21,6 +21,6 @@ namespace Service.Interface
 
         Task<BlogResponseModel> UpdateBlog(int id,BlogRequestModel blog);
 
-        public Task<List<Blog>> GetAllPrivateBlog();
+        public Task<List<Blog>> GetAllPublishBlog();
     }
 }

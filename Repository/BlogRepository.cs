@@ -68,10 +68,10 @@ namespace Repository
             };
         }
 
-        public  async Task<List<Blog>> GetAllPrivateBlog()
+        public  async Task<List<Blog>> GetAllPublishBlog()
         {
             List<Blog> listBlogPrivate = await _context.Blogs
-                .Where(blog => blog.Status.Equals("Private")).AsNoTracking()
+                .Where(blog => blog.Status.Equals("Publish")).AsNoTracking()
                 .ToListAsync();
 
             return listBlogPrivate;

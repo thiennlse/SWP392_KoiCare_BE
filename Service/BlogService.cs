@@ -64,9 +64,9 @@ namespace Service
             return await _blogRepository.UpdateBlog(_blog);
         }
 
-        public async Task<List<Blog>> GetAllPrivateBlog()
+        public async Task<List<Blog>> GetAllPublishBlog()
         {
-            return await _blogRepository.GetAllPrivateBlog();
+            return await _blogRepository.GetAllPublishBlog();
         }
     }
 }
