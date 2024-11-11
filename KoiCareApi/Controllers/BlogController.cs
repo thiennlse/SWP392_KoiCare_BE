@@ -117,7 +117,7 @@ namespace KoiCareApi.Controllers
 
             if (blog == null)
             {
-                return BadRequest("no have Public Blog");
+                return BadRequest("no have Publish Blog");
             }
             return Ok(blog);
         }
