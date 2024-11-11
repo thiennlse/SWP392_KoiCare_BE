@@ -17,5 +17,7 @@ namespace Repository.Interface
         Task DeleteBlog(int id);
 
         Task<BlogResponseModel> UpdateBlog(Blog blog);
+
+        public  Task<List<Blog>> GetAllPrivateBlog();
     }
 }

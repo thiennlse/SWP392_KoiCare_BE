@@ -109,5 +109,17 @@ namespace KoiCareApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpGet("get-all-private-blog")]
+        public async Task<IActionResult> GetAllBlogPrivate()
+        {
+            var blog = await _blogService.GetAllPrivateBlog();
+
+            if (blog == null)
+            {
+                return BadRequest("no have Private Blog");
+            }
+            return Ok(blog);
+        }
     }
 }

@@ -67,5 +67,14 @@ namespace Repository
                 Member = _context.Members.FirstOrDefault(b => b.Id == blog.MemberId)
             };
         }
+
+        public  async Task<List<Blog>> GetAllPrivateBlog()
+        {
+            List<Blog> listBlogPrivate = await _context.Blogs
+                .Where(blog => blog.Status.Equals("Private")).AsNoTracking()
+                .ToListAsync();
+
+            return listBlogPrivate;
+        }
     }
 }

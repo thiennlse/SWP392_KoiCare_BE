@@ -63,5 +63,10 @@ namespace Service
             _blog.Id = id;
             return await _blogRepository.UpdateBlog(_blog);
         }
+
+        public async Task<List<Blog>> GetAllPrivateBlog()
+        {
+            return await _blogRepository.GetAllPrivateBlog();
+        }
     }
 }
