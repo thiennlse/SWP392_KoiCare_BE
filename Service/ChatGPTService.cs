@@ -110,5 +110,31 @@ namespace Service
                 Console.WriteLine($"Error: {response.StatusCode}, {await response.Content.ReadAsStringAsync()}");
             }
         }
+        public async Task<string> ProcessGrammarFix(string userInput, string model, double temperature, int maxTokens)
+        {
+            var requestData = new
+            {
+                model = model,
+                messages = new[]
+                {
+                new { role = "user", content = userInput }
+            },
+                temperature = temperature,
+                max_tokens = maxTokens
+            };
+
+            var response = await _httpClient.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<ChatGPTResponseModel>();
+                return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "No response from the model.";
+            }
+            else
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"OpenAI API error: {errorMessage}");
+            }
+        }
     }
 }

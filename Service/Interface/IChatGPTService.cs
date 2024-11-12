@@ -11,5 +11,7 @@ namespace Service.Interface
         public Task MakeRequestAsync();
         public Task<string> SendMessageAsync(string userInput);
         public Task FixGrammarAsync(string textToFix);
+
+        public Task<string> ProcessGrammarFix(string userInput, string model, double temperature, int maxTokens);
     }
 }

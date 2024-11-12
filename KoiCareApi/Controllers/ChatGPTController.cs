@@ -27,7 +27,36 @@ namespace KoiCareApi.Controllers
         {
             return _configuration["VERSION"];
         }
+        [HttpPost("fixGrammar")]
+        public async Task<IActionResult> FixGrammarAsync([FromBody] ChatGPTRequestModel request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.userInput))
+            {
+                return BadRequest("Invalid request data. 'userInput' cannot be empty.");
+            }
 
-        
+            try
+            {
+                // Process the text using the ChatGPT service
+                var fixedGrammarText = await _chatGptService.ProcessGrammarFix(
+                    request.userInput,
+                    request.Model,
+                    request.Temperature,
+                    request.MaxTokens
+                );
+
+                // Return the corrected text in the response
+                return Ok(new { correctedText = fixedGrammarText });
+            }
+            catch (Exception ex)
+            {
+                // Log the error if necessary
+                Console.WriteLine($"Error: {ex.Message}");
+
+                // Return a generic error message to the client
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
+
     }
 }
