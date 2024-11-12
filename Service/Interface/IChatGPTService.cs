@@ -10,7 +10,6 @@ namespace Service.Interface
     public interface IChatGPTService {
 
         public Task MakeRequestAsync();
-        public Task<string> SendMessageAsync(ChatGPTRequestModel request);
-        public Task<string> ProcessGrammarFix(string userInput, string model, double temperature, int maxTokens);
+        public Task<string> ProcessGrammarFix(string userInput, string model = "gpt-3.5-turbo", double temperature = 0.7, int maxTokens = 200);
     }
 }

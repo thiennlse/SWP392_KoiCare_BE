@@ -1,10 +1,12 @@
 ﻿using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -14,85 +16,86 @@ namespace Service
 {
     public class ChatGPTService : IChatGPTService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly string _chatGPTApiKey;
+        
 
-        public ChatGPTService(HttpClient httpClient)
+        public ChatGPTService(IConfiguration configuration)
         {
-            _httpClient = httpClient;
+            _configuration = configuration;
+            _chatGPTApiKey = _configuration["ChatGPT:ApiKey"] ?? throw new Exception("Cannot find ChatGPT API Key");
+            
         }
 
         public async Task MakeRequestAsync()
         {
-            using var client = new HttpClient();
-
-            var chatGPTApiKey = configuration["ChatGPT:ApiKey"] ?? throw new Exception("Cannot find ChatGPT API Key");
-
-            // Add the Bearer token to the Authorization header
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", chatGPTApiKey);
-
-            var response = await client.GetAsync("https://localhost:7017/api/ChatGPT/fixGrammar");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var result = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(result);
+                var requestUrl = "https://localhost:7017/api/ChatGPT/fixGrammar"; // Replace with your actual URL
+                var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatGPTApiKey);
+
+                using var client = new HttpClient();
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(result);
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                Console.WriteLine($"Request failed: {ex.Message}");
             }
         }
 
-        public async Task<string> SendMessageAsync(ChatGPTRequestModel request)
+
+        public async Task<string> ProcessGrammarFix(string userInput, string model = "gpt-3.5-turbo", double temperature = 0.7, int maxTokens = 200)
         {
-            var openAIRequest = new
+            try
             {
-                model = request.Model,
-                messages = new[] { new { role = "user", content = request.userInput } },
-                max_tokens = request.MaxTokens,
-                temperature = request.Temperature
-            };
+                var requestData = new
+                {
+                    model = model,
+                    messages = new[] { new { role = "user", content = userInput } },
+                    temperature = temperature,
+                    max_tokens = maxTokens
+                };
 
-            var jsonContent = JsonConvert.SerializeObject(openAIRequest);
+                var requestJson = JsonConvert.SerializeObject(requestData);
 
-            // Create StringContent with JSON format
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var requestUrl = "https://api.openai.com/v1/chat/completions"; // OpenAI API endpoint
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUrl)
+                {
+                    Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+                };
 
-            // Set up the API call with authorization header
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "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");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _chatGPTApiKey);
 
-            // Send the request and await the response
-            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+                using var client = new HttpClient();
+                var response = await client.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new HttpRequestException($"Error: {response.ReasonPhrase}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var chatResponse = JsonConvert.DeserializeObject<ChatGPTResponseModel>(result);
+                    return chatResponse?.Choices?.FirstOrDefault()?.Message?.Content ?? "No response from the model.";
+                }
+                else
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"OpenAI API error: {errorMessage}");
+                }
             }
-
-            // Read and return the response content as a string
-            var responseString = await response.Content.ReadAsStringAsync();
-            return responseString; // Ensure a value is returned
-        }
-        public async Task<string> ProcessGrammarFix(string userInput, string model, double temperature, int maxTokens)
-        {
-            var requestData = new
+            catch (Exception ex)
             {
-                model = model,
-                messages = new[] { new { role = "user", content = userInput } },
-                temperature = temperature,
-                max_tokens = maxTokens
-            };
-
-            var response = await _httpClient.PostAsJsonAsync("https://api.openai.com/v1/chat/completions", requestData);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadFromJsonAsync<ChatGPTResponseModel>();
-                return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "No response from the model.";
-            }
-            else
-            {
-                var errorMessage = await response.Content.ReadAsStringAsync();
-                throw new Exception($"OpenAI API error: {errorMessage}");
+                Console.WriteLine($"Error: {ex.Message}");
+                throw;
             }
         }
     }

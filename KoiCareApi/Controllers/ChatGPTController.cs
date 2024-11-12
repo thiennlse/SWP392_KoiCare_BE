@@ -36,6 +36,7 @@ namespace KoiCareApi.Controllers
         [HttpPost("fixGrammar")]
         public async Task<IActionResult> FixGrammarAsync([FromBody] ChatGPTRequestModel request)
         {
+            // Validate the request model
             if (request == null || string.IsNullOrWhiteSpace(request.userInput))
             {
                 return BadRequest("Invalid request data. 'userInput' cannot be empty.");
