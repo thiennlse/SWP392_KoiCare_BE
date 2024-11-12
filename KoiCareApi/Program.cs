@@ -84,6 +84,7 @@ builder.Services.AddDbContext<KoiCareDBContext>(options =>
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorNumbersToAdd: null);
     }));
+builder.Services.AddScoped<IChatGPTService, ChatGPTService>();
 #endregion
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";

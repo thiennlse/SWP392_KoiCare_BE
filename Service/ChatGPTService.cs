@@ -1,6 +1,7 @@
 ﻿using BusinessObject.RequestModel;
 using BusinessObject.ResponseModel;
 using Newtonsoft.Json;
+using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class ChatGPTService
+    public class ChatGPTService : IChatGPTService
     {
         private readonly HttpClient _httpClient;
 
