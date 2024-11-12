@@ -15,17 +15,16 @@ namespace KoiCareApi.Controllers
         
         private readonly ILogger<ChatGPTController> _logger;
         private IConfiguration _configuration;
-        private readonly IChatGPTService _chatGptService;
+        private readonly IChatGPTService _chatGPTService;
 
-        public ChatGPTController(IChatGPTService chatGptService)
-        {
-            _chatGptService = chatGptService;
-        }
 
-        public ChatGPTController(ILogger<ChatGPTController> logger, IConfiguration configuration)
+
+        public ChatGPTController(ILogger<ChatGPTController> logger, IConfiguration configuration, IChatGPTService chatGPTService)
         {
             _logger = logger;
             _configuration = configuration;
+            _chatGPTService = chatGPTService;
+            
         }
 
         [HttpGet("version")]
@@ -45,7 +44,7 @@ namespace KoiCareApi.Controllers
             try
             {
                 // Process the text using the ChatGPT service
-                var fixedGrammarText = await _chatGptService.ProcessGrammarFix(
+                var fixedGrammarText = await _chatGPTService.ProcessGrammarFix(
                     request.userInput,
                     request.Model,
                     request.Temperature,

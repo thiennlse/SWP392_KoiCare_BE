@@ -19,6 +19,7 @@ using Validation.Order;
 using Validation.Product;
 using Azure.AI.OpenAI;
 using OpenAI;
+using Google.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,6 +92,9 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 #region GenerativeAI
 var generativeApiKey = configuration["GenerativeAI:ApiKey"] ?? throw new Exception("Cannot find Generative AI API Key");
 #endregion
+#region ChatGPTAI
+var ChatGPTApiKey = configuration["ChatGPT:ApiKey"] ?? throw new Exception("Cannot find ChatGPT API Key");
+#endregion
 
 #region CORS
 builder.Services.AddCors(options =>
@@ -139,12 +143,16 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IGeminiService, GeminiService>();
+builder.Services.AddScoped<IChatGPTService, ChatGPTService>();
 builder.Services.AddScoped<BlogValidation>();
 builder.Services.AddScoped<FishValidation>();
 builder.Services.AddScoped<FoodValidation>();
 builder.Services.AddScoped<MemberValidation>();
 builder.Services.AddScoped<OrderValidation>();
 builder.Services.AddScoped<ProductValidation>();
+
+
+
 #endregion
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
