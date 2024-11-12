@@ -15,6 +15,12 @@ namespace KoiCareApi.Controllers
         
         private readonly ILogger<ChatGPTController> _logger;
         private IConfiguration _configuration;
+        private readonly IChatGPTService _chatGptService;
+
+        public ChatGPTController(IChatGPTService chatGptService)
+        {
+            _chatGptService = chatGptService;
+        }
 
         public ChatGPTController(ILogger<ChatGPTController> logger, IConfiguration configuration)
         {
@@ -27,6 +33,7 @@ namespace KoiCareApi.Controllers
         {
             return _configuration["VERSION"];
         }
+
         [HttpPost("fixGrammar")]
         public async Task<IActionResult> FixGrammarAsync([FromBody] ChatGPTRequestModel request)
         {
