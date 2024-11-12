@@ -116,10 +116,7 @@ namespace Service
             var requestData = new
             {
                 model = model,
-                messages = new[]
-                {
-                new { role = "user", content = userInput }
-            },
+                messages = new[] { new { role = "user", content = userInput } },
                 temperature = temperature,
                 max_tokens = maxTokens
             };

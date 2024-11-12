@@ -8,17 +8,21 @@ namespace BusinessObject.RequestModel
 {
     public class ChatGPTRequestModel
     {
-        public string userInput { get; set; } // The user’s message
-        public string Model { get; set; } = "gpt-3.5-turbo"; // Specify the model, defaulting to GPT-3.5-turbo
+        public string userInput { get; set; }
 
-        public double Temperature { get; set; } = 0.7; // Controls randomness of the output
-        public int MaxTokens { get; set; } = 100; // Maximum length of response
+        public List<Message> Messages { get; set; } = new List<Message>();
 
+        public string Model { get; set; } = "gpt-3.5-turbo";
+
+        public double Temperature { get; set; } = 0.7;
+
+        public int MaxTokens { get; set; } = 100;
     }
+
 
     public class Message
     {
-        public string Role { get; set; } // "user" or "assistant"
+        public string Role { get; set; }
         public string Content { get; set; }
     }
 }
