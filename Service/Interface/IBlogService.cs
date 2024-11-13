@@ -20,5 +20,7 @@ namespace Service.Interface
         Task DeleteBlog(int id);
 
         Task<BlogResponseModel> UpdateBlog(int id,BlogRequestModel blog);
+
+        public Task<List<Blog>> GetAllPublishBlog();
     }
 }

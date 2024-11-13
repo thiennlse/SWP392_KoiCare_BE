@@ -109,5 +109,17 @@ namespace KoiCareApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpGet("get-all-Publish-blog")]
+        public async Task<IActionResult> GetAllPublishBlog()
+        {
+            var blog = await _blogService.GetAllPublishBlog();
+
+            if (blog == null)
+            {
+                return BadRequest("no have Publish Blog");
+            }
+            return Ok(blog);
+        }
     }
 }
