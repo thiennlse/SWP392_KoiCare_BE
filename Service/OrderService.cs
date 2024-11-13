@@ -1,16 +1,10 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
-using CloudinaryDotNet.Actions;
+using iText.Forms.Form.Element;
 using Microsoft.AspNetCore.Http;
-using Repository;
 using Repository.Interface;
 using Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -50,9 +44,23 @@ namespace Service
 
         public async Task UpdateOrder(int id, OrderRequestModel newOrder)
         {
-            var order = await MapToOrder(newOrder);
-            order.Id = id;
-            await _orderRepository.UpdateOrder(order);
+            Order order = await _orderRepository.GetById(id);
+            var existOrder = await MapToOrder(newOrder);
+            var updatedOrder = await UpdataOrderDetails(existOrder, order);
+            await _orderRepository.UpdateOrder(updatedOrder);
+        }
+
+        private async Task<Order> UpdataOrderDetails(Order order, Order old)
+        {
+            
+            old.OrderDate = order.OrderDate;
+            old.TotalCost = order.TotalCost;
+            old.CloseDate = order.CloseDate;
+            old.Code = order.Code;
+            old.Description = order.Description;
+            old.Status = order.Status;
+            old.OrderProducts = old.OrderProducts;
+            return old;
         }
 
 
@@ -79,18 +87,14 @@ namespace Service
                 var product = await _productRepository.GetById(request.ProductId[i]);
                 if (product != null && request.Quantity[i] > 0)
                 {
-                    // Trừ số lượng sản phẩm tồn kho
                     if (product.InStock >= request.Quantity[i])
                     {
                         product.InStock -= request.Quantity[i];
-                        // Thêm sản phẩm vào đơn hàng
                         order.OrderProducts.Add(new OrderProduct
                         {
                             ProductId = product.Id,
                             Quantity = request.Quantity[i]
                         });
-
-                        // Cập nhật sản phẩm
                         await _productRepository.UpdateProduct(product);
                     }
                     else

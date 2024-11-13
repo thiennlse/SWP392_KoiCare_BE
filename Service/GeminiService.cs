@@ -5,25 +5,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Mscc.GenerativeAI;
 using Repository.Interface;
-using Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
-    public  class GeminiService : IGeminiService
+    public class GeminiService : IGeminiService
     {
 
         private readonly IConfiguration _configuration;
-        private readonly string _generativeApiKey; // Thay đổi để lưu trữ API Key
+        private readonly string _generativeApiKey;
         private readonly IProductRepository _productRepository;
         private readonly IWaterRepository _waterRepository;
-        
-        public GeminiService(IConfiguration configuration,IProductRepository productRepository, IWaterRepository waterRepository)
+
+        public GeminiService(IConfiguration configuration, IProductRepository productRepository, IWaterRepository waterRepository)
         {
             _configuration = configuration;
             _generativeApiKey = _configuration["GenerativeAI:ApiKey"] ?? throw new Exception("Cannot find Generative AI API Key"); // Lấy API Key từ cấu hình
@@ -43,7 +37,7 @@ namespace Service
         public async Task<string> AskQuestionFishFood(Fish fish)
         {
             int MonthAge = DateTime.Now.Month - fish.Dob.Month;
-            var prompt = $"tính toán lượng thức ăn dựa vào 2 thông số cân nặng {fish.Weight}theo kg và tuổi {MonthAge}theo tháng của cá Koi này , trả về theo thẻ html , không trả về <!DOCTYPE html> và <html> , no yapping";
+            var prompt = $"Đánh giá và tính toán lượng thức ăn cho cá Koi này dựa trên hai thông số: {fish.Weight} kilogram và {MonthAge} tháng tuổi. Trả về kết quả dưới dạng HTML nhưng không bao gồm thẻ <!DOCTYPE html> và <html>. Trả lời trực tiếp, không thêm lời bình luận phụ.";
             var model = new GenerativeModel();
             model.ApiKey = _generativeApiKey;
             var response = await model.GenerateContent(prompt);
@@ -56,7 +50,7 @@ namespace Service
             List<Product> products = await _productRepository.GetAllProduct();
             Waters waters = await _waterRepository.GetById(pool.WaterId);
             var saltOfpool = waters.Salt;
-            var prompt = $"tính toán lượng muối hợp lí cho nước này với size{pool.Size} m2 ,Depth{pool.Depth} m, và so sánh với salt{saltOfpool} gram trong hồ, đồng thời tính các chỉ số po4 {waters.Po4} ," +
+            var prompt = $"tính toán lượng muối hợp lí cho nước này với size{pool.Size} cm2 ,Depth{pool.Depth} cm, và so sánh với salt {saltOfpool} gram trong hồ, đồng thời tính các chỉ số po4 {waters.Po4} ," +
                 $"chỉ số ph {waters.Ph} , chỉ số no2 {waters.No2}, chỉ số no3 {waters.No3}, chỉ số o2 {waters.O2}, và nhiệt độ của nước {waters.Temperature} " +
                 $" trả về kết quả  theo thẻ html , không trả về <!DOCTYPE html> và <html> , no yapping";
             var model = new GenerativeModel();
