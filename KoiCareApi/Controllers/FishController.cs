@@ -151,41 +151,33 @@ namespace KoiCareApi.Controllers
         }
 
         [HttpGet("calculateFoodFish/{id}")]
-        public async Task<IActionResult> CalculateFoodForFish(int id) {
+        public async Task<IActionResult> CalculateDailyFoodForFish(int id)
+        {
             if (id <= 0)
             {
-                return BadRequest("fish id must greater than 0");
+                return BadRequest("Fish ID must be greater than 0");
+            }
 
-            }
-            Fish fish =  await _fishService.GetFishById(id);
-            if (fish == null) 
+            Fish fish = await _fishService.GetFishById(id);
+            if (fish == null)
             {
-            return NotFound("fish is not exits");
+                return NotFound("Fish does not exist");
             }
-            double foodStandardForFish = await _foodService.CalculateFishFood(id);
-            
-            Food foodOfFish = await _foodService.GetFoodById(fish.FoodId);
 
-            double result = 0;
-                
-            if(foodOfFish.Weight > foodStandardForFish)
-            {   // descrease food with result unit
-                result = foodOfFish.Weight - foodStandardForFish;
-                return Ok("descrease "+result);
-            }
-            if(foodOfFish.Weight < foodStandardForFish)
+            double dailyFood = await _foodService.CalculateDailyFishFood(id);
+            double weeklyFood = await _foodService.CalculateWeeklyFoodRequirement(dailyFood, fish);
+            int feedDay = await _foodService.GetFeedDay(fish);
+            double perFeedingDay = await _foodService.CalculateFoodPerFeedingDay(weeklyFood, fish);
+
+            var result = new
             {
-                // increase food with result unit
-                result = foodStandardForFish - foodOfFish.Weight;
-                return Ok("increase " + result);
-            }
-            if (foodOfFish.Weight == result) 
-            {
-                result = foodStandardForFish;
-                return Ok("keep " + result);
-            }
-            return Ok();
-        
+                DailyFood = dailyFood,
+                WeeklyFood = weeklyFood,
+                FeedDays = feedDay,
+                FoodPerFeedingDay = perFeedingDay
+            };
+
+            return Ok(result);
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.ResponseModel;
+using iText.Layout.Properties;
 using Repository;
 using Repository.Interface;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,51 +49,100 @@ namespace Service
          return await _foodRepository.UpdateFood(food);
         }
 
-        public async Task<double> CalculateFishFood(int fishId)
+        public async Task<double> CalculateDailyFishFood(int fishId)
         {
-            double dailyFood =  0;
+            double dailyFood = 0;
             double fishFoodResult = 0;
-           
+
             Fish _fish = await _fishRepository.GetById(fishId);
-            var age = DateTime.Now.Year - _fish.Dob.Year;
-            if (_fish != null) {
-                if (age > 0) {
+            if (_fish != null)
+            {
+                var age = DateTime.Now.Year - _fish.Dob.Year;
+
+                if (age > 0)
+                {
                     if (age >= 25 && age <= 50)
                     {
-                        dailyFood = (_fish.Weight * 1.5 ) / 100;
+                        dailyFood = (_fish.Weight * 1.5) / 100;
                         fishFoodResult = dailyFood * 0.3;
                     }
-                    if ( age > 0 && age < 25)
+                    else if (age < 25)
                     {
-                        fishFoodResult = (_fish.Weight * 0.5 ) / 100;
+                        fishFoodResult = (_fish.Weight * 0.5) / 100;
                     }
                 }
-                if (age <= 0) {
-                    int MonthAge = DateTime.Now.Month - _fish.Dob.Month;
-                    if (MonthAge >= 1 && MonthAge <= 4) {
-                        dailyFood = (_fish.Weight * 5 ) / 100;
+                else
+                {
+                    int monthAge = DateTime.Now.Month - _fish.Dob.Month;
+                    if (monthAge >= 1 && monthAge <= 4)
+                    {
+                        dailyFood = (_fish.Weight * 5) / 100;
                         fishFoodResult = dailyFood;
                     }
-                    if (MonthAge >= 5 && MonthAge <= 9) { 
-                         dailyFood = (_fish.Weight * 4 ) / 100;
-                         fishFoodResult = dailyFood;
-                    }
-                    if (MonthAge >= 10 && MonthAge <= 12) {
-                        dailyFood = (_fish.Weight * 3 ) / 100;
+                    else if (monthAge >= 5 && monthAge <= 9)
+                    {
+                        dailyFood = (_fish.Weight * 4) / 100;
                         fishFoodResult = dailyFood;
-                    }if(MonthAge == 0)
+                    }
+                    else if (monthAge >= 10 && monthAge <= 12)
+                    {
+                        dailyFood = (_fish.Weight * 3) / 100;
+                        fishFoodResult = dailyFood;
+                    }
+                    else if (monthAge == 0)
                     {
                         fishFoodResult = 0;
                     }
                 }
-
             }
 
             return Math.Round(fishFoodResult, 2);
-             
-
         }
 
-        
+        public async Task<double> CalculateWeeklyFoodRequirement(double dailyFood, Fish _fish) {
+            int numberOfFeedDay = await GetFeedDay(_fish);
+            // calculate weekly food 
+            double weeklyFood = dailyFood * numberOfFeedDay;
+            return Math.Round(weeklyFood, 2);
+        }
+
+        public async Task<int> GetFeedDay(Fish _fish)
+        {
+            int feedDay = 0;
+            var ageYear = DateTime.Now.Year - _fish.Dob.Year;
+
+            if (ageYear >= 1 && ageYear <= 10)
+            {
+                feedDay = 5;
+            }
+            else if (ageYear > 10)
+            {
+                feedDay = 3;
+            }
+            else
+            {
+                int monthAge = DateTime.Now.Month - _fish.Dob.Month;
+                if (monthAge >= 1 && monthAge < 6)
+                {
+                    feedDay = 7;
+                }
+                else if (monthAge >= 6 && monthAge <= 12)
+                {
+                    feedDay = 6;
+                }
+            }
+
+            return feedDay;
+        }
+
+        public async Task<double> CalculateFoodPerFeedingDay(double weeklyFood, Fish _fish)
+        {
+            int feedDay = await GetFeedDay(_fish);
+            double foodPerFeedingDay = weeklyFood / feedDay;
+
+            return Math.Round(foodPerFeedingDay, 2);
+        }
+
+
     }
 }

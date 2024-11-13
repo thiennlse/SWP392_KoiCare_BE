@@ -15,6 +15,9 @@ namespace Service.Interface
         public Task AddNewFood(Food food);
         public Task DeleteFood(int id);
         public Task<Food> UpdateFood(Food food);
-        public  Task<double> CalculateFishFood(int fishId);
+        public  Task<double> CalculateDailyFishFood(int fishId);
+        public  Task<double> CalculateWeeklyFoodRequirement(double dailyFood, Fish _fish);
+        public  Task<int> GetFeedDay(Fish _fish);
+        public  Task<double> CalculateFoodPerFeedingDay(double weeklyFood, Fish _fish);
     }
 }
