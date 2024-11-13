@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BusinessObject.Models
@@ -9,6 +10,7 @@ namespace BusinessObject.Models
     public class UserSubcriptions : BaseEntity
     {
         public int UserId { get; set; }
+        [JsonIgnore]
         public virtual Member Member { get; set; }
 
         public int SubcriptionId { get; set; }

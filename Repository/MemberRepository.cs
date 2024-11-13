@@ -22,7 +22,9 @@ namespace Repository
 
         public async Task<List<MemberResponseModel>> GetAllMember()
         {
-            List<Member> members = await _context.Members.Include(m => m.Role).ToListAsync();
+            List<Member> members = await _context.Members.Include(m => m.Role)
+                .Include(m => m.UserSubcriptions)
+                .ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {

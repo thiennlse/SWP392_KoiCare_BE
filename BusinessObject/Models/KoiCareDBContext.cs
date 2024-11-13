@@ -36,7 +36,7 @@ public class KoiCareDBContext : DbContext
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("KoiCareDB"));
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("KoiCareDB"));
         }
     }
 

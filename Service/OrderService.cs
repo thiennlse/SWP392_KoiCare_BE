@@ -63,7 +63,6 @@ namespace Service
             return old;
         }
 
-
         private async Task<Order> MapToOrder(OrderRequestModel request)
         {
             var user = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -84,7 +83,7 @@ namespace Service
 
             for (int i = 0; i < request.ProductId.Count; i++)
             {
-                var product = await _productRepository.GetById(request.ProductId[i]);
+                var product = await _productRepository.GetById(request.ProductId[i].Value);
                 if (product != null && request.Quantity[i] > 0)
                 {
                     if (product.InStock >= request.Quantity[i])

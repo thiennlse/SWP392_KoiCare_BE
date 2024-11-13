@@ -12,7 +12,8 @@ namespace BusinessObject.RequestModel
 {
     public class OrderRequestModel
     {
-        public List<int> ProductId { get; set; }
+        public List<int?> ProductId { get; set; }
+        public int? SubcriptionId { get; set; }
         public List<int> Quantity { get; set; }
         public double TotalCost { get; set; }
         public DateTime CloseDate { get; set; }
