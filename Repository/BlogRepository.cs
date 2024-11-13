@@ -62,7 +62,7 @@ namespace Repository
             {
                 Title = blog.Title,
                 Content = blog.Content,
-                DateOfPublish = blog.DateOfPublish,
+                DateOfPublish = blog.DateOfPublish.ToUniversalTime(),
                 Status = blog.Status,
                 Member = _context.Members.FirstOrDefault(b => b.Id == blog.MemberId)
             };

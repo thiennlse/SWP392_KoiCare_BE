@@ -53,9 +53,9 @@ namespace Service
         private async Task<Order> UpdataOrderDetails(Order order, Order old)
         {
             
-            old.OrderDate = order.OrderDate;
+            old.OrderDate = order.OrderDate.ToUniversalTime();
             old.TotalCost = order.TotalCost;
-            old.CloseDate = order.CloseDate;
+            old.CloseDate = order.CloseDate.ToUniversalTime();
             old.Code = order.Code;
             old.Description = order.Description;
             old.Status = order.Status;
@@ -73,8 +73,8 @@ namespace Service
                 MemberId = userid,
                 Member = await _memberRepository.GetById(userid),
                 TotalCost = request.TotalCost,
-                OrderDate = DateTime.Now,
-                CloseDate = request.CloseDate,
+                OrderDate = DateTime.Now.ToUniversalTime(),
+                CloseDate = request.CloseDate.ToUniversalTime(),
                 Code = request.Code,
                 Description = request.Description,
                 Status = request.Status,

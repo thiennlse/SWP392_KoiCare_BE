@@ -27,7 +27,6 @@ namespace BusinessObject.Models
         public virtual ICollection<Pool>? Pools { get; set; }
         [JsonIgnore]
         public virtual ICollection<Product>? Products { get; set; }
-
         public virtual ICollection<UserSubcriptions>? UserSubcriptions { get; set; } = new List<UserSubcriptions>();
     }
 }

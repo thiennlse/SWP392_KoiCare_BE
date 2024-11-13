@@ -20,12 +20,14 @@ namespace KoiCareApi.Controllers
         private readonly IMemberService _memberService;
         private readonly IRoleService _roleService;
         private IConfiguration _config;
+        private readonly ISubcriptionService _subcriptionService;
 
-        public MemberController(IMemberService memberService, IRoleService roleService, IConfiguration config)
+        public MemberController(IMemberService memberService, IRoleService roleService, IConfiguration config, ISubcriptionService subcriptionService)
         {
             _memberService = memberService;
             _roleService = roleService;
             _config = config;
+            _subcriptionService = subcriptionService;
         }
 
         [HttpGet]
@@ -94,6 +96,7 @@ namespace KoiCareApi.Controllers
                 Success = true,
                 Token = token,
                 Role = member.Role.Name,
+                Subcriptions = member.UserSubcriptions,
                 UserId = member.Id
             };
             return Ok(response);
@@ -145,6 +148,28 @@ namespace KoiCareApi.Controllers
                 return BadRequest("Error with input");
             }
             return NotFound();
+        }
+        [HttpPost("subcription/{planId}")]
+        public async Task<IActionResult> SubcriptionForMember(int planId)
+        {
+            try
+            {
+                var plan = await _subcriptionService.GetById(planId);
+                if (plan != null)
+                {
+                    await _memberService.AddSubcriptionForMember(planId);
+                    return Ok("Regstered subcription successful");
+                }
+                else
+                {
+                    return BadRequest("Plan not found");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
