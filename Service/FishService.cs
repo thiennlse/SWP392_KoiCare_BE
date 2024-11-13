@@ -16,32 +16,33 @@ namespace Service
 
         private IFishRepository _fishRepository;
 
-        public FishService(IFishRepository fishRepository) {
+        public FishService(IFishRepository fishRepository)
+        {
             _fishRepository = fishRepository;
         }
 
         public async Task<List<Fish>> GetAllFishAsync(int page, int pageSize, string? searchTerm)
         {
-        return await _fishRepository.GetAllFishAsync(page, pageSize, searchTerm);
+            return await _fishRepository.GetAllFishAsync(page, pageSize, searchTerm);
         }
 
-        public async Task<Fish> GetFishById(int id) 
+        public async Task<Fish> GetFishById(int id)
         {
-        return await _fishRepository.GetById(id);
+            return await _fishRepository.GetById(id);
         }
 
-        public async Task AddNewFish(Fish fish) 
+        public async Task AddNewFish(Fish fish)
         {
-         await _fishRepository.AddNewFish(fish);
+            await _fishRepository.AddNewFish(fish);
         }
 
         public async Task DeleteFish(int id)
         {
-         await _fishRepository.DeleteFish(id);
+            await _fishRepository.DeleteFish(id);
         }
-        public async Task<Fish> UpdateById(Fish fish) 
+        public async Task<Fish> UpdateById(Fish fish)
         {
-        return  await _fishRepository.UpdateById(fish);
+            return await _fishRepository.UpdateById(fish);
         }
     }
 }

@@ -133,6 +133,8 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IGeminiService, GeminiService>();
+builder.Services.AddScoped<ISubcriptionRepository,SubcriptionRepository>();
+builder.Services.AddScoped<ISubcriptionService, SubcriptionService>();
 builder.Services.AddScoped<BlogValidation>();
 builder.Services.AddScoped<FishValidation>();
 builder.Services.AddScoped<FoodValidation>();
