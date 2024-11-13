@@ -10,13 +10,13 @@ namespace Validation.Product
 {
     public class ProductValidation : AbstractValidator<ProductRequestModel>
     {
-        public ProductValidation() 
+        public ProductValidation()
         {
             RuleFor(p => p.Name)
                 .NotEmpty().WithMessage("Name is required");
             RuleFor(p => p.Description)
                 .NotEmpty().WithMessage("Description is required");
-            RuleFor(p=> p.Image)
+            RuleFor(p => p.Image)
                 .NotEmpty().WithMessage("Image is required");
             RuleFor(p => p.Cost)
                 .GreaterThanOrEqualTo(1).WithMessage("Cost cannot lower than 1")
@@ -26,8 +26,6 @@ namespace Validation.Product
             RuleFor(p => p.Productivity)
                 .GreaterThanOrEqualTo(1).WithMessage("Productivity cannot lower than 1")
                 .NotEmpty().WithMessage("Productivity is required");
-            RuleFor(p => p.Code)
-                .NotEmpty().WithMessage("Code is required");
             RuleFor(p => p.InStock)
                 .GreaterThanOrEqualTo(1).WithMessage("Instock cannot lower than 1")
                 .NotEmpty().WithMessage("InStock is required");
