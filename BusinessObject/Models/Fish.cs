@@ -41,8 +41,9 @@ namespace BusinessObject.Models
         [StringLength(100)]
         public string Origin { get; set; } = string.Empty;
         [JsonIgnore]
-        public virtual Food? Food { get; set; } 
+        public virtual Food? Food { get; set; }
         [JsonIgnore]
         public virtual Pool? Pool { get; set; } = null!;
+        public ICollection<FishProperties> FishProperties { get; set; } = new List<FishProperties>();
     }
 }

@@ -77,13 +77,7 @@ builder.Services.AddAuthentication(options =>
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
 builder.Services.AddDbContext<KoiCareDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB"), sqlOptions =>
-    {
-        sqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 10,
-            maxRetryDelay: TimeSpan.FromSeconds(30),
-            errorNumbersToAdd: null);
-    }));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB")));
 #endregion
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
