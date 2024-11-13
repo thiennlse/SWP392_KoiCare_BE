@@ -1,6 +1,6 @@
 using BusinessObject.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+using Npgsql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -77,7 +77,8 @@ builder.Services.AddAuthentication(options =>
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
 builder.Services.AddDbContext<KoiCareDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("KoiCareDB")));
+
 #endregion
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -100,10 +101,7 @@ builder.Services.AddCors(options =>
 #endregion
 
 #region Add Scope
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.Configure<CloudinarySetting>(builder.Configuration.GetSection("CloudinarySetting"));
-builder.Services.AddDbContext<KoiCareDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KoiCareDB")));
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
