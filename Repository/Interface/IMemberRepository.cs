@@ -13,6 +13,7 @@ namespace Repository.Interface
         Task<List<MemberResponseModel>> GetAllMember();
         Task<Member> Login(string email, string password);
         Task Register(Member member);
+        Task<Member> GetByIdAsync(int id);
         Task<Member> UpdateMember(Member member);
         Task<Member> ExistedEmail(string email);
         Task<Member> CreateMemberByGoogleAccount(string accountEmail, string accountName);

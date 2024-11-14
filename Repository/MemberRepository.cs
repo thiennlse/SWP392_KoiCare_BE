@@ -37,6 +37,8 @@ namespace Repository
             return _member;
         }
 
+
+
         public async Task<Member> Login(string email, string password)
         {
             password = HashPasswordToSha256(password);
@@ -88,6 +90,14 @@ namespace Repository
             _context.Members.Add(member);
             await _context.SaveChangesAsync();
             return member;
+        }
+
+        public async Task<Member> GetByIdAsync(int id)
+        {
+            return await _context.Members
+                 .Include(m => m.Role)
+                 .Include(m => m.UserSubcriptions.Where(subscription => subscription.EndDate > DateTime.Now.ToUniversalTime()))
+                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
         }
     }
 }
