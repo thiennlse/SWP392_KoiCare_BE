@@ -9,9 +9,7 @@ namespace BusinessObject.RequestModel
     public class PaymentRequestModel
     {
         public int ProductId { get; set; }
-
         public double Cost { get; set; }
-
         public int quantity { get; set; }
     }
 }

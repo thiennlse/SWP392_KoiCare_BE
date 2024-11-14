@@ -45,7 +45,7 @@ namespace Service
                 Image = blog.Image,
                 Title = blog.Title,
                 Content = blog.Content,
-                DateOfPublish = blog.DateOfPublish,
+                DateOfPublish = blog.DateOfPublish.ToUniversalTime(),
                 Status = blog.Status,
                 MemberId = blog.MemberId
             };

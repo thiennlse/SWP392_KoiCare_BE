@@ -9,7 +9,6 @@ namespace BusinessObject.Models
     {
         [Required]
         public int PoolId { get; set; }
-
         [Required]
         public int FoodId { get; set; }
 

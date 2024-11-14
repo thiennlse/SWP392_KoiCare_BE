@@ -14,12 +14,14 @@ namespace Service
         private readonly IMemberRepository _memberRepository;
         private readonly IProductRepository _productRepository;
         private readonly IHttpContextAccessor _contextAccessor;
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository)
+        private readonly ISubcriptionRepository _subcriptionRepository;
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IHttpContextAccessor contextAccessor, IMemberRepository memberRepository, ISubcriptionRepository subcriptionRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _contextAccessor = contextAccessor;
             _memberRepository = memberRepository;
+            _subcriptionRepository = subcriptionRepository;
         }
         public async Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm)
         {
@@ -53,9 +55,9 @@ namespace Service
         private async Task<Order> UpdataOrderDetails(Order order, Order old)
         {
             
-            old.OrderDate = order.OrderDate;
+            old.OrderDate = order.OrderDate.ToUniversalTime();
             old.TotalCost = order.TotalCost;
-            old.CloseDate = order.CloseDate;
+            old.CloseDate = order.CloseDate.ToUniversalTime();
             old.Code = order.Code;
             old.Description = order.Description;
             old.Status = order.Status;
@@ -73,36 +75,56 @@ namespace Service
                 MemberId = userid,
                 Member = await _memberRepository.GetById(userid),
                 TotalCost = request.TotalCost,
-                OrderDate = DateTime.Now,
-                CloseDate = request.CloseDate,
+                OrderDate = DateTime.Now.ToUniversalTime(),
+                CloseDate = request.CloseDate.ToUniversalTime(),
                 Code = request.Code,
                 Description = request.Description,
                 Status = request.Status,
                 OrderProducts = new List<OrderProduct>()
             };
 
-            for (int i = 0; i < request.ProductId.Count; i++)
+            if (request.SubcriptionId != 0)
             {
-                var product = await _productRepository.GetById(request.ProductId[i].Value);
-                if (product != null && request.Quantity[i] > 0)
+                var subscriptionProduct = await _subcriptionRepository.GetById(request.SubcriptionId.Value);
+                if (subscriptionProduct != null)
                 {
-                    if (product.InStock >= request.Quantity[i])
+                    order.OrderProducts.Add(new OrderProduct
                     {
-                        product.InStock -= request.Quantity[i];
-                        order.OrderProducts.Add(new OrderProduct
+                        SubcriptionId = request.SubcriptionId.Value,
+                        Quantity = 1
+                    });
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Sản phẩm {request.SubcriptionId.Value} không có.");
+                }
+            }
+            else
+            {
+                for (int i = 0; i < request.ProductId.Count; i++)
+                {
+                    var product = await _productRepository.GetById(request.ProductId[i].Value);
+                    if (product != null && request.Quantity[i] > 0)
+                    {
+                        if (product.InStock >= request.Quantity[i])
                         {
-                            ProductId = product.Id,
-                            Quantity = request.Quantity[i]
-                        });
-                        await _productRepository.UpdateProduct(product);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException($"Số lượng tồn kho của sản phẩm {product.Id} không đủ.");
+                            product.InStock -= request.Quantity[i];
+                            order.OrderProducts.Add(new OrderProduct
+                            {
+                                ProductId = product.Id,
+                                Quantity = request.Quantity[i]
+                            });
+                            await _productRepository.UpdateProduct(product);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"Số lượng tồn kho của sản phẩm {product.Id} không đủ.");
+                        }
                     }
                 }
             }
             return order;
         }
+
     }
 }

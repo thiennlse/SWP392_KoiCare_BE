@@ -23,7 +23,7 @@ namespace Repository
         public async Task<List<MemberResponseModel>> GetAllMember()
         {
             List<Member> members = await _context.Members.Include(m => m.Role)
-                .Include(m => m.UserSubcriptions)
+                .Include(m => m.UserSubcriptions.Where(subscription => subscription.EndDate > DateTime.Now.ToUniversalTime()))
                 .ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
@@ -40,7 +40,9 @@ namespace Repository
         public async Task<Member> Login(string email, string password)
         {
             password = HashPasswordToSha256(password);
-            return await _context.Members.Include(m => m.Role)
+            return await _context.Members
+                .Include(m => m.Role)
+                .Include(m => m.UserSubcriptions.Where(subscription => subscription.EndDate > DateTime.Now.ToUniversalTime()))
                 .FirstOrDefaultAsync(m => m.Email.Equals(email) && m.Password.Equals(password));
         }
         public async Task Register(Member member)
@@ -58,7 +60,10 @@ namespace Repository
         }
         public async Task<Member> ExistedEmail(string email)
         {
-            return await _context.Members.FirstOrDefaultAsync(m => m.Email.Equals(email));
+            return await _context.Members
+                .Include(m => m.Role)
+                .Include(m => m.UserSubcriptions.Where(subscription => subscription.EndDate > DateTime.Now.ToUniversalTime()))
+                .FirstOrDefaultAsync(m => m.Email.Equals(email));
         }
 
         public string HashPasswordToSha256(string password)
