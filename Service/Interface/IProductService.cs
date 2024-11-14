@@ -19,5 +19,7 @@ namespace Service.Interface
         Task DeleteProduct(int id);
 
         Task<Product> UpdateProduct(int id, ProductRequestModel product);
+
+        public  Task<List<Product>> GetListProductbyListProductid(List<int> listProductId);
     }
 }

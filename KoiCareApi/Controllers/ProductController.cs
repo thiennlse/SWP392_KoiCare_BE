@@ -4,6 +4,8 @@ using Service.Interface;
 using Validation.Product;
 using FluentValidation;
 using FluentValidation.Results;
+using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 
 namespace KoiCareApi.Controllers
 {
@@ -65,11 +67,11 @@ namespace KoiCareApi.Controllers
                 });
                 return BadRequest(error);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         [HttpDelete("Delete")]
@@ -109,6 +111,21 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("getlistproductformlistid")]
+        public async Task<IActionResult> GetListProductbyListProductid( List<int> listProductId)
+        {
+            try
+            {
+                List<Product> ListProductResult = await _productService.GetListProductbyListProductid(listProductId);
+               return Ok(ListProductResult);
+                
+            }
+            catch (Exception ex) {
+            return BadRequest(ex.Message);
+            }
+
         }
     }
 }

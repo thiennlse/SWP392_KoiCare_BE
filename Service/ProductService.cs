@@ -65,5 +65,17 @@ namespace Service
             };
         }
         private string GenerateUniqueCode() => Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
-    }
+    
+        public async Task<List<Product>> GetListProductbyListProductid(List<int> listProductId)
+        {
+            List<Product> ListProduct = new List<Product>();
+            foreach (int id in listProductId)
+            {
+                Product product = await _productRepository.GetById(id);
+                ListProduct.Add(product);
+            }
+
+            return ListProduct;
+        }
+    }   
 }
