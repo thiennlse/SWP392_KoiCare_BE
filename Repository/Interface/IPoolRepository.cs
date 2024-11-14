@@ -17,5 +17,7 @@ namespace Repository.Interface
         Task DeletePool(int id);
 
         Task<Pool> UpdatePool(Pool pool);
+
+        public  Task<List<Fish>> GetFishByPoolId(int poolId);
     }
 }

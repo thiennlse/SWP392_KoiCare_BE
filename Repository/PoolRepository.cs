@@ -69,6 +69,13 @@ namespace Repository
             return pool;
         }
 
+        public async Task<List<Fish>> GetFishByPoolId(int poolId)
+        {
+            var pool = await _context.Pools
+                .Include(p => p.Fish)
+                .SingleOrDefaultAsync(p => p.Id == poolId);
+            return pool?.Fish?.ToList() ?? new List<Fish>();
+        }
 
     }
 }

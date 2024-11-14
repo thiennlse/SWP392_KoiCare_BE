@@ -20,9 +20,9 @@ namespace Service.Interface
         Task DeletePool(int id);
 
         Task UpdatePool(int id,PoolRequestModel request);
-        Task<double> CalCulateSaltPoolNeed(int id);
 
-        public  Task<List<Product>> CheckWaterElementInPool(int PoolId);
-        public  Task<double> TotalFishInPool(int poolId);
+        public  Task<WaterElementResponseModel> CheckWaterElementInPool(int PoolId);
+        public  Task<int> TotalFishInPool(int poolId);
+        public Task<List<Fish>> GetFishByPoolId(int poolId);
     }
 }
