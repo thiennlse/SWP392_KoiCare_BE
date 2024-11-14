@@ -31,7 +31,7 @@ namespace Service
 
         public async Task<Member> GetMemberById(int id)
         {
-            return await _memberRepository.GetById(id);
+            return await _memberRepository.GetByIdAsync(id);
         }
 
         public async Task<Member> Login(string email, string password)

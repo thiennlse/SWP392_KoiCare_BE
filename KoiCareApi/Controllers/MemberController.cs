@@ -48,6 +48,10 @@ namespace KoiCareApi.Controllers
                 return BadRequest("Vui lòng nhập đúng id");
             }
             var member = await _memberService.GetMemberById(id);
+            if (member == null)
+            {
+                return NotFound($"Không có member với id {id}");
+            }
             MemberResponseModel response = new MemberResponseModel();
             response.Id = member.Id;
             response.Email = member.Email;
@@ -56,10 +60,8 @@ namespace KoiCareApi.Controllers
             response.FullName = member.FullName;
             response.Address = member.Address;
             response.Role = member.Role;
-            if (member == null)
-            {
-                return NotFound($"Không có member với id {id}");
-            }
+            response.UserSubcriptions = member.UserSubcriptions;
+            
             return Ok(response);
         }
         [HttpPost("login")]
