@@ -52,6 +52,17 @@ namespace KoiCareApi.Controllers
             {
                 return BadRequest("please input information");
             }
+            WaterProperties waterProperties = new WaterProperties
+            {
+                Temperature = _water.Temperature,
+                Salt = _water.Salt,
+                O2 = _water.O2,
+                Po4 = _water.Po4,
+                No2 = _water.No2,
+                No3 = _water.No3,
+                Ph = _water.Ph,
+                Date = DateTime.Now.ToUniversalTime()
+            };
             Waters waters = new Waters();
             waters.Salt = _water.Salt;
             waters.Temperature = _water.Temperature;
@@ -60,6 +71,8 @@ namespace KoiCareApi.Controllers
             waters.No2 = _water.No2;
             waters.O2 = _water.O2;
             waters.Ph = _water.Ph;
+
+            waters.WaterProperties.Add(waterProperties);
             await _waterService.addWater(waters);
             return Created("Create", waters);
 
@@ -73,6 +86,19 @@ namespace KoiCareApi.Controllers
             {
                 return NotFound(" water is not exit");
             }
+            WaterProperties waterProperties = new WaterProperties
+            {
+
+                Date = DateTime.Now.ToUniversalTime(),
+                Ph = _water.Ph,
+                O2 = _water.O2,
+                No2 = _water.No2,
+                No3 = _water.No3,
+                Po4 = _water.Po4,
+                Salt = _water.Salt,
+                Temperature = _water.Temperature,
+            };
+           
             waters.Id = id;
             waters.Salt = _water.Salt;
             waters.Temperature = _water.Temperature;
@@ -81,7 +107,10 @@ namespace KoiCareApi.Controllers
             waters.No2 = _water.No2;
             waters.O2 = _water.O2;
             waters.Ph = _water.Ph;
+
+            waters.WaterProperties.Add(waterProperties);
             await _waterService.updateWater(waters);
+            
             return Ok(waters);
         }
 
@@ -95,6 +124,18 @@ namespace KoiCareApi.Controllers
             }
             await _waterService.deleteWater(id);
             return NoContent();
+        }
+
+        [HttpGet("getwaterbyidproperties/{id}")]
+        public async Task<IActionResult> GetWaterByIdProperties(int id)
+        {
+            var _water = await _waterService.GetWaterByIdProperties(id);
+            if (_water == null)
+            {
+                return NotFound("this water is not exits");
+            }
+
+            return Ok(_water);
         }
     }
 

@@ -22,7 +22,7 @@ namespace BusinessObject.ResponseModel
         public DateTime Dob { get; set; }
         public string Gender { get; set; } = string.Empty;
         public string Origin { get; set; } = string.Empty;
-        
+       
         public virtual Food? Food { get; set; }
         
         public virtual Pool? Pool { get; set; } = null!;

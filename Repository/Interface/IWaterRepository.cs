@@ -17,5 +17,7 @@ namespace Repository.Interface
         Task<Waters> updateWater(Waters water);
 
         Task deleteWater(int id);
+
+        Task<Waters> GetWaterByIdProperties(int waterId);
     }
 }

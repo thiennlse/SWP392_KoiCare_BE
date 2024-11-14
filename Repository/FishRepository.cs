@@ -10,7 +10,7 @@ namespace Repository
     {
         private readonly KoiCareDBContext _context;
 
-        public FishRepository(KoiCareDBContext context) : base(context) 
+        public FishRepository(KoiCareDBContext context) : base(context)
         {
             _context = context;
 
@@ -26,7 +26,7 @@ namespace Repository
                 query = query.Where(f => f.Name.Contains(searchTerm) || f.Origin.Contains(searchTerm));
             }
 
-            var fishs = await query.Skip((page - 1) * pageSize)
+            var fishs = await query.Include(f => f.FishProperties).Skip((page - 1) * pageSize)
                                        .Take(pageSize)
                                        .ToListAsync();
             return fishs.ToList();
@@ -55,11 +55,33 @@ namespace Repository
         {
             _context.Entry(fish).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            await _context.Entry(fish)
+             .Collection(f => f.FishProperties)
+             .LoadAsync();
+
             return fish;
         }
 
-        
+        public async Task<Fish> GetFishByIdGetFishProperties(int fishId)
+        {
+            return await _context.Fishes
+                .Include(f => f.FishProperties)
+                .FirstOrDefaultAsync(f => f.Id == fishId);
+        }
 
+        public async Task<FishProperties> GetFishPropertiesForCalculateByFishId(int fishId)
+        {
+            return (await _context.Fishes
+          .Include(f => f.FishProperties)
+            .FirstAsync(f => f.Id == fishId))
+            .FishProperties.First();
+        }
+
+        public async Task<Fish> GetFishByIdForCalculate(int fishId)
+        {
+            return await _context.Fishes.FirstOrDefaultAsync(f => f.Id == fishId);
+        }
 
     }
 }

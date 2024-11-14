@@ -14,5 +14,10 @@ namespace Repository.Interface
         public  Task AddNewFish(Fish fish);
         public  Task DeleteFish(int id);
         public  Task<Fish> UpdateById(Fish fish);
+        public  Task<Fish> GetFishByIdGetFishProperties(int fishId);
+        public Task<FishProperties> GetFishPropertiesForCalculateByFishId(int fishId);
+        public  Task<Fish> GetFishByIdForCalculate(int fishId);
+
+
     }
 }

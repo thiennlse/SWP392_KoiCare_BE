@@ -44,5 +44,20 @@ namespace Service
         {
             return await _fishRepository.UpdateById(fish);
         }
+        public async Task<Fish> GetFishByIdGetFishProperties(int fishId)
+        {
+            return await _fishRepository.GetFishByIdGetFishProperties(fishId);
+        }
+
+        public async Task<FishProperties> GetFishPropertiesForCalculateByFishId(int fishId)
+        {
+            return await _fishRepository.GetFishPropertiesForCalculateByFishId(fishId);
+        }
+        public async Task<Fish> GetFishByIdForCalculate(int fishId)
+        {
+            return await _fishRepository.GetFishByIdForCalculate(fishId);
+
+        }
+
     }
 }

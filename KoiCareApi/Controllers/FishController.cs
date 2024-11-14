@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using BusinessObject.ResponseModel;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Service.Interface;
 using System.Reflection.Metadata;
 using Validation.Fish;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 namespace KoiCareApi.Controllers
 {
     [Route("api/[controller]")]
@@ -50,6 +52,20 @@ namespace KoiCareApi.Controllers
             return Ok(_fish);
         }
 
+        [HttpGet("getfishbyidproperties/{id}")]
+        public async Task<IActionResult> GetFishByIdGetFishProperties(int id) {
+            if (id <= 0)
+            {
+                return BadRequest("phease input id >0");
+            }
+            var _fish = await _fishService.GetFishByIdGetFishProperties(id);
+            if (_fish == null)
+            {
+                return NotFound("fish is not exit");
+            }
+            return Ok(_fish);
+        }
+
 
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile(IFormFile file)
@@ -84,6 +100,15 @@ namespace KoiCareApi.Controllers
                         Gender = _fish.Gender,
                         Origin = _fish.Origin
                     };
+                    FishProperties fishProperties = new FishProperties
+                    {   
+                        Date = DateTime.Now.ToUniversalTime(),
+                        Fish = fish,
+                        Size = _fish.Size,
+                        Weight = _fish.Weight,
+
+                    };
+                    fish.FishProperties.Add(fishProperties);
                     await _fishService.AddNewFish(fish);
                     return Created("Created", fish);
                 }
@@ -138,9 +163,18 @@ namespace KoiCareApi.Controllers
                         fish.Dob = _fish.Dob;
                         fish.Gender = _fish.Gender;
                         fish.Origin = _fish.Origin;
+                        FishProperties fishProperties = new FishProperties
+                        {
+                            Fish = fish,
+                            Size = fish.Size,
+                            Weight = fish.Weight,
+                            Date = DateTime.Now.ToUniversalTime(),
+                        };
+                        fish.FishProperties.Add(fishProperties);
                         await _fishService.UpdateById(fish);
                         return Ok(fish);
                     }
+
                 }
                 return BadRequest(errors);
             }
@@ -153,31 +187,36 @@ namespace KoiCareApi.Controllers
         [HttpGet("calculateFoodFish/{id}")]
         public async Task<IActionResult> CalculateDailyFoodForFish(int id)
         {
-            if (id <= 0)
+            try
             {
-                return BadRequest("Fish ID must be greater than 0");
+                if (id <= 0)
+                {
+                    return BadRequest("Fish ID must be greater than 0");
+                }
+
+                Fish fish = await _fishService.GetFishByIdForCalculate(id);
+                if (fish == null)
+                {
+                    return NotFound("Fish does not exist");
+                }
+
+                double dailyFood = await _foodService.CalculateDailyFishFood(id);
+                double weeklyFood = await _foodService.CalculateWeeklyFoodRequirement(dailyFood, fish);
+                int feedDay = await _foodService.GetFeedDay(fish);
+                double perFeedingDay = await _foodService.CalculateFoodPerFeedingDay(weeklyFood, fish);
+
+                FishFoodCalculateResponModel fishFoodResult = new FishFoodCalculateResponModel {
+                    DailyFood = dailyFood,
+                    WeeklyFood = weeklyFood,
+                    FeedDay = feedDay,
+                    PerFeedingDay = perFeedingDay
+                };
+
+                return Ok(fishFoodResult);
             }
-
-            Fish fish = await _fishService.GetFishById(id);
-            if (fish == null)
-            {
-                return NotFound("Fish does not exist");
+            catch (Exception ex) {
+            return BadRequest(ex.Message);
             }
-
-            double dailyFood = await _foodService.CalculateDailyFishFood(id);
-            double weeklyFood = await _foodService.CalculateWeeklyFoodRequirement(dailyFood, fish);
-            int feedDay = await _foodService.GetFeedDay(fish);
-            double perFeedingDay = await _foodService.CalculateFoodPerFeedingDay(weeklyFood, fish);
-
-            var result = new
-            {
-                DailyFood = dailyFood,
-                WeeklyFood = weeklyFood,
-                FeedDays = feedDay,
-                FoodPerFeedingDay = perFeedingDay
-            };
-
-            return Ok(result);
         }
     }
 }

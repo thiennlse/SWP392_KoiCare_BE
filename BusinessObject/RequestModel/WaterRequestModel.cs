@@ -39,6 +39,7 @@ namespace BusinessObject.RequestModel
         [Required]
         [Range(0, double.MaxValue)]
         public double Po4 { get; set; }
-      
+
+       
     }
 }

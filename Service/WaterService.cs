@@ -47,9 +47,13 @@ namespace Service
             return await _repo.updateWater(water);
         }
 
-        
+        public async Task<Waters> GetWaterByIdProperties(int waterId)
+        {
+            return await _repo.GetWaterByIdProperties(waterId);
+        }
 
-       
+
+
 
     }
 }

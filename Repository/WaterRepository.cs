@@ -37,7 +37,7 @@ namespace Repository
         {
             var query = GetQueryable();
             
-            var products = await query.Skip((page - 1) * pageSize)
+            var products = await query.Include(wp => wp.WaterProperties).Skip((page - 1) * pageSize)
                                        .Take(pageSize)
                                        .ToListAsync();
             return products.ToList();
@@ -47,7 +47,18 @@ namespace Repository
         {
             _context.Entry(water).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            await _context.Entry(water)
+             .Collection(wp => wp.WaterProperties) 
+             .LoadAsync();
             return water;
+        }
+
+        public async Task<Waters> GetWaterByIdProperties(int waterId)
+        {
+            return await _context.Waters
+              .Include(w => w.WaterProperties)
+              .FirstOrDefaultAsync(w => w.Id == waterId);
         }
     }
 }
