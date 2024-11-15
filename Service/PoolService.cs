@@ -72,6 +72,7 @@ namespace Service
             pool.Description = newpool.Description;
             pool.Size = newpool.Size;
             pool.Depth = newpool.Depth;
+            pool.Image = newpool.Image;
         }
 
         private Pool MapToPool(PoolRequestModel request)
@@ -83,6 +84,7 @@ namespace Service
                 Name = request.Name,
                 Size = request.Size,
                 Depth = request.Depth,
+                Image = request.Image,
                 MemberId = currUserId,
                 Description = request.Description,
                 Water = new Waters
