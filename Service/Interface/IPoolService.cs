@@ -11,9 +11,9 @@ namespace Service.Interface
 {
     public interface IPoolService
     {
-        public Task<List<Pool>> GetAllPoolAsync(int page, int pageSize, String? searchTerm);
+        public Task<List<PoolResponseModel>> GetAllPoolAsync(int page, int pageSize, String? searchTerm);
 
-        Task<Pool> GetPoolById(int id);
+        Task<PoolResponseModel> GetPoolById(int id);
 
         Task AddNewPool(PoolRequestModel pool);
 

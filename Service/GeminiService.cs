@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +25,7 @@ namespace Service
             _productRepository = productRepository;
             _waterRepository = waterRepository;
         }
-        public async Task<string> AskQuestion(Pool pool)
+        public async Task<string> AskQuestion(PoolResponseModel pool)
         {
             var prompt = $"đánh giá chất lượng nước của hồ này với những thông số này:{pool.Water}, trả về theo thẻ html, không trả về <!DOCTYPE html> và <html> , no yapping";
             var model = new GenerativeModel();
@@ -45,7 +46,7 @@ namespace Service
             return response.ToString();
         }
 
-        public async Task<string> AskQuestionCaculatSalt(Pool pool)
+        public async Task<string> AskQuestionCaculatSalt(PoolResponseModel pool)
         {
             List<Product> products = await _productRepository.GetAllProduct();
             Waters waters = await _waterRepository.GetById(pool.WaterId);

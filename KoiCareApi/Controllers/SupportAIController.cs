@@ -26,7 +26,7 @@ namespace KoiCareApi.Controllers
         public async Task<IActionResult> AskQuestion(int poolId) 
         {
             try {
-                Pool pool = await _poolService.GetPoolById(poolId);
+                var pool = await _poolService.GetPoolById(poolId);
                 if (pool == null) 
                 { 
                 return NotFound("pool is not exits");
@@ -62,7 +62,7 @@ namespace KoiCareApi.Controllers
         {
             try
             {
-                Pool pool = await _poolService.GetPoolById(poolId);
+                var pool = await _poolService.GetPoolById(poolId);
                 if (pool == null)
                 {
                     return BadRequest("pool is not exits");

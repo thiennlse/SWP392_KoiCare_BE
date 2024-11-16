@@ -32,19 +32,54 @@ namespace Service
             _memberRepository = memberRepository;
             _waterRepository = waterRepository;
             _productRepository = productRepository;
-            _fishRepository = fishRepository;   
+            _fishRepository = fishRepository;
         }
 
 
 
-        public async Task<List<Pool>> GetAllPoolAsync(int page, int pageSize, String? searchTerm)
+        public async Task<List<PoolResponseModel>> GetAllPoolAsync(int page, int pageSize, String? searchTerm)
         {
-            return await _poolRepository.GetAllPooltAsync(page, pageSize, searchTerm);
+            var pools = await _poolRepository.GetAllPooltAsync(page, pageSize, searchTerm);
+            List<PoolResponseModel> responseList = new List<PoolResponseModel>();
+            foreach (var pool in pools)
+            {
+                var response = new PoolResponseModel
+                {
+                    Id = pool.Id,
+                    MemberId = pool.MemberId,
+                    Name = pool.Name,
+                    Image = pool.Image,
+                    Size = pool.Size,
+                    Depth = pool.Depth,
+                    Volume = pool.Depth * pool.Size,
+                    Description = pool.Description,
+                    WaterId = pool.WaterId,
+                    Member = pool.Member,
+                    Water = pool.Water
+                };
+                responseList.Add(response);
+            }
+            return responseList;
         }
 
-        public async Task<Pool> GetPoolById(int id)
+        public async Task<PoolResponseModel> GetPoolById(int id)
         {
-            return await _poolRepository.GetById(id);
+            var pool = await _poolRepository.GetById(id);
+            var response = new PoolResponseModel
+            {
+                Id = pool.Id,
+                MemberId = pool.MemberId,
+                Name = pool.Name,
+                Image = pool.Image,
+                Size = pool.Size,
+                Depth = pool.Depth,
+                Volume = pool.Depth * pool.Size,
+                Description = pool.Description,
+                WaterId = pool.WaterId,
+                Member = pool.Member,
+                Water = pool.Water
+            };
+            return response;
         }
 
         public async Task AddNewPool(PoolRequestModel newPool)
@@ -111,24 +146,24 @@ namespace Service
             Pool _pool = await _poolRepository.GetById(poolId);
             double volumeCubicMeters = 0;
             double volume = 0;
-           
+
             if (_pool != null)
             {
                 volumeCubicMeters = _pool.Size * _pool.Depth;
                 volume = volumeCubicMeters;
             }
-           return volume; // lit
+            return volume; // lit
         }
 
         // find total fish on pool
         public async Task<int> TotalFishInPool(int poolId)
         {
-            List<Fish> poolFish = await _poolRepository.GetFishByPoolId(poolId); 
+            List<Fish> poolFish = await _poolRepository.GetFishByPoolId(poolId);
             int numberOfKoi = 0;
             if (poolFish != null)
             {
                 numberOfKoi = poolFish.Count;
-            }       
+            }
             return numberOfKoi;
         }
 
@@ -137,7 +172,7 @@ namespace Service
         public async Task<double> CalculateSaltOfPool(double waterSalt, double volumOfWater)
         {
             double standardOfSalt = volumOfWater * 0.2 / 100;// kg
-            return Math.Round(standardOfSalt,5);
+            return Math.Round(standardOfSalt, 5);
 
         }
 
@@ -145,7 +180,7 @@ namespace Service
         public async Task<double> CalculateNo3OfPool(double waterNo3)
         {
             double standardOfNo3 = waterNo3 * 0.2 * 0.16;
-            return Math.Round(standardOfNo3,5);//g
+            return Math.Round(standardOfNo3, 5);//g
         }
 
         //Calculate standard of No2
@@ -153,17 +188,17 @@ namespace Service
         {
             int totalFish = await TotalFishInPool(poolId);
             double Nh3 = totalFish * 0.2 * 24;
-            double Nh3gas = Nh3  / volumeOfwater; // mg/l
+            double Nh3gas = Nh3 / volumeOfwater; // mg/l
             double standardOfNo2 = Nh3gas * 0.33;
             return Math.Round(standardOfNo2, 5);
         }
 
         //Calculate standard of Po4
-        public async Task<double> CalculatePO4OfPool(int poolId,  double VolumeOfpool) 
+        public async Task<double> CalculatePO4OfPool(int poolId, double VolumeOfpool)
         {
             int totalFish = await TotalFishInPool(poolId);
             double numberPo4OnDay = totalFish * 0.5;
-            double standardOfPo4 = numberPo4OnDay *10/ VolumeOfpool;// mg
+            double standardOfPo4 = numberPo4OnDay * 10 / VolumeOfpool;// mg
             return Math.Round(standardOfPo4, 5);
         }
         // Calcultae Standard of O2
@@ -171,7 +206,7 @@ namespace Service
         {
             int totalFish = await TotalFishInPool(poolId);
             double numberOfO2OnDay = totalFish * 0.1 * 24; // g
-            double standardOfO2 = numberOfO2OnDay /VolumneOfPool;
+            double standardOfO2 = numberOfO2OnDay / VolumneOfPool;
             return Math.Round(standardOfO2, 5);
 
         }
@@ -208,16 +243,16 @@ namespace Service
 
                     // Check salt
                     if (waters.Salt != standardOfSalt)
-                    {   
+                    {
                         waterElementResponseModel.StandardSalt = standardOfSalt;
-                       products.Add(12);
+                        products.Add(12);
                     }
 
                     // Check pH
                     if (waters.Ph < 6.5 || waters.Ph > 8.5)
                     {
                         waterElementResponseModel.StandardPH = waters.Ph;
-                       products.Add(10);
+                        products.Add(10);
                     }
 
                     // Check O2
@@ -231,7 +266,7 @@ namespace Service
                     if (waters.No2 != standardOfNo2)
                     {
                         waterElementResponseModel.StandardNo2 = standardOfNo2;
-                       products.Add(8);
+                        products.Add(8);
                     }
 
                     // Check No3
