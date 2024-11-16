@@ -235,6 +235,7 @@ namespace Service
                     double standardOfO2 = await CalculateO2OfPool(PoolId, volumOfWater);
 
                     // Check temperature
+                    waterElementResponseModel.StandardTemperature = waters.Temperature;
                     if (waters.Temperature < 6 || waters.Temperature > 32)
                     {
                         waterElementResponseModel.StandardTemperature = waters.Temperature;
@@ -249,6 +250,7 @@ namespace Service
                     }
 
                     // Check pH
+                    waterElementResponseModel.StandardPH = waters.Ph;
                     if (waters.Ph < 6.5 || waters.Ph > 8.5)
                     {
                         waterElementResponseModel.StandardPH = waters.Ph;
