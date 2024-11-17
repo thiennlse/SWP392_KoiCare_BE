@@ -17,6 +17,6 @@ namespace Service.Interface
         public Task<Fish> UpdateById(Fish fish);
         public  Task<Fish> GetFishByIdGetFishProperties(int fishId);
         public Task<FishProperties> GetFishPropertiesForCalculateByFishId(int fishId);
-        public Task<Fish> GetFishByIdForCalculate(int fishId);
+        public Task<Fish> GetLastPropertiesOnDay(int fishId);
     }
 }

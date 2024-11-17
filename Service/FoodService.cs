@@ -53,7 +53,7 @@ namespace Service
         {
             double dailyFood = 0;
             double fishFoodResult = 0;
-            Fish _fish = await _fishRepository.GetFishByIdForCalculate(fishId);
+            Fish _fish = await _fishRepository.GetById(fishId);
             if (_fish != null)
             {
                 var age = DateTime.Now.Year - _fish.Dob.Year;

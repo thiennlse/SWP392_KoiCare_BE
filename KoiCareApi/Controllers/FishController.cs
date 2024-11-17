@@ -194,7 +194,7 @@ namespace KoiCareApi.Controllers
                     return BadRequest("Fish ID must be greater than 0");
                 }
 
-                Fish fish = await _fishService.GetFishByIdForCalculate(id);
+                Fish fish = await _fishService.GetFishById(id);
                 if (fish == null)
                 {
                     return NotFound("Fish does not exist");
@@ -218,5 +218,20 @@ namespace KoiCareApi.Controllers
             return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("getlastpropertiesonday")]
+        public async Task<IActionResult> GetLastPropertiesOnDay(int fishId)
+        {
+            try
+            {
+                var reulst = await _fishService.GetLastPropertiesOnDay(fishId);
+                return Ok(reulst);
+            }
+            catch (Exception ex) { 
+            return BadRequest(ex.Message);
+            }
+
+        }
+
     }
 }

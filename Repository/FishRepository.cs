@@ -78,10 +78,26 @@ namespace Repository
             .FishProperties.First();
         }
 
-        public async Task<Fish> GetFishByIdForCalculate(int fishId)
+        public async Task<Fish> GetLastPropertiesOnDay(int fishId)
         {
-            return await _context.Fishes.FirstOrDefaultAsync(f => f.Id == fishId);
+            var fish = await _context.Fishes
+                .Where(f => f.Id == fishId)
+                .Include(f => f.FishProperties)
+                .FirstOrDefaultAsync();
+
+            if (fish == null || fish.FishProperties == null)
+                return null;
+
+            // Lấy FishProperties cuối cùng trong mỗi ngày
+            fish.FishProperties = fish.FishProperties
+                .GroupBy(fp => fp.Date.Date) // Nhóm theo ngày (chỉ lấy phần Date)
+                .Select(g => g.OrderByDescending(fp => fp.Date).First()) // Lấy FishProperty cuối cùng trong ngày
+                .ToList();
+
+            return fish;
         }
+
+
 
     }
 }
