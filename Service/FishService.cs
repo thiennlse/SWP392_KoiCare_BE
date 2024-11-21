@@ -28,7 +28,7 @@ namespace Service
 
         public async Task<Fish> GetFishById(int id)
         {
-            return await _fishRepository.GetById(id);
+            return await _fishRepository.GetFishByIdGetFishProperties(id);
         }
 
         public async Task AddNewFish(Fish fish)
@@ -53,11 +53,9 @@ namespace Service
         {
             return await _fishRepository.GetFishPropertiesForCalculateByFishId(fishId);
         }
-        public async Task<Fish> GetFishByIdForCalculate(int fishId)
+        public async Task<Fish> GetLastPropertiesOnDay(int fishId)
         {
-            return await _fishRepository.GetFishByIdForCalculate(fishId);
-
+            return await _fishRepository.GetLastPropertiesOnDay(fishId);
         }
-
     }
 }
