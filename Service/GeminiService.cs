@@ -38,7 +38,7 @@ namespace Service
         public async Task<string> AskQuestionFishFood(Fish fish)
         {
             int MonthAge = DateTime.Now.Month - fish.Dob.Month;
-            var prompt = $"Đánh giá và tính toán lượng thức ăn cho cá Koi này dựa trên hai thông số: {fish.Weight} kilogram và {MonthAge} tháng tuổi. Trả về kết quả dưới dạng HTML nhưng không bao gồm thẻ <!DOCTYPE html> và <html>. Trả lời trực tiếp, không thêm lời bình luận phụ.";
+            var prompt = $"Đánh giá và tính toán lượng thức ăn cho cá Koi này dựa trên hai thông số: {fish.Weight} gam và {MonthAge} tháng tuổi. Trả về kết quả dưới dạng HTML nhưng không bao gồm thẻ <!DOCTYPE html> và <html>. Trả lời trực tiếp, không thêm lời bình luận phụ.";
             var model = new GenerativeModel();
             model.ApiKey = _generativeApiKey;
             var response = await model.GenerateContent(prompt);
