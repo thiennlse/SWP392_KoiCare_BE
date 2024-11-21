@@ -239,14 +239,14 @@ namespace Service
                     if (waters.Temperature < 6 || waters.Temperature > 32)
                     {
                         waterElementResponseModel.StandardTemperature = waters.Temperature;
-                        products.Add(13);
+                        products.Add(21);
                     }
 
                     // Check salt
                     if (waters.Salt != standardOfSalt)
                     {
                         waterElementResponseModel.StandardSalt = standardOfSalt;
-                        products.Add(12);
+                        products.Add(20);
                     }
 
                     // Check pH
@@ -254,35 +254,35 @@ namespace Service
                     if (waters.Ph < 6.5 || waters.Ph > 8.5)
                     {
                         waterElementResponseModel.StandardPH = waters.Ph;
-                        products.Add(10);
+                        products.Add(18);
                     }
 
                     // Check O2
                     if (waters.O2 != standardOfO2)
                     {
                         waterElementResponseModel.StandardO2 = standardOfO2;
-                        products.Add(9);
+                        products.Add(17);
                     }
 
                     // Check No2
                     if (waters.No2 != standardOfNo2)
                     {
                         waterElementResponseModel.StandardNo2 = standardOfNo2;
-                        products.Add(8);
+                        products.Add(16);
                     }
 
                     // Check No3
                     if (waters.No3 != standardOfNo3)
                     {
                         waterElementResponseModel.StandardNo3 = standardOfNo3;
-                        products.Add(7);
+                        products.Add(15);
                     }
 
                     // Check Po4
                     if (waters.Po4 != standardOfPo4)
                     {
                         waterElementResponseModel.StandardPo4 = standardOfPo4;
-                        products.Add(11);
+                        products.Add(19);
                     }
 
                     waterElementResponseModel.listProductId = products;
