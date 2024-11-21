@@ -82,7 +82,7 @@ namespace Repository
         {
             var fish = await _context.Fishes
                 .Where(f => f.Id == fishId)
-                .Include(f => f.FishProperties)
+                .Include(f => f.FishProperties.OrderByDescending(fp => fp.Date))
                 .FirstOrDefaultAsync();
 
             if (fish == null || fish.FishProperties == null)
