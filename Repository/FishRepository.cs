@@ -26,7 +26,7 @@ namespace Repository
                 query = query.Where(f => f.Name.Contains(searchTerm) || f.Origin.Contains(searchTerm));
             }
 
-            var fishs = await query.Include(f => f.FishProperties).Skip((page - 1) * pageSize)
+            var fishs = await query.Include(f => f.FishProperties.OrderByDescending(fp => fp.Date)).Skip((page - 1) * pageSize)
                                        .Take(pageSize)
                                        .ToListAsync();
             return fishs.ToList();
@@ -66,14 +66,14 @@ namespace Repository
         public async Task<Fish> GetFishByIdGetFishProperties(int fishId)
         {
             return await _context.Fishes
-                .Include(f => f.FishProperties)
+                .Include(f => f.FishProperties.OrderByDescending(fp => fp.Date))
                 .FirstOrDefaultAsync(f => f.Id == fishId);
         }
 
         public async Task<FishProperties> GetFishPropertiesForCalculateByFishId(int fishId)
         {
             return (await _context.Fishes
-          .Include(f => f.FishProperties)
+            .Include(f => f.FishProperties.OrderByDescending(fp => fp.Date))
             .FirstAsync(f => f.Id == fishId))
             .FishProperties.First();
         }

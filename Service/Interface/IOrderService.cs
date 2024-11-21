@@ -1,16 +1,11 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Interface
 {
     public interface IOrderService
     {
-        public  Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm);
+        public Task<List<Order>> GetAllOrderAsync(int page, int pageSize, string? searchTerm);
 
         Task<Order> GetOrderById(int id);
 
@@ -18,6 +13,6 @@ namespace Service.Interface
 
         Task DeleteOrder(int id);
 
-        Task UpdateOrder(int id,OrderRequestModel order);
+        Task UpdateOrder(int id, OrderRequestModel order);
     }
 }
