@@ -49,6 +49,7 @@ namespace Service
          return await _foodRepository.UpdateFood(food);
         }
 
+      
         public async Task<double> CalculateDailyFishFood(int fishId)
         {
             double dailyFood = 0;
@@ -88,14 +89,16 @@ namespace Service
                         dailyFood = (_fish.Weight * 3) / 100;
                         fishFoodResult = dailyFood;
                     }
-                    else if (monthAge == 0)
+                    else if (monthAge <= 0)
                     {
-                        fishFoodResult = 0;
+                        dailyFood = _fish.Weight * 0.5;
+                        fishFoodResult = dailyFood;
+
                     }
                 }
             }
 
-            return Math.Round(fishFoodResult, 2);
+            return Math.Round(fishFoodResult, 5);
         }
 
         public async Task<double> CalculateWeeklyFoodRequirement(double dailyFood, Fish _fish) {
@@ -121,7 +124,7 @@ namespace Service
             else
             {
                 int monthAge = DateTime.Now.Month - _fish.Dob.Month;
-                if (monthAge >= 1 && monthAge < 6)
+                if (monthAge >= 0 && monthAge < 6)
                 {
                     feedDay = 7;
                 }
@@ -139,7 +142,7 @@ namespace Service
             int feedDay = await GetFeedDay(_fish);
             double foodPerFeedingDay = weeklyFood / feedDay;
 
-            return Math.Round(foodPerFeedingDay, 2);
+            return Math.Round(foodPerFeedingDay, 5);
         }
 
 
