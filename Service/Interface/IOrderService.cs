@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using BusinessObject.ResponseModel;
 
 namespace Service.Interface
 {
@@ -14,5 +15,7 @@ namespace Service.Interface
         Task DeleteOrder(int id);
 
         Task UpdateOrder(int id, OrderRequestModel order);
+
+        Task<OrderProductResponse> GetProductByOrderId(int orderId);
     }
 }

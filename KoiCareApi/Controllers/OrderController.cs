@@ -110,5 +110,12 @@ namespace KoiCareApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("product/{id}")]
+        public async Task<IActionResult> GetProductByOrderId(int id)
+        {
+            var orderProduct = await _orderService.GetProductByOrderId(id);
+            return Ok(orderProduct);
+        }
     }
 }

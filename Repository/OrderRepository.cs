@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interface;
 
@@ -72,5 +73,24 @@ namespace Repository
         {
             return await _context.Orders.FirstOrDefaultAsync(o => o.Code == orderCode);
         }
+
+        public async Task<Order> GetProductByOrderId(int orderId, int userId)
+        {
+            var order = await _context.Orders
+                .Where(o => o.Id == orderId)
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product) 
+                .FirstOrDefaultAsync();
+
+            if (order != null)
+            {
+                order.OrderProducts = order.OrderProducts
+                    .Where(op => op.Product.UserId == userId)
+                    .ToList();
+            }
+
+            return order;
+        }
+
     }
 }

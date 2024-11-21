@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using BusinessObject.RequestModel;
+using BusinessObject.ResponseModel;
 using iText.Forms.Form.Element;
 using Microsoft.AspNetCore.Http;
 using Repository.Interface;
@@ -126,5 +127,23 @@ namespace Service
             return order;
         }
 
+        public async Task<OrderProductResponse> GetProductByOrderId(int orderId)
+        {
+            var user = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userid = int.Parse(user);
+            var order = await _orderRepository.GetProductByOrderId(orderId,userid);
+            var orderProduct = order.OrderProducts.Select(o => o.ProductId.Value).ToList();
+            var products = order.OrderProducts.Select(o => o.Product).ToList();
+            var quantity = order.OrderProducts.Select(o => o.Quantity);
+            var total = order.OrderProducts
+                 .Where(op => op.Product != null)
+                 .Sum(op => op.Product.Cost * op.Quantity);
+
+            return new OrderProductResponse
+            {
+                Amount = total,
+                ProductId = orderProduct
+            };
+        }
     }
 }

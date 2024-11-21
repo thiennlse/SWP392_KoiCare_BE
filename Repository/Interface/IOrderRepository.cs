@@ -1,4 +1,5 @@
 ﻿using BusinessObject.Models;
+using BusinessObject.ResponseModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Repository.Interface
         Task DeleteOrder(int id);
         Task<Order> UpdateOrder(Order order);
         Order getById(int id);
+        Task<Order> GetProductByOrderId(int orderId, int userId);
     }
 }
