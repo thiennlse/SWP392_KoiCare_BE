@@ -44,7 +44,9 @@ namespace Repository
             password = HashPasswordToSha256(password);
             return await _context.Members
                 .Include(m => m.Role)
-                .Include(m => m.UserSubcriptions.Where(subscription => subscription.EndDate > DateTime.Now.ToUniversalTime()))
+                .Include(m => m.UserSubcriptions
+                .Where(subscription => subscription.EndDate > DateTime.Now.ToUniversalTime())
+                .OrderByDescending(s => s.SubcriptionId))
                 .FirstOrDefaultAsync(m => m.Email.Equals(email) && m.Password.Equals(password));
         }
         public async Task Register(Member member)
